@@ -438,6 +438,7 @@
 
     input[type="range"].risk-slider {
       -webkit-appearance: none;
+      appearance: none;
       width: 100%;
       height: 6px;
       background: linear-gradient(90deg, var(--surface-2), #e5e7eb);
@@ -448,6 +449,7 @@
 
     input[type="range"].risk-slider::-webkit-slider-thumb {
       -webkit-appearance: none;
+      appearance: none;
       width: 16px;
       height: 16px;
       border-radius: 50%;
@@ -902,6 +904,317 @@
         opacity: .85
       }
     }
+
+    /* ── FAB & Location Panel ── */
+    .fab-wrap {
+      position: fixed;
+      bottom: 28px;
+      right: 324px;
+      z-index: 9000;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+    }
+
+    .fab-btn {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      background: var(--grad-pop);
+      color: #fff;
+      font-size: 1.35rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 24px rgba(99, 102, 241, 0.4), 0 2px 8px rgba(236, 72, 153, 0.25);
+      transition: transform 0.25s cubic-bezier(.4, 0, .2, 1), box-shadow 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .fab-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .fab-btn:hover {
+      transform: scale(1.1) translateY(-2px);
+      box-shadow: 0 8px 32px rgba(99, 102, 241, 0.5), 0 4px 12px rgba(236, 72, 153, 0.3);
+    }
+
+    .fab-btn:active {
+      transform: scale(0.92);
+    }
+
+    .fab-btn.loading {
+      pointer-events: none;
+    }
+
+    .fab-btn.tracking {
+      animation: fab-pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes fab-pulse {
+
+      0%,
+      100% {
+        box-shadow: 0 6px 24px rgba(99, 102, 241, 0.4), 0 0 0 0 rgba(99, 102, 241, 0.3);
+      }
+
+      50% {
+        box-shadow: 0 6px 24px rgba(99, 102, 241, 0.4), 0 0 0 12px rgba(99, 102, 241, 0);
+      }
+    }
+
+    .fab-spinner {
+      width: 24px;
+      height: 24px;
+      border: 2.5px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: fab-spin 0.7s linear infinite;
+    }
+
+    @keyframes fab-spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Location Card */
+    .loc-card {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md), 0 8px 40px rgba(15, 23, 42, 0.08);
+      padding: 14px 16px;
+      min-width: 260px;
+      max-width: 310px;
+      opacity: 0;
+      transform: translateY(12px) scale(0.95);
+      transition: opacity 0.3s cubic-bezier(.4, 0, .2, 1), transform 0.3s cubic-bezier(.4, 0, .2, 1);
+      pointer-events: none;
+    }
+
+    .loc-card.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    .loc-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .loc-card-title {
+      font-family: var(--font);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-soft);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .loc-card-title::before {
+      content: '';
+      width: 3px;
+      height: 12px;
+      border-radius: 2px;
+      background: var(--grad-pop);
+    }
+
+    .loc-card-close {
+      width: 22px;
+      height: 22px;
+      border: none;
+      background: var(--surface-2);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.65rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .loc-card-close:hover {
+      background: var(--line-strong);
+      color: var(--text);
+    }
+
+    .loc-address {
+      font-family: var(--font);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.4;
+      letter-spacing: -0.01em;
+      margin-bottom: 8px;
+      min-height: 1.2em;
+    }
+
+    .loc-coords-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .loc-coords {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      font-weight: 400;
+      color: var(--text-soft);
+      background: var(--surface-2);
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      flex: 1;
+      letter-spacing: 0.01em;
+    }
+
+    .loc-copy-btn {
+      width: 28px;
+      height: 28px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.7rem;
+      color: var(--text-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .loc-copy-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(99, 102, 241, 0.06);
+    }
+
+    .loc-copy-btn.copied {
+      border-color: #059669;
+      color: #059669;
+      background: rgba(52, 211, 153, 0.1);
+    }
+
+    .loc-meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .loc-chip {
+      font-family: var(--font-mono);
+      font-size: 0.52rem;
+      font-weight: 500;
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      background: var(--surface-2);
+      color: var(--text-soft);
+    }
+
+    .loc-chip.accuracy {
+      border-color: rgba(52, 211, 153, 0.35);
+      color: #047857;
+      background: rgba(52, 211, 153, 0.1);
+    }
+
+    .loc-chip.tracking {
+      border-color: rgba(99, 102, 241, 0.3);
+      color: var(--accent);
+      background: rgba(99, 102, 241, 0.08);
+    }
+
+    .loc-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+    }
+
+    .loc-action-btn {
+      flex: 1;
+      padding: 6px 10px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: 0.62rem;
+      font-weight: 600;
+      color: var(--text-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: all 0.2s;
+    }
+
+    .loc-action-btn:hover {
+      border-color: var(--line-strong);
+      background: var(--surface-2);
+      color: var(--text);
+    }
+
+    .loc-action-btn.active {
+      border-color: transparent;
+      background: linear-gradient(var(--surface), var(--surface)) padding-box, var(--grad-pop) border-box;
+      border: 1px solid transparent;
+      color: var(--accent);
+    }
+
+    .loc-error {
+      font-family: var(--font);
+      font-size: 0.72rem;
+      color: #be123c;
+      background: rgba(244, 63, 94, 0.08);
+      border: 1px solid rgba(244, 63, 94, 0.2);
+      border-radius: var(--radius-sm);
+      padding: 8px 10px;
+      line-height: 1.45;
+    }
+
+    .loc-error strong {
+      display: block;
+      margin-bottom: 2px;
+      font-size: 0.68rem;
+      letter-spacing: 0.03em;
+    }
+
+    /* Leaflet accuracy circle styling */
+    .loc-accuracy-circle {
+      fill: rgba(99, 102, 241, 0.08);
+      stroke: rgba(99, 102, 241, 0.3);
+      stroke-width: 1.5;
+    }
+
+    @media (max-width: 1100px) {
+      .fab-wrap {
+        right: 20px;
+      }
+    }
   </style>
 </head>
 
@@ -1102,6 +1415,14 @@
       </div>
     </div>
 
+  </div>
+
+  <!-- FAB & Location Panel -->
+  <div class="fab-wrap" id="fab-wrap">
+    <div class="loc-card" id="loc-card"></div>
+    <button class="fab-btn" id="fab-btn" title="Get my location" aria-label="Get my live location">
+      <span id="fab-icon">📍</span>
+    </button>
   </div>
 
   <div id="bootwarn"
@@ -1538,6 +1859,261 @@
         }
       });
     });
+
+    // ── FAB GPS Location Feature ──
+    (function () {
+      const fabBtn = document.getElementById('fab-btn');
+      const fabIcon = document.getElementById('fab-icon');
+      const locCard = document.getElementById('loc-card');
+
+      let gpsState = 'idle'; // idle | loading | located | tracking | error
+      let watchId = null;
+
+
+
+
+
+
+
+      let locMarker = null;
+      let locCircle = null;
+      let lastCoords = null;
+
+      function setFabState(state) {
+        gpsState = state;
+        fabBtn.classList.remove('loading', 'tracking');
+        if (state === 'loading') {
+          fabBtn.classList.add('loading');
+          fabIcon.innerHTML = '<div class="fab-spinner"></div>';
+        } else if (state === 'tracking') {
+          fabBtn.classList.add('tracking');
+          fabIcon.textContent = '📍';
+        } else {
+          fabIcon.textContent = '📍';
+        }
+      }
+
+      function showCard(html) {
+        locCard.innerHTML = html;
+        requestAnimationFrame(() => {
+          locCard.classList.add('visible');
+        });
+      }
+
+      function hideCard() {
+        locCard.classList.remove('visible');
+      }
+
+      function showError(title, msg) {
+        setFabState('error');
+        showCard(`
+          <div class="loc-card-header">
+            <span class="loc-card-title">Location Error</span>
+            <button class="loc-card-close" onclick="document.getElementById('loc-card').classList.remove('visible')" title="Close">✕</button>
+          </div>
+          <div class="loc-error">
+            <strong>⚠ ${title}</strong>
+            ${msg}
+          </div>
+        `);
+      }
+
+      function formatAccuracy(m) {
+        return m < 1000 ? m.toFixed(0) + ' m' : (m / 1000).toFixed(1) + ' km';
+      }
+
+      async function reverseGeocode(lat, lng) {
+        try {
+          const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`, {
+            headers: { 'Accept-Language': 'en' }
+          });
+          const d = await r.json();
+          if (d && d.display_name) {
+            // Shorten: take first 3 parts
+            const parts = d.display_name.split(', ');
+            return parts.slice(0, 3).join(', ');
+          }
+        } catch (e) { }
+        return null;
+      }
+
+      function updateMapLocation(lat, lng, accuracy) {
+        if (!map) return;
+
+        if (locMarker) map.removeLayer(locMarker);
+        if (locCircle) map.removeLayer(locCircle);
+
+        // Accuracy circle
+        locCircle = L.circle([lat, lng], {
+          radius: accuracy,
+          className: 'loc-accuracy-circle',
+          interactive: false
+        }).addTo(map);
+
+        // User dot with pulsing glow
+        const dotSize = 14;
+        const glowSize = dotSize * 3;
+        const offset = (glowSize - dotSize) / 2;
+        const icon = L.divIcon({
+          className: '',
+          html: `<div style="position:relative;width:${glowSize}px;height:${glowSize}px;pointer-events:none">
+            <div style="position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,0.35) 0%,rgba(99,102,241,0.12) 35%,transparent 70%);animation:mp 2s infinite"></div>
+            <div style="position:absolute;top:${offset}px;left:${offset}px;width:${dotSize}px;height:${dotSize}px;background:linear-gradient(135deg,#6366f1,#ec4899);border:2.5px solid #fff;border-radius:50%;box-shadow:0 2px 8px rgba(99,102,241,0.5);pointer-events:auto"></div>
+          </div>`,
+          iconSize: [glowSize, glowSize],
+          iconAnchor: [glowSize / 2, glowSize / 2]
+        });
+
+        locMarker = L.marker([lat, lng], { icon, interactive: false }).addTo(map);
+      }
+
+      function copyCoords() {
+        if (!lastCoords) return;
+        const text = `${lastCoords.lat.toFixed(6)}, ${lastCoords.lng.toFixed(6)}`;
+        navigator.clipboard.writeText(text).then(() => {
+          const btn = document.getElementById('loc-copy');
+          if (btn) {
+            btn.classList.add('copied');
+            btn.textContent = '✓';
+            setTimeout(() => {
+              btn.classList.remove('copied');
+              btn.textContent = '⧉';
+            }, 1500);
+          }
+        });
+      }
+      window.copyCoords = copyCoords;
+
+      function toggleWatch() {
+        if (gpsState === 'tracking') {
+          stopWatch();
+          setFabState('located');
+          const wb = document.getElementById('loc-watch-btn');
+          if (wb) { wb.classList.remove('active'); wb.innerHTML = '◎ Watch'; }
+        } else {
+          startWatch();
+        }
+      }
+      window.toggleWatch = toggleWatch;
+
+      function startWatch() {
+        if (watchId !== null) return;
+        setFabState('tracking');
+        watchId = navigator.geolocation.watchPosition(
+          (pos) => onPosition(pos, true),
+          (err) => handleGeoError(err),
+          { enableHighAccuracy: true, maximumAge: 5000, timeout: 15000 }
+        );
+        const wb = document.getElementById('loc-watch-btn');
+        if (wb) { wb.classList.add('active'); wb.innerHTML = '◉ Watching'; }
+      }
+
+      function stopWatch() {
+        if (watchId !== null) {
+          navigator.geolocation.clearWatch(watchId);
+          watchId = null;
+        }
+      }
+
+      async function onPosition(pos, isWatch) {
+        const { latitude: lat, longitude: lng, accuracy } = pos.coords;
+        lastCoords = { lat, lng, accuracy };
+
+        updateMapLocation(lat, lng, accuracy);
+
+        if (!isWatch || gpsState === 'loading') {
+          map.flyTo([lat, lng], 16, { duration: 1.2 });
+        }
+
+        if (!isWatch) setFabState('located');
+
+        // Reverse geocode
+        const address = await reverseGeocode(lat, lng);
+        const addrText = address || 'Location found';
+
+        const isTracking = gpsState === 'tracking';
+
+        showCard(`
+          <div class="loc-card-header">
+            <span class="loc-card-title">Your Location</span>
+            <button class="loc-card-close" onclick="document.getElementById('loc-card').classList.remove('visible')" title="Close">✕</button>
+          </div>
+          <div class="loc-address">${addrText}</div>
+          <div class="loc-coords-row">
+            <span class="loc-coords">${lat.toFixed(6)}, ${lng.toFixed(6)}</span>
+            <button class="loc-copy-btn" id="loc-copy" onclick="copyCoords()" title="Copy coordinates">⧉</button>
+          </div>
+          <div class="loc-meta">
+            <span class="loc-chip accuracy">± ${formatAccuracy(accuracy)}</span>
+            ${isTracking ? '<span class="loc-chip tracking">◉ LIVE</span>' : ''}
+          </div>
+          <div class="loc-actions">
+            <button class="loc-action-btn" onclick="if(map){map.flyTo([${lat},${lng}],16,{duration:1})}">
+              ⊕ Center
+            </button>
+            <button class="loc-action-btn ${isTracking ? 'active' : ''}" id="loc-watch-btn" onclick="toggleWatch()">
+              ${isTracking ? '◉ Watching' : '◎ Watch'}
+            </button>
+          </div>
+        `);
+      }
+
+      function handleGeoError(err) {
+        stopWatch();
+        switch (err.code) {
+          case err.PERMISSION_DENIED:
+            showError('Permission Denied', 'Please allow location access in your browser settings and try again.');
+            break;
+          case err.POSITION_UNAVAILABLE:
+            showError('Location Unavailable', 'Your device could not determine its position. Check GPS settings.');
+            break;
+          case err.TIMEOUT:
+            showError('Request Timed Out', 'Location request took too long. Move to open area and retry.');
+            break;
+          default:
+            showError('Unknown Error', 'Could not fetch location. Please try again.');
+        }
+      }
+
+      function requestLocation() {
+        if (!navigator.geolocation) {
+          showError('Not Supported', 'Geolocation is not supported by your browser.');
+          return;
+        }
+
+        if (gpsState === 'tracking') {
+          // Stop tracking
+          stopWatch();
+          setFabState('idle');
+          if (locMarker) { map.removeLayer(locMarker); locMarker = null; }
+          if (locCircle) { map.removeLayer(locCircle); locCircle = null; }
+          hideCard();
+          lastCoords = null;
+          return;
+        }
+
+        if (gpsState === 'located') {
+          // Refresh / re-fetch
+          setFabState('loading');
+          navigator.geolocation.getCurrentPosition(
+            (pos) => onPosition(pos, false),
+            (err) => handleGeoError(err),
+            { enableHighAccuracy: true, maximumAge: 0, timeout: 15000 }
+          );
+          return;
+        }
+
+        // First request
+        setFabState('loading');
+        navigator.geolocation.getCurrentPosition(
+          (pos) => onPosition(pos, false),
+          (err) => handleGeoError(err),
+          { enableHighAccuracy: true, maximumAge: 0, timeout: 15000 }
+        );
+      }
+
+      fabBtn.addEventListener('click', requestLocation);
+    })();
   </script>
 </body>
 
