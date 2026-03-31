@@ -1,0 +1,1544 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lucknow Crime Intelligence Map</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.heat/0.2.0/leaflet-heat.js"></script>
+  <style>
+    :root {
+      --bg: #f8f9fc;
+      --surface: #ffffff;
+      --surface-2: #f3f4f8;
+      --text: #171717;
+      --text-soft: #525252;
+      --muted: #a3a3a3;
+      --line: rgba(15, 23, 42, 0.06);
+      --line-strong: rgba(15, 23, 42, 0.1);
+      --grad-pop: linear-gradient(135deg, #6366f1 0%, #8b5cf6 45%, #ec4899 100%);
+      --grad-soft: linear-gradient(180deg, rgba(99, 102, 241, 0.06) 0%, rgba(236, 72, 153, 0.04) 100%);
+      --grad-bar: linear-gradient(90deg, #34d399 0%, #fbbf24 32%, #fb923c 66%, #f43f5e 100%);
+      --grad-chip: linear-gradient(135deg, #22d3ee, #6366f1);
+      --accent: #6366f1;
+      --accent-2: #ec4899;
+      --red: #f43f5e;
+      --ora: #fb923c;
+      --yel: #fbbf24;
+      --grn: #34d399;
+      --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+      --shadow-md: 0 4px 24px rgba(15, 23, 42, 0.06);
+      --radius: 12px;
+      --radius-sm: 8px;
+      --font: "DM Sans", system-ui, -apple-system, sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, monospace;
+    }
+
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font);
+      font-weight: 400;
+      color: var(--text);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+      background-color: var(--bg);
+      background-image:
+        radial-gradient(ellipse 80% 60% at 10% 0%, rgba(99, 102, 241, 0.09) 0%, transparent 55%),
+        radial-gradient(ellipse 70% 50% at 90% 100%, rgba(236, 72, 153, 0.07) 0%, transparent 50%),
+        radial-gradient(ellipse 50% 40% at 50% 50%, rgba(34, 211, 238, 0.04) 0%, transparent 60%);
+    }
+
+    /* subtle paper grain */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 9998;
+      pointer-events: none;
+      opacity: 0.35;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+      background-size: 180px 180px;
+      mix-blend-mode: multiply;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.65rem 1.25rem;
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+      flex-shrink: 0;
+      z-index: 1000;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .logo-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-hex {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .logo-hex::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      padding: 1.5px;
+      border-radius: inherit;
+      background: var(--grad-pop);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+    }
+
+    .ttl h1 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      text-transform: none;
+    }
+
+    .ttl p {
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      font-weight: 400;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      margin-top: 0.15rem;
+    }
+
+    .hstats {
+      display: flex;
+      gap: 1.25rem;
+    }
+
+    .hs {
+      text-align: center;
+    }
+
+    .hs-v {
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+
+    .hs-v.r {
+      background: var(--grad-pop);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hs-v.y {
+      color: #d97706;
+    }
+
+    .hs-l {
+      font-size: 0.58rem;
+      font-weight: 500;
+      color: var(--text-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-top: 0.1rem;
+    }
+
+    .live-pill {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      font-weight: 500;
+      color: var(--text-soft);
+      background: var(--surface);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .ldot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--grad-pop);
+      animation: blink 1.6s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.35;
+      }
+    }
+
+    .main {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    .lp {
+      width: 248px;
+      background: rgba(255, 255, 255, 0.55);
+      backdrop-filter: blur(10px);
+      border-right: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      flex-shrink: 0;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0, 0, 0, 0.12) transparent;
+    }
+
+    .ps {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .ps-ttl {
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-soft);
+      margin-bottom: 0.65rem;
+    }
+
+    .ps-ttl::before {
+      content: "";
+      display: inline-block;
+      width: 3px;
+      height: 10px;
+      margin-right: 0.45rem;
+      border-radius: 2px;
+      background: var(--grad-pop);
+      vertical-align: middle;
+    }
+
+    .fg {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .fg-row {
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+
+    .fg-row .fb {
+      flex: 1;
+      min-width: 0;
+      justify-content: center;
+      font-size: 0.68rem;
+    }
+
+    .fb {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.45rem 0.65rem;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      color: var(--text-soft);
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: 0.72rem;
+      font-weight: 500;
+      border-radius: var(--radius-sm);
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+
+    .fb:hover {
+      border-color: var(--line-strong);
+      background: var(--surface-2);
+      color: var(--text);
+    }
+
+    .fb.active {
+      border-color: transparent;
+      background: linear-gradient(var(--surface), var(--surface)) padding-box,
+        var(--grad-pop) border-box;
+      border: 1px solid transparent;
+      color: var(--text);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .fdot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .fc {
+      margin-left: auto;
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    .risk-spectrum {
+      margin-bottom: 0.5rem;
+    }
+
+    .risk-bar {
+      height: 10px;
+      border-radius: 999px;
+      border: none;
+      background: var(--grad-bar);
+      box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.35);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .risk-bar::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(90deg,
+          transparent,
+          transparent calc(25% - 1px),
+          rgba(255, 255, 255, 0.25) calc(25% - 1px),
+          rgba(255, 255, 255, 0.25) 25%);
+      pointer-events: none;
+    }
+
+    .risk-ticks {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 0.35rem;
+      font-family: var(--font-mono);
+      font-size: 0.48rem;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .risk-tick.cr {
+      color: #e11d48;
+    }
+
+    .risk-tick.hi {
+      color: #ea580c;
+    }
+
+    .risk-tick.mo {
+      color: #ca8a04;
+    }
+
+    .risk-tick.lo {
+      color: #059669;
+    }
+
+    .risk-range-wrap {
+      margin-top: 0.65rem;
+    }
+
+    .risk-range-lbl {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.35rem;
+      font-size: 0.65rem;
+      color: var(--text-soft);
+      font-weight: 500;
+    }
+
+    .risk-zone-name {
+      font-family: var(--font);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      max-width: 150px;
+      text-align: right;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .risk-band {
+      font-family: var(--font-mono);
+      font-size: 0.5rem;
+      font-weight: 500;
+      padding: 0.2rem 0.45rem;
+      border-radius: 6px;
+      border: 1px solid;
+    }
+
+    .risk-band.lo {
+      color: #047857;
+      background: rgba(52, 211, 153, 0.12);
+      border-color: rgba(52, 211, 153, 0.35);
+    }
+
+    .risk-band.mo {
+      color: #b45309;
+      background: rgba(251, 191, 36, 0.15);
+      border-color: rgba(251, 191, 36, 0.4);
+    }
+
+    .risk-band.hi {
+      color: #c2410c;
+      background: rgba(251, 146, 60, 0.14);
+      border-color: rgba(251, 146, 60, 0.35);
+    }
+
+    .risk-band.cr {
+      color: #be123c;
+      background: rgba(244, 63, 94, 0.12);
+      border-color: rgba(244, 63, 94, 0.35);
+    }
+
+    input[type="range"].risk-slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      background: linear-gradient(90deg, var(--surface-2), #e5e7eb);
+      border-radius: 999px;
+      outline: none;
+      border: 1px solid var(--line);
+    }
+
+    input[type="range"].risk-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--grad-pop);
+      border: 2px solid #fff;
+      box-shadow: 0 2px 8px rgba(99, 102, 241, 0.35);
+      cursor: pointer;
+    }
+
+    input[type="range"].risk-slider::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6366f1, #ec4899);
+      border: 2px solid #fff;
+      box-shadow: 0 2px 8px rgba(99, 102, 241, 0.35);
+      cursor: pointer;
+    }
+
+    .risk-hint {
+      font-size: 0.55rem;
+      color: var(--muted);
+      margin-top: 0.5rem;
+      line-height: 1.45;
+      font-family: var(--font-mono);
+      font-weight: 400;
+    }
+
+    .risk-idx-meta {
+      font-family: var(--font-mono);
+      font-size: 0.52rem;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    .cb {
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
+
+    .cr-lbl {
+      display: flex;
+      justify-content: space-between;
+      font-size: .62rem;
+      color: var(--text-soft);
+      font-weight: 500
+    }
+
+    .cr-trk {
+      height: 4px;
+      background: var(--surface-2);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid var(--line)
+    }
+
+    .cr-fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 1.2s ease
+    }
+
+    .dnote {
+      padding: 7px 14px;
+      font-size: .58rem;
+      color: var(--text-soft);
+      font-weight: 400;
+      border-top: 1px solid var(--line);
+      font-family: var(--font-mono);
+      line-height: 1.4
+    }
+
+    #map {
+      flex: 1;
+      z-index: 1;
+      min-width: 0
+    }
+
+    .leaflet-tile-pane {
+      filter:
+        grayscale(0.08) contrast(1.02) saturate(1.05);
+    }
+
+    .leaflet-container {
+      background: #eef0f6 !important
+    }
+
+    .leaflet-control-zoom a {
+      background: var(--surface) !important;
+      color: var(--text) !important;
+      border-color: var(--line) !important;
+      font-weight: 600 !important;
+      border-radius: 8px !important;
+      box-shadow: var(--shadow-sm) !important
+    }
+
+    .leaflet-control-zoom a:hover {
+      background: var(--surface-2) !important
+    }
+
+    .leaflet-control-attribution {
+      background: rgba(255, 255, 255, .85) !important;
+      color: var(--muted) !important;
+      font-size: .52rem !important;
+      border-radius: 6px !important
+    }
+
+    .leaflet-popup-content-wrapper {
+      background: var(--surface) !important;
+      border: 1px solid var(--line) !important;
+      border-radius: var(--radius-sm) !important;
+      box-shadow: var(--shadow-md) !important;
+      color: var(--text) !important;
+    }
+
+    .leaflet-popup-tip {
+      background: var(--surface) !important;
+      box-shadow: 0 1px 0 var(--line) !important
+    }
+
+    .leaflet-popup-close-button {
+      color: var(--text-soft) !important
+    }
+
+    .pu {
+      min-width: 185px;
+      padding: 2px
+    }
+
+    .pu-ttl {
+      font-family: var(--font);
+      font-size: .95rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 6px
+    }
+
+    .pu-risk {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: var(--font-mono);
+      font-size: .58rem;
+      font-weight: 500;
+      padding: 3px 8px;
+      margin-bottom: 8px;
+      border-radius: 6px;
+      border: 1px solid var(--line)
+    }
+
+    .pu-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px
+    }
+
+    .pu-tag {
+      font-family: var(--font-mono);
+      font-size: .58rem;
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      background: var(--surface-2);
+      color: var(--text-soft);
+      font-weight: 400
+    }
+
+    .rp {
+      width: 300px;
+      background: rgba(255, 255, 255, .6);
+      backdrop-filter: blur(12px);
+      border-left: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0
+    }
+
+    .ch {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      background: var(--grad-soft)
+    }
+
+    .ai-orb {
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      background: var(--grad-pop);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+      box-shadow: 0 4px 16px rgba(99, 102, 241, .25);
+      animation: orb 5s ease-in-out infinite;
+    }
+
+    @keyframes orb {
+
+      0%,
+      100% {
+        transform: scale(1);
+        filter: brightness(1)
+      }
+
+      50% {
+        transform: scale(1.02);
+        filter: brightness(1.05)
+      }
+    }
+
+    .ain {
+      font-family: var(--font);
+      font-size: .82rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--text)
+    }
+
+    .ais {
+      font-family: var(--font-mono);
+      font-size: .52rem;
+      color: var(--muted);
+      font-weight: 400;
+      letter-spacing: 0.02em
+    }
+
+    .msgs {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0, 0, 0, .1) transparent
+    }
+
+    .msg {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      animation: fu .28s ease
+    }
+
+    @keyframes fu {
+      from {
+        opacity: 0;
+        transform: translateY(6px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .mwho {
+      font-family: var(--font-mono);
+      font-size: .52rem;
+      font-weight: 500;
+      letter-spacing: 0.04em
+    }
+
+    .msg.user .mwho {
+      color: #c2410c;
+      text-align: right
+    }
+
+    .msg.assistant .mwho {
+      color: var(--accent)
+    }
+
+    .mbub {
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      font-size: .78rem;
+      line-height: 1.55;
+      font-weight: 400
+    }
+
+    .msg.user .mbub {
+      background: linear-gradient(135deg, rgba(99, 102, 241, .1), rgba(236, 72, 153, .08));
+      border: 1px solid rgba(99, 102, 241, .2);
+      align-self: flex-end;
+      max-width: 92%;
+      color: var(--text)
+    }
+
+    .msg.assistant .mbub {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      color: var(--text);
+      box-shadow: var(--shadow-sm)
+    }
+
+    .typing {
+      display: flex;
+      gap: 4px;
+      padding: 4px 0
+    }
+
+    .typing span {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--grad-pop);
+      animation: db 1.2s infinite
+    }
+
+    .typing span:nth-child(2) {
+      animation-delay: .18s
+    }
+
+    .typing span:nth-child(3) {
+      animation-delay: .36s
+    }
+
+    @keyframes db {
+
+      0%,
+      80%,
+      100% {
+        transform: translateY(0);
+        opacity: .4
+      }
+
+      40% {
+        transform: translateY(-4px);
+        opacity: 1
+      }
+    }
+
+    .qp {
+      padding: 8px 12px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px
+    }
+
+    .qb {
+      padding: 5px 10px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      color: var(--text-soft);
+      font-size: .58rem;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: 999px;
+      font-family: var(--font);
+      transition: all .2s ease;
+    }
+
+    .qb:hover {
+      border-color: transparent;
+      background: linear-gradient(var(--surface), var(--surface)) padding-box, var(--grad-pop) border-box;
+      border: 1px solid transparent;
+      color: var(--text);
+      box-shadow: var(--shadow-sm)
+    }
+
+    .cir {
+      padding: 10px 12px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      gap: 8px;
+      background: rgba(255, 255, 255, .4)
+    }
+
+    .ci {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      color: var(--text);
+      padding: 8px 11px;
+      font-family: var(--font);
+      font-size: .78rem;
+      font-weight: 400;
+      border-radius: var(--radius-sm);
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+      resize: none;
+      height: 38px;
+      caret-color: var(--accent);
+    }
+
+    .ci:focus {
+      border-color: rgba(99, 102, 241, .45);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, .12)
+    }
+
+    .ci::placeholder {
+      color: var(--muted)
+    }
+
+    .sb {
+      padding: 8px 14px;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: var(--font);
+      font-size: .68rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      color: #fff;
+      background: var(--grad-pop);
+      box-shadow: 0 4px 14px rgba(99, 102, 241, .35);
+      transition: transform .15s, box-shadow .2s;
+    }
+
+    .sb:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(236, 72, 153, .35)
+    }
+
+    .sb:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none
+    }
+
+    ::-webkit-scrollbar {
+      width: 4px
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, .1);
+      border-radius: 4px
+    }
+
+    @keyframes mp {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 1
+      }
+
+      50% {
+        transform: scale(1.35);
+        opacity: .85
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="logo-row">
+      <div class="logo-hex">⬡</div>
+      <div class="ttl">
+        <h1>UP Crime Map · Lucknow &amp; Kanpur</h1>
+        <p>Police data is compiled nationally by NCRB from state police (including UP Police) records</p>
+      </div>
+    </div>
+    <div class="hstats">
+      <div class="hs">
+        <div class="hs-v" id="stat-murder">—</div>
+        <div class="hs-l">Murder (NCRB ’23)</div>
+      </div>
+      <div class="hs">
+        <div class="hs-v r" id="stat-rape">—</div>
+        <div class="hs-l">Rape (NCRB ’23)</div>
+      </div>
+      <div class="hs">
+        <div class="hs-v y" id="stat-kidnap">—</div>
+        <div class="hs-l">Kidnap (NCRB ’23)</div>
+      </div>
+      <div class="hs">
+        <div class="hs-v" id="stat-year">2023</div>
+        <div class="hs-l">Metro city table</div>
+      </div>
+    </div>
+    <div class="live-pill">
+      <div class="ldot"></div>NCRB-sourced headlines
+    </div>
+  </header>
+
+  <div class="main">
+
+    <!-- LEFT PANEL -->
+    <div class="lp">
+      <div class="ps">
+        <div class="ps-ttl">City</div>
+        <div class="fg fg-row">
+          <button type="button" class="fb fb-city active" data-city="lucknow"
+            onclick="setCity('lucknow')">Lucknow</button>
+          <button type="button" class="fb fb-city" data-city="kanpur" onclick="setCity('kanpur')">Kanpur Nagar</button>
+        </div>
+      </div>
+      <div class="ps">
+        <div class="ps-ttl">Crime Type Filter</div>
+        <div class="fg">
+          <button class="fb active" data-type="all" onclick="filterCrimes('all')">
+            <span class="fdot" style="background:linear-gradient(135deg,#6366f1,#ec4899)"></span>All Crimes<span
+              class="fc">847</span>
+          </button>
+          <button class="fb" data-type="theft" onclick="filterCrimes('theft')">
+            <span class="fdot" style="background:#ff6b1a"></span>Theft / Snatching<span class="fc">312</span>
+          </button>
+          <button class="fb" data-type="robbery" onclick="filterCrimes('robbery')">
+            <span class="fdot" style="background:#ff2d4a"></span>Robbery / Dacoity<span class="fc">148</span>
+          </button>
+          <button class="fb" data-type="assault" onclick="filterCrimes('assault')">
+            <span class="fdot" style="background:#ff9a00"></span>Assault / Violence<span class="fc">189</span>
+          </button>
+          <button class="fb" data-type="vehicle" onclick="filterCrimes('vehicle')">
+            <span class="fdot" style="background:#ffc107"></span>Vehicle Theft<span class="fc">124</span>
+          </button>
+          <button class="fb" data-type="fraud" onclick="filterCrimes('fraud')">
+            <span class="fdot" style="background:linear-gradient(135deg,#6366f1,#22d3ee)"></span>Cyber / Fraud<span
+              class="fc">74</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="ps">
+        <div class="ps-ttl">Time Window</div>
+        <div class="fg">
+          <button class="fb active" data-time="all" onclick="filterTime('all')">
+            <span class="fdot" style="background:linear-gradient(135deg,#6366f1,#ec4899)"></span>All Day
+          </button>
+          <button class="fb" data-time="day" onclick="filterTime('day')">
+            <span class="fdot" style="background:#ffc107"></span>Day (06:00-18:00)
+          </button>
+          <button class="fb" data-time="night" onclick="filterTime('night')">
+            <span class="fdot" style="background:#ff2d4a"></span>Night (18:00-06:00)
+          </button>
+        </div>
+      </div>
+
+      <div class="ps">
+        <div class="ps-ttl">Risk Zones</div>
+        <div class="risk-spectrum">
+          <div class="risk-bar" title="Low → Critical spectrum"></div>
+          <div class="risk-ticks">
+            <span class="risk-tick lo">Low</span>
+            <span class="risk-tick mo">Moderate</span>
+            <span class="risk-tick hi">High</span>
+            <span class="risk-tick cr">Critical</span>
+          </div>
+        </div>
+        <div class="risk-range-wrap">
+          <div class="risk-range-lbl">
+            <span>Area</span>
+            <span class="risk-zone-name" id="risk-zone-name">—</span>
+          </div>
+          <input type="range" class="risk-slider" id="risk-range" min="0" max="14" value="7" step="1"
+            aria-label="Select risk zone along spectrum" />
+          <div class="risk-range-lbl" style="margin-top:6px">
+            <span id="risk-band-label" class="risk-band mo">MODERATE</span>
+            <span class="risk-idx-meta"><span id="risk-idx">8</span> / <span id="risk-total">15</span></span>
+          </div>
+          <p class="risk-hint">Drag the range to move the map across zones (low risk left → critical right).</p>
+        </div>
+      </div>
+
+      <div class="ps">
+        <div class="ps-ttl">Crime Breakdown</div>
+        <p class="risk-hint" style="margin-bottom:8px">Shares below are a demo split for charts — use NCRB / UP Police
+          published tables for exact IPC head totals.</p>
+        <div class="cb">
+          <div class="cr-row">
+            <div class="cr-lbl"><span>Theft / Snatching</span><span>37%</span></div>
+            <div class="cr-trk">
+              <div class="cr-fill" style="width:37%;background:linear-gradient(90deg,#ff6b1a,#ff9a00)"></div>
+            </div>
+          </div>
+          <div class="cr-row">
+            <div class="cr-lbl"><span>Assault</span><span>22%</span></div>
+            <div class="cr-trk">
+              <div class="cr-fill" style="width:22%;background:linear-gradient(90deg,#ff9a00,#ffc107)"></div>
+            </div>
+          </div>
+          <div class="cr-row">
+            <div class="cr-lbl"><span>Robbery</span><span>17%</span></div>
+            <div class="cr-trk">
+              <div class="cr-fill" style="width:17%;background:linear-gradient(90deg,#ff2d4a,#ff6b1a)"></div>
+            </div>
+          </div>
+          <div class="cr-row">
+            <div class="cr-lbl"><span>Vehicle Theft</span><span>15%</span></div>
+            <div class="cr-trk">
+              <div class="cr-fill" style="width:15%;background:linear-gradient(90deg,#ffc107,#ffe082)"></div>
+            </div>
+          </div>
+          <div class="cr-row">
+            <div class="cr-lbl"><span>Cyber / Fraud</span><span>9%</span></div>
+            <div class="cr-trk">
+              <div class="cr-fill" style="width:9%;background:linear-gradient(90deg,#6366f1,#ec4899)"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dnote">Headline counts: NCRB Crime in India 2023 (metropolitan city). UP Police → NCRB pipeline. Map
+        clusters are illustrative density, not FIR locations. <a href="https://uppolice.gov.in/article/en/crime"
+          target="_blank" rel="noopener" style="color:#6366f1">UP Police</a> · <a href="https://ncrb.gov.in"
+          target="_blank" rel="noopener" style="color:#6366f1">NCRB</a></div>
+    </div>
+
+    <!-- MAP -->
+    <div id="map"></div>
+
+    <!-- RIGHT AI PANEL -->
+    <div class="rp">
+      <div class="ch">
+        <div class="ai-orb">🤖</div>
+        <div>
+          <div class="ain">CRIME ANALYST AI</div>
+          <div class="ais" id="ai-sub">// GEMINI API · PATTERN INTELLIGENCE</div>
+        </div>
+      </div>
+
+      <div class="msgs" id="msgs">
+        <div class="msg assistant">
+          <div class="mwho">▶ ANALYST AI</div>
+          <div class="mbub">
+            Namaste! I cover <strong>Lucknow</strong> and <strong>Kanpur Nagar</strong> using NCRB headline statistics
+            (metro city tables) and UP Police as the official reporting chain.<br><br>
+            Ask about risk patterns, safety tips, or comparing the two cities. Map clusters are illustrative — not
+            individual FIRs.
+          </div>
+        </div>
+      </div>
+
+      <div class="qp">
+        <button class="qb" onclick="sq('Which area of Lucknow has the highest crime rate?')">Highest risk?</button>
+        <button class="qb" onclick="sq('What crimes happen most in Chowk area?')">Chowk crimes</button>
+        <button class="qb" onclick="sq('Is Gomti Nagar safe to live in?')">Gomti safe?</button>
+        <button class="qb" onclick="sq('Night safety tips for Lucknow')">Night safety</button>
+        <button class="qb" onclick="sq('Compare old city vs new city crime in Lucknow')">Old vs New</button>
+        <button class="qb" onclick="sq('Where should I avoid parking my vehicle in Lucknow?')">Parking safety</button>
+      </div>
+
+      <div class="cir">
+        <textarea class="ci" id="ci" placeholder="Ask about crime patterns..."
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}"></textarea>
+        <button class="sb" id="sbtn" onclick="sendMsg()">SEND</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="bootwarn"
+    style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:10001;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-top:1px solid rgba(15,23,42,.08);padding:10px 16px;font-family:DM Sans,system-ui,sans-serif;font-size:.68rem;font-weight:500;color:#525252;text-align:center;box-shadow:0 -8px 32px rgba(15,23,42,.08)">
+    You opened this page as a local file. Run the server and open
+    <strong style="color:#6366f1;font-weight:600">http://localhost:3000/lucknow-crime-map.html</strong>
+    so the map and AI chat can load correctly.
+  </div>
+
+  <script>
+    /** Chat API: relative URLs break on file://; port may not be 3000 if that port was busy */
+    const API_BASE = (function () {
+      try {
+        const q = new URLSearchParams(window.location.search).get("api");
+        if (q) return q.replace(/\/$/, "");
+      } catch (e) { }
+      if (window.location.protocol === "file:") return "http://localhost:3000";
+      return "";
+    })();
+
+    let resolvedChatBase = null;
+    let resolveChatBasePromise = null;
+
+    async function ensureChatBase() {
+      if (resolvedChatBase !== null) return resolvedChatBase;
+      if (resolveChatBasePromise) return resolveChatBasePromise;
+      resolveChatBasePromise = (async () => {
+        const bases = [];
+        if (API_BASE) bases.push(API_BASE);
+        if (window.location.protocol !== "file:" && window.location.hostname) {
+          bases.push("");
+        }
+        for (let p = 3000; p <= 3015; p++) {
+          bases.push("http://127.0.0.1:" + p);
+          bases.push("http://localhost:" + p);
+        }
+        const seen = new Set();
+        for (const b of bases) {
+          if (seen.has(b)) continue;
+          seen.add(b);
+          try {
+            const url = (b || "") + "/api/health";
+            const r = await fetch(url, { method: "GET", cache: "no-store" });
+            if (!r.ok) continue;
+            const j = await r.json();
+            if (j && j.ok === true) {
+              resolvedChatBase = b;
+              return b;
+            }
+          } catch (e) { }
+        }
+        resolvedChatBase = API_BASE;
+        return API_BASE;
+      })();
+      return resolveChatBasePromise;
+    }
+
+    if (window.location.protocol === "file:") {
+      window.addEventListener("load", function () {
+        var w = document.getElementById("bootwarn");
+        if (w) w.style.display = "block";
+      });
+    }
+
+    const crimes = [
+      // THAKURGANJ - Critical
+      { city: "lucknow", lat: 26.8682, lng: 80.9115, area: "Thakurganj", type: "robbery", sev: 1.0, hour: 22, tags: ["Robbery", "Chain Snatching", "Assault", "Murder"] },
+      { city: "lucknow", lat: 26.8695, lng: 80.9098, area: "Thakurganj", type: "assault", sev: 0.9, hour: 20, tags: ["Gang Violence", "Assault"] },
+      { city: "lucknow", lat: 26.8671, lng: 80.9130, area: "Thakurganj", type: "theft", sev: 0.9, hour: 14, tags: ["Theft", "Mobile Snatching"] },
+      { city: "lucknow", lat: 26.8660, lng: 80.9080, area: "Thakurganj", type: "robbery", sev: 0.95, hour: 1, tags: ["Robbery", "Dacoity"] },
+      // CHOWK - Critical
+      { city: "lucknow", lat: 26.8580, lng: 80.9197, area: "Chowk", type: "theft", sev: 0.95, hour: 19, tags: ["Pickpocketing", "Chain Snatching", "Robbery"] },
+      { city: "lucknow", lat: 26.8595, lng: 80.9215, area: "Chowk", type: "assault", sev: 0.85, hour: 23, tags: ["Assault", "Robbery"] },
+      { city: "lucknow", lat: 26.8565, lng: 80.9180, area: "Chowk", type: "theft", sev: 0.90, hour: 11, tags: ["Theft", "Eve Teasing"] },
+      { city: "lucknow", lat: 26.8610, lng: 80.9230, area: "Saadatganj", type: "robbery", sev: 0.88, hour: 21, tags: ["Robbery", "Violence"] },
+      { city: "lucknow", lat: 26.8625, lng: 80.9200, area: "Saadatganj", type: "assault", sev: 0.85, hour: 16, tags: ["Assault", "Theft"] },
+      // AMINABAD - High
+      { city: "lucknow", lat: 26.8498, lng: 80.9271, area: "Aminabad", type: "theft", sev: 0.82, hour: 17, tags: ["Pickpocketing", "Chain Snatching"] },
+      { city: "lucknow", lat: 26.8512, lng: 80.9290, area: "Aminabad", type: "theft", sev: 0.80, hour: 13, tags: ["Mobile Snatching", "Theft"] },
+      { city: "lucknow", lat: 26.8485, lng: 80.9255, area: "Aminabad", type: "fraud", sev: 0.65, hour: 10, tags: ["Fraud", "Cheating"] },
+      { city: "lucknow", lat: 26.8475, lng: 80.9278, area: "Aminabad", type: "assault", sev: 0.70, hour: 20, tags: ["Eve Teasing", "Assault"] },
+      // ALAMBAGH - High
+      { city: "lucknow", lat: 26.7998, lng: 80.9127, area: "Alambagh", type: "robbery", sev: 0.85, hour: 22, tags: ["Highway Robbery", "Vehicle Theft"] },
+      { city: "lucknow", lat: 26.8015, lng: 80.9145, area: "Alambagh", type: "vehicle", sev: 0.80, hour: 2, tags: ["Vehicle Theft", "Robbery"] },
+      { city: "lucknow", lat: 26.7980, lng: 80.9110, area: "Alambagh", type: "assault", sev: 0.75, hour: 18, tags: ["Assault", "Dacoity"] },
+      { city: "lucknow", lat: 26.8030, lng: 80.9095, area: "Alambagh", type: "theft", sev: 0.78, hour: 15, tags: ["Theft", "Chain Snatching"] },
+      // RAJAJIPURAM - High
+      { city: "lucknow", lat: 26.8419, lng: 80.9196, area: "Rajajipuram", type: "vehicle", sev: 0.82, hour: 23, tags: ["Vehicle Theft", "Robbery"] },
+      { city: "lucknow", lat: 26.8435, lng: 80.9215, area: "Rajajipuram", type: "assault", sev: 0.75, hour: 19, tags: ["Assault", "Violence"] },
+      { city: "lucknow", lat: 26.8402, lng: 80.9178, area: "Rajajipuram", type: "theft", sev: 0.78, hour: 12, tags: ["Theft", "Snatching"] },
+      // TRANSPORT NAGAR - High
+      { city: "lucknow", lat: 26.8867, lng: 80.9264, area: "Transport Nagar", type: "vehicle", sev: 0.88, hour: 3, tags: ["Vehicle Theft", "Truck Robbery"] },
+      { city: "lucknow", lat: 26.8852, lng: 80.9280, area: "Transport Nagar", type: "robbery", sev: 0.82, hour: 21, tags: ["Robbery", "Assault"] },
+      { city: "lucknow", lat: 26.8880, lng: 80.9248, area: "Transport Nagar", type: "vehicle", sev: 0.85, hour: 0, tags: ["Auto Theft", "Carjacking"] },
+      // CHINHAT - High
+      { city: "lucknow", lat: 26.8677, lng: 81.0541, area: "Chinhat", type: "robbery", sev: 0.78, hour: 20, tags: ["Highway Robbery", "Dacoity"] },
+      { city: "lucknow", lat: 26.8692, lng: 81.0525, area: "Chinhat", type: "vehicle", sev: 0.72, hour: 4, tags: ["Vehicle Theft", "Robbery"] },
+      // HAZRATGANJ - Moderate
+      { city: "lucknow", lat: 26.8467, lng: 80.9462, area: "Hazratganj", type: "theft", sev: 0.60, hour: 16, tags: ["Pickpocketing", "Mobile Snatching"] },
+      { city: "lucknow", lat: 26.8480, lng: 80.9478, area: "Hazratganj", type: "fraud", sev: 0.55, hour: 11, tags: ["Fraud", "Chain Snatching"] },
+      { city: "lucknow", lat: 26.8455, lng: 80.9445, area: "Hazratganj", type: "theft", sev: 0.58, hour: 20, tags: ["Bag Snatching", "Theft"] },
+      // KAISERBAGH - Moderate
+      { city: "lucknow", lat: 26.8561, lng: 80.9408, area: "Kaiserbagh", type: "theft", sev: 0.72, hour: 18, tags: ["Theft", "Snatching", "Fraud"] },
+      { city: "lucknow", lat: 26.8548, lng: 80.9392, area: "Kaiserbagh", type: "robbery", sev: 0.68, hour: 22, tags: ["Robbery", "Assault"] },
+      // NAKA HINDOLA - Moderate
+      { city: "lucknow", lat: 26.8297, lng: 80.9528, area: "Naka Hindola", type: "vehicle", sev: 0.65, hour: 1, tags: ["Vehicle Theft", "Snatching"] },
+      { city: "lucknow", lat: 26.8312, lng: 80.9545, area: "Naka Hindola", type: "assault", sev: 0.60, hour: 15, tags: ["Assault", "Theft"] },
+      // MAHANAGAR - Moderate
+      { city: "lucknow", lat: 26.8778, lng: 80.9625, area: "Mahanagar", type: "theft", sev: 0.58, hour: 17, tags: ["Theft", "Chain Snatching"] },
+      { city: "lucknow", lat: 26.8795, lng: 80.9642, area: "Mahanagar", type: "fraud", sev: 0.52, hour: 9, tags: ["Cyber Fraud", "Cheating"] },
+      // ALIGANJ - Moderate
+      { city: "lucknow", lat: 26.8836, lng: 80.9469, area: "Aliganj", type: "theft", sev: 0.55, hour: 14, tags: ["Theft", "Mobile Snatching"] },
+      { city: "lucknow", lat: 26.8820, lng: 80.9485, area: "Aliganj", type: "fraud", sev: 0.50, hour: 10, tags: ["Cyber Fraud"] },
+      // GOMTI NAGAR - Low
+      { city: "lucknow", lat: 26.8508, lng: 80.9997, area: "Gomti Nagar", type: "fraud", sev: 0.35, hour: 13, tags: ["Cyber Fraud", "Property Disputes"] },
+      { city: "lucknow", lat: 26.8525, lng: 81.0012, area: "Gomti Nagar", type: "theft", sev: 0.30, hour: 8, tags: ["Vehicle Theft", "Burglary"] },
+      // INDIRA NAGAR - Low
+      { city: "lucknow", lat: 26.8810, lng: 81.0020, area: "Indira Nagar", type: "theft", sev: 0.38, hour: 16, tags: ["Theft", "Fraud"] },
+      { city: "lucknow", lat: 26.8795, lng: 81.0038, area: "Indira Nagar", type: "vehicle", sev: 0.35, hour: 19, tags: ["Vehicle Theft"] },
+      // VIBHUTI KHAND - Low
+      { city: "lucknow", lat: 26.8447, lng: 81.0011, area: "Vibhuti Khand", type: "fraud", sev: 0.28, hour: 12, tags: ["Cyber Fraud"] },
+      // —— Kanpur Nagar (illustrative density; headline stats from NCRB 2023 metro table) ——
+      { city: "kanpur", lat: 26.475, lng: 80.347, area: "Allen Garden", type: "theft", sev: 0.32, hour: 14, tags: ["Theft"] },
+      { city: "kanpur", lat: 26.472, lng: 80.352, area: "Civil Lines", type: "fraud", sev: 0.30, hour: 11, tags: ["Fraud", "Cyber"] },
+      { city: "kanpur", lat: 26.462, lng: 80.358, area: "Kanpur Cantt", type: "vehicle", sev: 0.38, hour: 19, tags: ["Vehicle Theft"] },
+      { city: "kanpur", lat: 26.456, lng: 80.325, area: "Arya Nagar", type: "theft", sev: 0.48, hour: 16, tags: ["Theft", "Snatching"] },
+      { city: "kanpur", lat: 26.435, lng: 80.315, area: "Kidwai Nagar", type: "assault", sev: 0.55, hour: 21, tags: ["Assault"] },
+      { city: "kanpur", lat: 26.448, lng: 80.298, area: "Govind Nagar", type: "theft", sev: 0.52, hour: 15, tags: ["Theft"] },
+      { city: "kanpur", lat: 26.407, lng: 80.318, area: "Kalyanpur", type: "robbery", sev: 0.72, hour: 22, tags: ["Robbery"] },
+      { city: "kanpur", lat: 26.388, lng: 80.335, area: "Yashoda Nagar", type: "fraud", sev: 0.42, hour: 10, tags: ["Cyber Fraud"] },
+      { city: "kanpur", lat: 26.398, lng: 80.305, area: "Kalyanpur Industrial", type: "vehicle", sev: 0.78, hour: 2, tags: ["Vehicle Theft"] },
+      { city: "kanpur", lat: 26.396, lng: 80.332, area: "Naubasta", type: "robbery", sev: 0.80, hour: 20, tags: ["Robbery", "Assault"] },
+      { city: "kanpur", lat: 26.458, lng: 80.248, area: "Panki", type: "vehicle", sev: 0.82, hour: 3, tags: ["Vehicle Theft"] },
+      { city: "kanpur", lat: 26.368, lng: 80.318, area: "Barra", type: "theft", sev: 0.68, hour: 18, tags: ["Theft", "Snatching"] },
+      { city: "kanpur", lat: 26.415, lng: 80.345, area: "Juhi", type: "assault", sev: 0.70, hour: 23, tags: ["Assault"] },
+      { city: "kanpur", lat: 26.450, lng: 80.342, area: "General Ganj", type: "theft", sev: 0.92, hour: 17, tags: ["Pickpocketing", "Theft"] },
+      { city: "kanpur", lat: 26.438, lng: 80.328, area: "Fazalganj", type: "robbery", sev: 0.90, hour: 1, tags: ["Robbery"] },
+      { city: "kanpur", lat: 26.451, lng: 80.351, area: "Colonelganj", type: "theft", sev: 0.88, hour: 19, tags: ["Theft", "Chain Snatching"] },
+      { city: "kanpur", lat: 26.425, lng: 80.318, area: "Darshan Purwa", type: "assault", sev: 0.62, hour: 14, tags: ["Assault"] },
+      { city: "kanpur", lat: 26.415, lng: 80.300, area: "Saket Nagar", type: "fraud", sev: 0.40, hour: 9, tags: ["Fraud"] },
+      { city: "kanpur", lat: 26.448, lng: 80.337, area: "Phoolbagh", type: "theft", sev: 0.58, hour: 12, tags: ["Theft"] },
+      { city: "kanpur", lat: 26.432, lng: 80.328, area: "Nayaganj", type: "robbery", sev: 0.76, hour: 21, tags: ["Robbery"] },
+    ];
+
+    const tC = { theft: '#ea580c', robbery: '#e11d48', assault: '#d97706', vehicle: '#ca8a04', fraud: '#6366f1' };
+    const rC = s => s >= .85 ? '#e11d48' : s >= .70 ? '#ea580c' : s >= .50 ? '#ca8a04' : '#059669';
+    const rL = s => s >= .85 ? 'CRITICAL' : s >= .70 ? 'HIGH' : s >= .50 ? 'MODERATE' : 'LOW';
+
+    let map, heat, markers = [], filter = 'all', timeFilter = 'all', currentCity = 'lucknow', ncrbData = null;
+
+    function init() {
+      map = L.map('map', { center: [26.8467, 80.9462], zoom: 13 });
+
+      // CartoDB Dark Matter — shows ALL street/place names like Google Maps
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '© OpenStreetMap © CARTO',
+        subdomains: 'abcd', maxZoom: 19
+      }).addTo(map);
+
+      buildHeat(); buildMarkers();
+    }
+
+    function isInTimeWindow(hour) {
+      if (timeFilter === 'all') return true;
+      if (timeFilter === 'day') return hour >= 6 && hour < 18;
+      return hour >= 18 || hour < 6;
+    }
+
+    function getFilt() {
+      return crimes.filter(d => {
+        const cityOk = d.city === currentCity;
+        const typeOk = filter === 'all' || d.type === filter;
+        const timeOk = isInTimeWindow(d.hour ?? 12);
+        return cityOk && typeOk && timeOk;
+      });
+    }
+
+    function updateTypeCounts() {
+      const base = crimes.filter(function (d) { return d.city === currentCity; });
+      const c = { all: base.length, theft: 0, robbery: 0, assault: 0, vehicle: 0, fraud: 0 };
+      base.forEach(function (d) { c[d.type] = (c[d.type] || 0) + 1; });
+      var allBtn = document.querySelector('[data-type="all"] .fc');
+      if (allBtn) allBtn.textContent = String(c.all);
+      ['theft', 'robbery', 'assault', 'vehicle', 'fraud'].forEach(function (t) {
+        var el = document.querySelector('[data-type="' + t + '"] .fc');
+        if (el) el.textContent = String(c[t] || 0);
+      });
+    }
+
+    async function loadNcrbData() {
+      try {
+        var base = await ensureChatBase();
+        var r = await fetch((base || '') + '/crime-data.json', { cache: 'no-store' });
+        if (r.ok) ncrbData = await r.json();
+      } catch (e) { }
+      applyNcrbHeader();
+    }
+
+    function applyNcrbHeader() {
+      if (!ncrbData || !ncrbData.ncrb2023Metropolitan) return;
+      var key = currentCity === 'lucknow' ? 'lucknow' : 'kanpur';
+      var row = ncrbData.ncrb2023Metropolitan[key];
+      if (!row) return;
+      var m = document.getElementById('stat-murder');
+      var rp = document.getElementById('stat-rape');
+      var k = document.getElementById('stat-kidnap');
+      var y = document.getElementById('stat-year');
+      if (m) m.textContent = String(row.murder_cases);
+      if (rp) rp.textContent = String(row.rape_cases);
+      if (k) k.textContent = String(row.kidnapping_abduction_cases);
+      if (y && ncrbData.meta) y.textContent = String(ncrbData.meta.dataYear);
+    }
+
+    function setCity(city) {
+      currentCity = city;
+      document.querySelectorAll('.fb-city').forEach(function (b) {
+        b.classList.toggle('active', b.dataset.city === city);
+      });
+      if (map) {
+        if (ncrbData && ncrbData.map && ncrbData.map[city]) {
+          map.setView(ncrbData.map[city].center, ncrbData.map[city].zoom);
+        } else if (city === 'kanpur') {
+          map.setView([26.4499, 80.3319], 12);
+        } else {
+          map.setView([26.8467, 80.9462], 13);
+        }
+      }
+      var zs = getRiskZones();
+      var rr = document.getElementById('risk-range');
+      if (rr) {
+        rr.max = Math.max(0, zs.length - 1);
+        var mid = Math.min(7, rr.max);
+        rr.value = String(mid);
+        applyRiskZone(Number(rr.value));
+      }
+      var rt = document.getElementById('risk-total');
+      if (rt) rt.textContent = String(zs.length);
+      updateTypeCounts();
+      buildHeat();
+      buildMarkers();
+      applyNcrbHeader();
+    }
+
+    function buildHeat() {
+      if (heat) map.removeLayer(heat);
+      heat = L.heatLayer(getFilt().map(d => [d.lat, d.lng, d.sev]), {
+        radius: 38, blur: 28, maxZoom: 17,
+        gradient: { .2: '#34d399', .4: '#fbbf24', .65: '#fb923c', .85: '#f43f5e', 1: '#7c3aed' }
+      }).addTo(map);
+    }
+
+    function buildMarkers() {
+      markers.forEach(m => map.removeLayer(m)); markers = [];
+      getFilt().forEach(d => {
+        const c = tC[d.type] || '#fff', sz = 7 + d.sev * 9;
+        // Use a larger wrapper with radial-gradient glow instead of box-shadow.
+        // box-shadow can desync from the element during Leaflet CSS transforms (pan/zoom).
+        // A radial-gradient background is part of the element itself, so it always stays aligned.
+        const glowSz = sz * 4;          // outer glow diameter
+        const off = (glowSz - sz) / 2;  // centering offset for the inner dot
+        const icon = L.divIcon({
+          className: '',
+          html: `<div style="position:relative;width:${glowSz}px;height:${glowSz}px;pointer-events:none">` +
+            `<div style="position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,${c}55 0%,${c}22 30%,transparent 70%);animation:mp ${1.8 + d.sev}s infinite"></div>` +
+            `<div style="position:absolute;top:${off}px;left:${off}px;width:${sz}px;height:${sz}px;background:${c};border:1.5px solid rgba(255,255,255,.5);border-radius:50%;pointer-events:auto"></div>` +
+            `</div>`,
+          iconSize: [glowSz, glowSz], iconAnchor: [glowSz / 2, glowSz / 2]
+        });
+        const rc = rC(d.sev), rl = rL(d.sev);
+        const pop = `<div class="pu">
+      <div class="pu-ttl">${d.area}</div>
+      <div class="pu-risk" style="color:${rc};border-color:${rc}30;background:${rc}15">● ${rl} RISK</div>
+      <div class="pu-tags">${d.tags.map(t => `<span class="pu-tag">${t}</span>`).join('')}</div>
+    </div>`;
+        markers.push(L.marker([d.lat, d.lng], { icon }).bindPopup(pop, { maxWidth: 240 }).addTo(map));
+      });
+    }
+
+    function filterCrimes(t) {
+      filter = t;
+      document.querySelectorAll('.fb[data-type]').forEach(b => b.classList.remove('active'));
+      document.querySelector(`[data-type="${t}"]`).classList.add('active');
+      buildHeat(); buildMarkers();
+    }
+
+    function filterTime(t) {
+      timeFilter = t;
+      document.querySelectorAll('.fb[data-time]').forEach(b => b.classList.remove('active'));
+      document.querySelector(`[data-time="${t}"]`).classList.add('active');
+      buildHeat(); buildMarkers();
+    }
+
+    function flyTo(lat, lng) { map.flyTo([lat, lng], 15, { duration: 1.4 }) }
+
+    /** Low → Critical (left → right) for range control */
+    const riskZonesLucknow = [
+      { name: 'Gomti Nagar', lat: 26.8508, lng: 80.9997, band: 'lo' },
+      { name: 'Indira Nagar', lat: 26.8810, lng: 81.0020, band: 'lo' },
+      { name: 'Vibhuti Khand', lat: 26.8447, lng: 81.0011, band: 'lo' },
+      { name: 'Hazratganj', lat: 26.8467, lng: 80.9462, band: 'mo' },
+      { name: 'Kaiserbagh', lat: 26.8561, lng: 80.9408, band: 'mo' },
+      { name: 'Naka Hindola', lat: 26.8297, lng: 80.9528, band: 'mo' },
+      { name: 'Mahanagar', lat: 26.8778, lng: 80.9625, band: 'mo' },
+      { name: 'Aliganj', lat: 26.8836, lng: 80.9469, band: 'mo' },
+      { name: 'Aminabad', lat: 26.8498, lng: 80.9271, band: 'hi' },
+      { name: 'Alambagh', lat: 26.7998, lng: 80.9127, band: 'hi' },
+      { name: 'Rajajipuram', lat: 26.8419, lng: 80.9196, band: 'hi' },
+      { name: 'Transport Nagar', lat: 26.8867, lng: 80.9264, band: 'hi' },
+      { name: 'Chinhat', lat: 26.8677, lng: 81.0541, band: 'hi' },
+      { name: 'Thakurganj', lat: 26.8682, lng: 80.9115, band: 'cr' },
+      { name: 'Chowk', lat: 26.8580, lng: 80.9197, band: 'cr' }
+    ];
+    const riskZonesKanpur = [
+      { name: 'Allen Garden', lat: 26.475, lng: 80.347, band: 'lo' },
+      { name: 'Civil Lines', lat: 26.472, lng: 80.352, band: 'lo' },
+      { name: 'Kanpur Cantt', lat: 26.462, lng: 80.358, band: 'lo' },
+      { name: 'Arya Nagar', lat: 26.456, lng: 80.325, band: 'mo' },
+      { name: 'Kidwai Nagar', lat: 26.435, lng: 80.315, band: 'mo' },
+      { name: 'Govind Nagar', lat: 26.448, lng: 80.298, band: 'mo' },
+      { name: 'Kalyanpur', lat: 26.407, lng: 80.318, band: 'mo' },
+      { name: 'Yashoda Nagar', lat: 26.388, lng: 80.335, band: 'mo' },
+      { name: 'Kalyanpur Industrial', lat: 26.398, lng: 80.305, band: 'hi' },
+      { name: 'Naubasta', lat: 26.396, lng: 80.332, band: 'hi' },
+      { name: 'Panki', lat: 26.458, lng: 80.248, band: 'hi' },
+      { name: 'Barra', lat: 26.368, lng: 80.318, band: 'hi' },
+      { name: 'Juhi', lat: 26.415, lng: 80.345, band: 'hi' },
+      { name: 'General Ganj', lat: 26.450, lng: 80.342, band: 'cr' },
+      { name: 'Fazalganj', lat: 26.438, lng: 80.328, band: 'cr' }
+    ];
+    const bandLabels = { lo: 'LOW', mo: 'MODERATE', hi: 'HIGH', cr: 'CRITICAL' };
+
+    function getRiskZones() {
+      return currentCity === 'lucknow' ? riskZonesLucknow : riskZonesKanpur;
+    }
+
+    function applyRiskZone(i) {
+      const z = getRiskZones()[i];
+      if (!z) return;
+      var nm = document.getElementById('risk-zone-name');
+      var ix = document.getElementById('risk-idx');
+      var bd = document.getElementById('risk-band-label');
+      if (nm) nm.textContent = z.name;
+      if (ix) ix.textContent = String(i + 1);
+      var rt = document.getElementById('risk-total');
+      if (rt) rt.textContent = String(getRiskZones().length);
+      if (bd) {
+        bd.textContent = bandLabels[z.band];
+        bd.className = 'risk-band ' + z.band;
+      }
+      if (map) map.panTo([z.lat, z.lng]);
+    }
+
+    // ── AI (Gemini via server) ──
+    const hist = [];
+    function buildSystemPrompt() {
+      var cityName = currentCity === 'lucknow' ? 'Lucknow' : 'Kanpur Nagar';
+      var ncrb = '';
+      if (ncrbData && ncrbData.ncrb2023Metropolitan) {
+        var k = currentCity === 'lucknow' ? 'lucknow' : 'kanpur';
+        var row = ncrbData.ncrb2023Metropolitan[k];
+        if (row) {
+          ncrb = ' NCRB Crime in India 2023 (metropolitan city / 20L+ pop) headline counts for ' + cityName + ': murder cases ' + row.murder_cases + ', rape cases ' + row.rape_cases + ', kidnapping/abduction cases ' + row.kidnapping_abduction_cases + '. These figures are compiled by NCRB from police records (UP Police reports into the national system). ';
+        }
+      }
+      return 'You are a public-safety analyst for ' + cityName + ', Uttar Pradesh, India.' + ncrb + 'The map shows illustrative cluster density for awareness, not individual FIR locations. Cite UP Police and NCRB as the official chain when discussing statistics. Answer concisely (under 140 words unless asked for detail). Do not invent FIR-level or suspect-level data.';
+    }
+
+    async function sendMsg() {
+      const inp = document.getElementById('ci');
+      const txt = inp.value.trim();
+      if (!txt) return;
+      inp.value = '';
+      addMsg('user', txt);
+      hist.push({ role: 'user', content: txt });
+      const btn = document.getElementById('sbtn');
+      btn.disabled = true;
+      const tid = 't' + Date.now();
+      const m = document.getElementById('msgs');
+      m.insertAdjacentHTML('beforeend', `<div id="${tid}" class="msg assistant"><div class="mwho">▶ ANALYST AI</div><div class="mbub"><div class="typing"><span></span><span></span><span></span></div></div></div>`);
+      m.scrollTop = m.scrollHeight;
+      try {
+        const base = await ensureChatBase();
+        const res = await fetch((base || '') + '/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ system: buildSystemPrompt(), messages: hist })
+        });
+        let data = {};
+        try { data = await res.json(); } catch (e) { }
+        if (!res.ok) {
+          document.getElementById(tid)?.remove();
+          const errText = data.reply || ('HTTP ' + res.status);
+          hist.pop();
+          addMsg('assistant', '⚠ ' + errText + '<br><br><span style="color:#737373;font-size:.7em">Please update your <code>.env</code> file with a valid <code>GEMINI_API_KEY</code> from Google AI Studio, then restart the server.</span>');
+          btn.disabled = false;
+          return;
+        }
+        const reply = data.reply || 'No response.';
+        hist.push({ role: 'assistant', content: reply });
+        document.getElementById(tid)?.remove();
+        addMsg('assistant', reply);
+      } catch (e) {
+        document.getElementById(tid)?.remove();
+        hist.pop();
+        addMsg('assistant', '⚠ Could not reach the chat API. Ensure your server is running and your <code>.env</code> file has a valid <code>GEMINI_API_KEY</code>.');
+      }
+      btn.disabled = false;
+    }
+
+    function sq(t) { document.getElementById('ci').value = t; sendMsg() }
+
+    function addMsg(role, text) {
+      const m = document.getElementById('msgs');
+      m.insertAdjacentHTML('beforeend', `<div class="msg ${role}"><div class="mwho">${role === 'user' ? '▷ YOU' : '▶ ANALYST AI'}</div><div class="mbub">${text.replace(/\n/g, '<br>')}</div></div>`);
+      m.scrollTop = m.scrollHeight;
+    }
+
+    window.addEventListener('load', function () {
+      init();
+      var rr = document.getElementById('risk-range');
+      if (rr) {
+        rr.addEventListener('input', function () {
+          applyRiskZone(Number(rr.value));
+        });
+      }
+      loadNcrbData().then(function () {
+        setCity('lucknow');
+      });
+      ensureChatBase().then(function (base) {
+        var sub = document.getElementById('ai-sub');
+        if (sub) {
+          var label = base !== null && base !== '' ? base : (location.origin || '');
+          sub.textContent = '// GEMINI API · backend: ' + (label || 'detecting…');
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

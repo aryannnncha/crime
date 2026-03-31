@@ -1,0 +1,59 @@
+{
+  "meta": {
+    "dataYear": 2023,
+    "description": "Headline counts are from NCRB Crime in India 2023 metropolitan city (20 lakh+ population) tables. UP Police and district police submit data that NCRB compiles. Map points are illustrative cluster density for awareness only — not individual FIR coordinates.",
+    "sources": [
+      {
+        "name": "Uttar Pradesh Police (official)",
+        "url": "https://uppolice.gov.in/article/en/crime",
+        "role": "State police agency; crime statistics flow from FIRs to NCRB."
+      },
+      {
+        "name": "National Crime Records Bureau — Crime in India",
+        "url": "https://ncrb.gov.in",
+        "role": "National compilation of police-recorded crime (IPC/SLL); district & city tables."
+      },
+      {
+        "name": "Press summary of NCRB 2023 metro-city figures (Lucknow, Kanpur, Ghaziabad)",
+        "url": "https://www.theweek.in/wire-updates/national/2025/09/30/des72-up-ncrb-crime-data.html",
+        "role": "PTI report citing NCRB 2023 murder, rape, kidnapping, acid attack, and negligence statistics for UP metro cities."
+      }
+    ]
+  },
+  "ncrb2023Metropolitan": {
+    "lucknow": {
+      "populationBand": "20 lakh+ (2011 census basis per NCRB metro definition)",
+      "murder_cases": 98,
+      "murder_victims": 101,
+      "murder_rate_per_lakh": 3.4,
+      "rape_cases": 151,
+      "rape_victims": 152,
+      "rape_rate_per_lakh": 10.9,
+      "kidnapping_abduction_cases": 720,
+      "kidnapping_victims": 722,
+      "kidnapping_rate_per_lakh": 24.8,
+      "acid_attack_cases": 4,
+      "death_negligence_cases": 1256,
+      "death_negligence_victims": 1293
+    },
+    "kanpur": {
+      "populationBand": "20 lakh+ (2011 census basis per NCRB metro definition)",
+      "murder_cases": 97,
+      "murder_victims": 97,
+      "murder_rate_per_lakh": 3.3,
+      "rape_cases": 86,
+      "rape_victims": 86,
+      "rape_rate_per_lakh": 6.4,
+      "kidnapping_abduction_cases": 373,
+      "kidnapping_victims": 555,
+      "kidnapping_rate_per_lakh": 12.8,
+      "acid_attack_cases": 1,
+      "death_negligence_cases": 562,
+      "death_negligence_victims": 562
+    }
+  },
+  "map": {
+    "lucknow": { "center": [26.8467, 80.9462], "zoom": 13 },
+    "kanpur": { "center": [26.4499, 80.3319], "zoom": 12 }
+  }
+}
