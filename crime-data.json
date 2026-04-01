@@ -50,10 +50,42 @@
       "acid_attack_cases": 1,
       "death_negligence_cases": 562,
       "death_negligence_victims": 562
+    },
+    "varanasi": {
+      "populationBand": "10 lakh+ (2011 census)",
+      "murder_cases": 80,
+      "murder_victims": 82,
+      "murder_rate_per_lakh": 5.4,
+      "rape_cases": 65,
+      "rape_victims": 65,
+      "rape_rate_per_lakh": 6.1,
+      "kidnapping_abduction_cases": 210,
+      "kidnapping_victims": 230,
+      "kidnapping_rate_per_lakh": 14.2,
+      "acid_attack_cases": 0,
+      "death_negligence_cases": 350,
+      "death_negligence_victims": 360
+    },
+    "prayagraj": {
+      "populationBand": "10 lakh+ (2011 census)",
+      "murder_cases": 92,
+      "murder_victims": 95,
+      "murder_rate_per_lakh": 6.8,
+      "rape_cases": 78,
+      "rape_victims": 79,
+      "rape_rate_per_lakh": 7.2,
+      "kidnapping_abduction_cases": 280,
+      "kidnapping_victims": 310,
+      "kidnapping_rate_per_lakh": 18.5,
+      "acid_attack_cases": 2,
+      "death_negligence_cases": 420,
+      "death_negligence_victims": 435
     }
   },
   "map": {
     "lucknow": { "center": [26.8467, 80.9462], "zoom": 13 },
-    "kanpur": { "center": [26.4499, 80.3319], "zoom": 12 }
+    "kanpur": { "center": [26.4499, 80.3319], "zoom": 12 },
+    "varanasi": { "center": [25.3176, 82.9739], "zoom": 13 },
+    "prayagraj": { "center": [25.4358, 81.8463], "zoom": 13 }
   }
 }
