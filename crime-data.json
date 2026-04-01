@@ -9,6 +9,21 @@
         "role": "State police agency; crime statistics flow from FIRs to NCRB."
       },
       {
+        "name": "Uttar Pradesh Police — Crime Investigation Department (CID)",
+        "url": "https://uppolice.gov.in/article/en/crime-investigation-department",
+        "role": "UP Police CID (Crime Branch); investigations and specialized units (official UP Police portal)."
+      },
+      {
+        "name": "Uttar Pradesh Police — Economic Offences Wing (EOW)",
+        "url": "https://uppolice.gov.in/pages/en/topmenu/police-units/economic-offences-wing-(eow)/en-about-us-economic-offences-wing",
+        "role": "UP Police EOW; investigates economic offences (official UP Police portal)."
+      },
+      {
+        "name": "Central Bureau of Investigation (CBI) (official)",
+        "url": "https://cbi.gov.in/",
+        "role": "India's central investigating agency; publishes press releases and case information (not ward-level city heatmap coordinates)."
+      },
+      {
         "name": "National Crime Records Bureau — Crime in India",
         "url": "https://ncrb.gov.in",
         "role": "National compilation of police-recorded crime (IPC/SLL); district & city tables."
