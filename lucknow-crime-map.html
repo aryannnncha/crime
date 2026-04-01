@@ -3,7 +3,7 @@
   
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Lucknow Crime Intelligence Map</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
   <link
@@ -908,88 +908,85 @@
     /* ── FAB & Location Panel ── */
     .fab-wrap {
       position: fixed;
-      bottom: 28px;
+      bottom: 32px;
       right: 324px;
       z-index: 9000;
       display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 10px;
+      flex-direction: row; /* Horizontal pill */
+      align-items: center;
+      gap: 4px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      box-shadow: 0 8px 32px rgba(15, 23, 42, 0.1), 0 2px 8px rgba(15, 23, 42, 0.04);
+      padding: 6px;
     }
 
     .fab-btn {
-      width: 52px;
-      height: 52px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
       border: none;
       cursor: pointer;
-      background: var(--grad-pop);
-      color: #fff;
-      font-size: 1.35rem;
+      background: transparent;
+      color: var(--text);
+      font-size: 1.25rem;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 6px 24px rgba(99, 102, 241, 0.4), 0 2px 8px rgba(236, 72, 153, 0.25);
-      transition: transform 0.25s cubic-bezier(.4, 0, .2, 1), box-shadow 0.3s;
+      transition: all 0.2s cubic-bezier(.4, 0, .2, 1);
       position: relative;
       overflow: hidden;
     }
 
-    .fab-btn::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, transparent 60%);
-      pointer-events: none;
-    }
-
     .fab-btn:hover {
-      transform: scale(1.1) translateY(-2px);
-      box-shadow: 0 8px 32px rgba(99, 102, 241, 0.5), 0 4px 12px rgba(236, 72, 153, 0.3);
+      background: var(--surface-2);
+      transform: scale(1.05);
     }
 
     .fab-btn:active {
-      transform: scale(0.92);
+      transform: scale(0.95);
     }
 
-    .fab-btn.loading {
-      pointer-events: none;
-    }
-
+    /* Active styling for the buttons inside pill */
     .fab-btn.tracking {
-      animation: fab-pulse 2s ease-in-out infinite;
+      background: rgba(99, 102, 241, 0.1);
+      color: var(--accent);
+      animation: pulse-light 2s ease-in-out infinite;
+    }
+    
+    .fab-sep {
+      width: 1px;
+      height: 24px;
+      background: var(--line-strong);
+      margin: 0 4px;
     }
 
-    @keyframes fab-pulse {
-
-      0%,
-      100% {
-        box-shadow: 0 6px 24px rgba(99, 102, 241, 0.4), 0 0 0 0 rgba(99, 102, 241, 0.3);
-      }
-
-      50% {
-        box-shadow: 0 6px 24px rgba(99, 102, 241, 0.4), 0 0 0 12px rgba(99, 102, 241, 0);
-      }
+    @keyframes pulse-light {
+      0%, 100% { box-shadow: inset 0 0 0 1px rgba(99, 102, 241, 0.2); }
+      50% { box-shadow: inset 0 0 0 2px rgba(99, 102, 241, 0.5); }
     }
 
     .fab-spinner {
-      width: 24px;
-      height: 24px;
-      border: 2.5px solid rgba(255, 255, 255, 0.3);
-      border-top-color: #fff;
+      width: 20px;
+      height: 20px;
+      border: 2.5px solid rgba(15, 23, 42, 0.2);
+      border-top-color: var(--accent);
       border-radius: 50%;
       animation: fab-spin 0.7s linear infinite;
     }
 
     @keyframes fab-spin {
-      to {
-        transform: rotate(360deg);
-      }
+      to { transform: rotate(360deg); }
     }
 
     /* Location Card */
     .loc-card {
+      position: absolute;
+      bottom: calc(100% + 12px);
+      right: 0;
       background: rgba(255, 255, 255, 0.88);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
@@ -1214,6 +1211,480 @@
       .fab-wrap {
         right: 20px;
       }
+      .safe-panel {
+        right: 20px !important;
+      }
+    }
+    /* --- SafeMode Feature --- */
+    .safe-panel {
+      position: fixed;
+      bottom: 100px;
+      right: 324px;
+      width: 320px;
+      background: #1c1c1e;
+      border-radius: 28px;
+      color: #fff;
+      box-shadow: 0 12px 48px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.1);
+      overflow: hidden;
+      display: none;
+      flex-direction: column;
+      z-index: 9500;
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+      transform-origin: bottom right;
+      transition: opacity 0.3s cubic-bezier(.4, 0, .2, 1), transform 0.3s cubic-bezier(.4, 0, .2, 1);
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .safe-panel.visible {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .sp-header {
+      padding: 16px 20px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .sp-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sp-close {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: #fff;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+    }
+
+    .sp-view {
+      display: none;
+      padding: 16px 20px;
+      flex-direction: column;
+      gap: 16px;
+    }
+    
+    .sp-view.active {
+      display: flex;
+    }
+
+    /* Switch toggle */
+    .sp-toggle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255,255,255,0.06);
+      padding: 12px 14px;
+      border-radius: 12px;
+    }
+
+    .sp-toggle-lbl {
+      font-size: 0.85rem;
+      font-weight: 500;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .sp-toggle-sub {
+      font-size: 0.65rem;
+      color: #a1a1aa;
+    }
+
+    .tgl {
+      appearance: none;
+      width: 44px;
+      height: 24px;
+      background: #3f3f46;
+      border-radius: 20px;
+      position: relative;
+      cursor: pointer;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    .tgl::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      background: #fff;
+      border-radius: 50%;
+      transition: 0.3s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+
+    .tgl:checked {
+      background: #10b981;
+    }
+
+    .tgl:checked::after {
+      transform: translateX(20px);
+    }
+
+    /* Contacts */
+    .sp-section-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #a1a1aa;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+
+    .sp-contact-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .sp-contact {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255,255,255,0.06);
+      padding: 10px 12px;
+      border-radius: 12px;
+    }
+
+    .sp-initials {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #6366f1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .sp-cinfo {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .sp-cname { font-size: 0.85rem; font-weight: 500; }
+    .sp-cnum { font-size: 0.65rem; color: #a1a1aa; font-family: monospace; }
+    
+    .sp-btn-outline {
+      border: 1px dashed rgba(255,255,255,0.2);
+      background: transparent;
+      color: #e4e4e7;
+      border-radius: 12px;
+      padding: 10px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-align: center;
+      transition: 0.2s;
+    }
+    .sp-btn-outline:hover { background: rgba(255,255,255,0.05); }
+
+    /* Countdown View */
+    .sp-warn-box {
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 14px;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .sp-warn-title { font-weight: 600; font-size: 0.9rem; }
+    .sp-warn-desc { font-size: 0.75rem; opacity: 0.8; }
+    
+    .sp-timer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 0;
+    }
+
+    .sp-circle {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      border: 4px solid #ef4444;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #ef4444;
+      animation: pulse-red 1s infinite;
+    }
+
+    @keyframes pulse-red {
+      0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+      70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+
+    .sp-btn-cancel {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      padding: 12px;
+      border-radius: 12px;
+      color: #fff;
+      font-weight: 500;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    /* Alert View */
+    .sp-alert-box {
+      background: #dcfce7;
+      color: #166534;
+      padding: 14px;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    
+    .sp-alert-msg {
+      background: #14532d;
+      color: #fff;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      line-height: 1.4;
+    }
+    .sp-alert-links {
+      display: flex;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .sp-alert-tag {
+      background: rgba(255,255,255,0.2);
+      padding: 4px 8px;
+      border-radius: 20px;
+      font-size: 0.6rem;
+      font-weight: 500;
+    }
+
+    .sp-btn-sos {
+      background: #ef4444;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+    
+    .sp-tracking-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px dashed rgba(255,255,255,0.1);
+    }
+    
+    .sp-live-tag {
+      color: #10b981;
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+
+    /* Fake Call Override */
+    #fake-call {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 10000;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      color: #fff;
+      font-family: -apple-system, sans-serif;
+      padding-top: 15vh;
+    }
+
+    #fake-call.visible { display: flex; }
+
+    .fc-title { font-size: 1.2rem; color: #a1a1aa; margin-bottom: 15px; }
+    .fc-name { font-size: 2.5rem; font-weight: 400; margin-bottom: 60px; }
+    
+    .fc-actions {
+      display: flex;
+      gap: 60px;
+      margin-top: auto;
+      margin-bottom: 10vh;
+    }
+
+    .fc-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .fc-btn-icon {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: #fff;
+      cursor: pointer;
+    }
+    
+    .fc-decline { background: #ef4444; }
+    .fc-accept { background: #10b981; animation: jump 1s infinite; }
+    
+    @keyframes jump {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* Mobile Menu Overlay */
+    .mobile-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.4);
+      backdrop-filter: blur(4px);
+      z-index: 1999;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .mobile-overlay.visible {
+      display: block;
+      opacity: 1;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: transparent;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 1.2rem;
+      width: 38px;
+      height: 38px;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      background: var(--surface);
+    }
+    .lp-close-btn {
+      display: none;
+      background: var(--surface-2);
+      border: none;
+      border-radius: var(--radius-sm);
+      width: 32px;
+      height: 32px;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-soft);
+      font-size: 1.1rem;
+      margin-left: auto;
+    }
+    .ps-header {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .mobile-menu-btn {
+        display: flex;
+        flex-shrink: 0;
+        margin-right: 0.2rem;
+      }
+      .logo-row {
+        flex: 1;
+        min-width: 0;
+      }
+      header {
+        flex-wrap: wrap;
+        padding: 0.5rem;
+        gap: 0.5rem;
+      }
+      .ttl p {
+        display: none; /* Hide long subtitle */
+      }
+      .hstats {
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        scrollbar-width: none; /* Firefox */
+      }
+      .hstats::-webkit-scrollbar {
+        display: none; /* Chrome */
+      }
+      .live-pill {
+        display: none; /* Hide on small screens, save space */
+      }
+      
+      .lp {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        bottom: 0;
+        width: 85%;
+        max-width: 320px;
+        z-index: 2000;
+        background: rgba(255, 255, 255, 0.95);
+        transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border-right: none;
+        box-shadow: var(--shadow-md);
+      }
+      .lp.open {
+        left: 0;
+      }
+      .lp-close-btn {
+        display: flex;
+      }
+      .ps-header {
+        display: flex;
+        align-items: center;
+        background: var(--surface-2);
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--line);
+      }
+      .ps-header .ps-ttl {
+        margin-bottom: 0;
+      }
+      #city-ttl {
+        display: none;
+      }
+
+      .safe-panel {
+        width: calc(100% - 32px) !important;
+        right: 16px !important;
+        bottom: 80px;
+        left: 16px;
+        margin: auto;
+      }
+      #fake-call {
+        z-index: 10000;
+      }
     }
   </style>
 </head>
@@ -1221,6 +1692,7 @@
 <body>
 
   <header>
+    <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open Filters">≡</button>
     <div class="logo-row">
       <div class="logo-hex">⬡</div>
       <div class="ttl">
@@ -1254,15 +1726,21 @@
   <div class="main">
 
     <!-- LEFT PANEL -->
-    <div class="lp">
+    <div class="mobile-overlay" id="mobile-overlay"></div>
+    <div class="lp" id="filter-lp">
+      <div class="ps-header lp-close-btn-wrapper">
+         <div class="ps-ttl">Filters & Data</div>
+         <button class="lp-close-btn" id="lp-close-btn">✕</button>
+      </div>
       <div class="ps">
-        <div class="ps-ttl">City</div>
+        <div class="ps-ttl" id="city-ttl">City</div>
         <div class="fg fg-row">
           <button type="button" class="fb fb-city active" data-city="lucknow"
             onclick="setCity('lucknow')">Lucknow</button>
           <button type="button" class="fb fb-city" data-city="kanpur" onclick="setCity('kanpur')">Kanpur Nagar</button>
           <button type="button" class="fb fb-city" data-city="varanasi" onclick="setCity('varanasi')">Varanasi</button>
-          <button type="button" class="fb fb-city" data-city="prayagraj" onclick="setCity('prayagraj')">Prayagraj</button>
+          <button type="button" class="fb fb-city" data-city="prayagraj"
+            onclick="setCity('prayagraj')">Prayagraj</button>
         </div>
       </div>
       <div class="ps">
@@ -1383,10 +1861,120 @@
 
   <!-- FAB & Location Panel -->
   <div class="fab-wrap" id="fab-wrap">
-    <div class="loc-card" id="loc-card"></div>
+    <button class="fab-btn" id="safe-fab-btn" title="Safe Mode" aria-label="Safe Mode Toggle">
+      🛡️
+    </button>
+    <div class="fab-sep"></div>
     <button class="fab-btn" id="fab-btn" title="Get my location" aria-label="Get my live location">
       <span id="fab-icon">📍</span>
     </button>
+  </div>
+
+  <!-- SafeMode Panel -->
+  <div class="safe-panel" id="safe-panel">
+    <div class="sp-header">
+      <div class="sp-title">🛡️ SafeMode</div>
+      <button class="sp-close" id="safe-close">✕</button>
+    </div>
+
+    <!-- View 1: Setup -->
+    <div class="sp-view active" id="sp-view-setup">
+      <div class="sp-toggle-row">
+        <div class="sp-toggle-lbl">
+          <span>SafeMode</span>
+          <span class="sp-toggle-sub" id="sp-status-text">Location sharing off</span>
+        </div>
+        <input type="checkbox" class="tgl" id="safemode-tgl">
+      </div>
+      
+      <div class="sp-toggle-row" style="background:transparent; padding:0;">
+        <div class="sp-toggle-lbl">
+          <span style="font-size: 0.75rem;">Simulate Call</span>
+          <span class="sp-toggle-sub">Fake incoming call to excuse yourself</span>
+        </div>
+        <button class="sp-close" style="background:#3f3f46" onclick="triggerFakeCall()">📞</button>
+      </div>
+
+      <div style="margin-top: 8px;">
+        <div class="sp-section-title">Emergency Contacts</div>
+        <div class="sp-contact-list" id="sp-contacts">
+          <!-- Dynamic Contacts here -->
+        </div>
+        <button class="sp-btn-outline" style="margin-top:8px" onclick="addSafeModeContact()">+ Add Contact</button>
+      </div>
+    </div>
+
+    <!-- View 2: Countdown -->
+    <div class="sp-view" id="sp-view-countdown">
+      <div class="sp-toggle-row">
+        <div class="sp-toggle-lbl">
+          <span>SafeMode</span>
+          <span class="sp-toggle-sub" style="color:#10b981">Watching your route</span>
+        </div>
+        <div style="color: #10b981; font-size:1.2rem;">●</div>
+      </div>
+
+      <div class="sp-warn-box">
+        <div class="sp-warn-title">Entering risk zone</div>
+        <div class="sp-warn-desc" id="sp-zone-desc">High assault reports near Chowk area</div>
+        <div style="display:flex; margin-top:4px;">
+          <span class="risk-band hi" id="sp-zone-badge" style="display:inline-block;">HIGH · Chowk</span>
+        </div>
+      </div>
+
+      <div class="sp-timer">
+        <div class="sp-circle" id="sp-countdown">10</div>
+      </div>
+
+      <button class="sp-btn-cancel" onclick="cancelSafeModeAlert()">Cancel · I'm safe</button>
+    </div>
+
+    <!-- View 3: Alert Sent -->
+    <div class="sp-view" id="sp-view-alert">
+      <div class="sp-alert-box">
+        <div style="font-weight:600; font-size:0.9rem;">Alert sent</div>
+        <div style="font-size:0.75rem;">Your location shared with <span id="sp-alert-count">2</span> contacts</div>
+        
+        <div class="sp-alert-msg" id="sp-alert-msg-box">
+          <!-- message preview -->
+        </div>
+        <div class="sp-alert-links">
+          <span class="sp-alert-tag">WhatsApp</span>
+          <span class="sp-alert-tag">SMS</span>
+        </div>
+      </div>
+
+      <button class="sp-btn-sos" onclick="dispatchSafeModeAlerts()">SOS · Send again</button>
+      
+      <div class="sp-tracking-row">
+        <div>
+          <div style="font-size:0.85rem; font-weight:500;">Live tracking on</div>
+          <div style="font-size:0.65rem; color:#a1a1aa;">Updates every 30 sec</div>
+        </div>
+        <div class="sp-live-tag">LIVE</div>
+      </div>
+      
+      <div class="sp-contact-list" id="sp-alert-contacts" style="margin-top:8px;">
+        <!-- Notified contacts -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Fake Call Fullscreen UI -->
+  <div id="fake-call">
+    <div class="fc-title">mobile</div>
+    <div class="fc-name">Mom</div>
+    
+    <div class="fc-actions">
+      <div class="fc-btn" onclick="document.getElementById('fake-call').classList.remove('visible')">
+        <div class="fc-btn-icon fc-decline">☎</div>
+        <span style="font-size:0.8rem">Decline</span>
+      </div>
+      <div class="fc-btn" onclick="document.getElementById('fake-call').classList.remove('visible')">
+        <div class="fc-btn-icon fc-accept">☎</div>
+        <span style="font-size:0.8rem">Accept</span>
+      </div>
+    </div>
   </div>
 
   <div id="bootwarn"
@@ -1965,6 +2553,7 @@
             </button>
           </div>
         `);
+        if (window.safeModeCheckGeofence) window.safeModeCheckGeofence(lat, lng);
       }
 
       function handleGeoError(err) {
@@ -2023,6 +2612,248 @@
 
       fabBtn.addEventListener('click', requestLocation);
     })();
+    
+    // ── Safe Mode Feature Logic ──
+    (function() {
+      const panel = document.getElementById('safe-panel');
+      const toggle = document.getElementById('safemode-tgl');
+      const statusTxt = document.getElementById('sp-status-text');
+      const contactsDiv = document.getElementById('sp-contacts');
+      
+      const vSetup = document.getElementById('sp-view-setup');
+      const vCount = document.getElementById('sp-view-countdown');
+      const vAlert = document.getElementById('sp-view-alert');
+
+      let safeState = 'off'; // 'off' | 'watching' | 'countdown' | 'alert'
+      let contacts = JSON.parse(localStorage.getItem('safemode_contacts') || '[]');
+      let checkInterval;
+      
+      // Countdown states
+      let countdownTimer = null;
+      let timeLeft = 10;
+      let currentDangerZone = null;
+
+      // Utils
+      function initContacts() {
+        if (!contacts.length) {
+          // default demo contact for new visitors
+          contacts = [{ name: 'Mom', phone: '+919810000000' }];
+          saveContacts();
+        }
+        renderContacts();
+      }
+      
+      function saveContacts() {
+        localStorage.setItem('safemode_contacts', JSON.stringify(contacts));
+      }
+      
+      function renderContacts() {
+        contactsDiv.innerHTML = contacts.map((c, i) => `
+          <div class="sp-contact">
+            <div class="sp-initials">${c.name.substring(0,2).toUpperCase()}</div>
+            <div class="sp-cinfo">
+              <div class="sp-cname">${c.name}</div>
+              <div class="sp-cnum">${c.phone}</div>
+            </div>
+            <button class="sp-close" style="width:20px;height:20px;font-size:0.6rem;opacity:0.6" onclick="removeSafeContact(${i})">✕</button>
+          </div>
+        `).join('');
+      }
+
+      window.addSafeModeContact = function() {
+        const name = prompt("Contact Name (e.g. Mom):");
+        if (!name) return;
+        const phone = prompt("Phone Number (with country code):");
+        if (!phone) return;
+        contacts.push({ name, phone });
+        saveContacts();
+        renderContacts();
+      };
+      
+      window.removeSafeContact = function(i) {
+        contacts.splice(i, 1);
+        saveContacts();
+        renderContacts();
+      };
+
+      // State Transitions
+      function transitionView(from, to) {
+        if (!document.startViewTransition) {
+          from.classList.remove('active');
+          to.classList.add('active');
+          return;
+        }
+        document.startViewTransition(() => {
+          from.classList.remove('active');
+          to.classList.add('active');
+        });
+      }
+
+      // Geofence check using Haversine
+      function calcDist(lat1, lon1, lat2, lon2) {
+        const R = 6371e3; // metres
+        const f1 = lat1 * Math.PI/180;
+        const f2 = lat2 * Math.PI/180;
+        const df = (lat2-lat1) * Math.PI/180;
+        const dl = (lon2-lon1) * Math.PI/180;
+        const a = Math.sin(df/2) * Math.sin(df/2) +
+                  Math.cos(f1) * Math.cos(f2) *
+                  Math.sin(dl/2) * Math.sin(dl/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c; 
+      }
+
+      window.safeModeCheckGeofence = function(lat, lng) {
+        if (safeState !== 'watching') return;
+        
+        // Find if in any Hi/Critical zone (within radius = 300m)
+        const zones = getRiskZones().filter(z => z.band === 'hi' || z.band === 'cr');
+        const inDanger = zones.find(z => calcDist(lat, lng, z.lat, z.lng) <= 300);
+        
+        if (inDanger) {
+          triggerCountdown(inDanger);
+        }
+      };
+
+      function triggerCountdown(zone) {
+        if (safeState !== 'watching') return;
+        safeState = 'countdown';
+        currentDangerZone = zone;
+        
+        document.getElementById('sp-zone-desc').textContent = `High assault reports near ${zone.name} area`;
+        document.getElementById('sp-zone-badge').textContent = `${bandLabels[zone.band]} · ${zone.name}`;
+        document.getElementById('sp-zone-badge').className = `risk-band ${zone.band}`;
+        
+        timeLeft = 10;
+        document.getElementById('sp-countdown').textContent = timeLeft;
+        transitionView(vSetup, vCount);
+        
+        countdownTimer = setInterval(() => {
+          timeLeft--;
+          document.getElementById('sp-countdown').textContent = timeLeft;
+          if (timeLeft <= 0) {
+            clearInterval(countdownTimer);
+            executeSafeAlerts();
+          }
+        }, 1000);
+      }
+
+      window.cancelSafeModeAlert = function() {
+        if (countdownTimer) clearInterval(countdownTimer);
+        safeState = 'watching';
+        transitionView(vCount, vSetup);
+        statusTxt.textContent = 'Watching your route';
+        statusTxt.style.color = '#10b981';
+      };
+
+      function executeSafeAlerts() {
+        safeState = 'alert';
+        transitionView(vCount, vAlert);
+        
+        // Populate alert view
+        document.getElementById('sp-alert-count').textContent = contacts.length;
+        
+        const cZone = currentDangerZone ? currentDangerZone.name : currentCity;
+        // The message
+        const msg = `Emergency! I need help near ${cZone}. Live location: https://maps.google.com/?q=${window.lastCoords ? window.lastCoords.lat.toFixed(4) : ''},${window.lastCoords ? window.lastCoords.lng.toFixed(4) : ''}`;
+        document.getElementById('sp-alert-msg-box').textContent = msg;
+        
+        // Notified list
+        document.getElementById('sp-alert-contacts').innerHTML = contacts.map(c => `
+          <div class="sp-contact" style="padding: 6px 12px">
+             <div class="sp-initials" style="width:24px;height:24px;font-size:0.6rem;background:#10b981">${c.name.substring(0,2).toUpperCase()}</div>
+             <div class="sp-cinfo">
+               <div class="sp-cname" style="font-size:0.75rem">${c.name} · Notified</div>
+               <div class="sp-cnum" style="font-size:0.6rem">Delivered just now</div>
+             </div>
+          </div>
+        `).join('');
+        
+        // Dispatch
+        window.dispatchSafeModeAlerts(msg);
+      }
+
+      window.dispatchSafeModeAlerts = function(overMsg) {
+        const cZone = currentDangerZone ? currentDangerZone.name : currentCity;
+        const msg = overMsg || `Emergency! I need help near ${cZone}. Live tracking: https://maps.google.com/?q=${window.lastCoords ? window.lastCoords.lat.toFixed(4) : ''},${window.lastCoords ? window.lastCoords.lng.toFixed(4) : ''}`;
+        
+        if (contacts.length === 0) return alert("No contacts saved to notify!");
+        
+        const first = contacts[0];
+        // Open WhatsApp for primary
+        const waLink = `https://wa.me/${first.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(msg)}`;
+        window.open(waLink, '_blank');
+        
+        // Fallback or secondary SMS
+        console.log(`[SafeMode] Mocking SMS dispatch via Fast2SMS API to ${contacts.map(c=>c.phone).join(', ')}: ${msg}`);
+      };
+
+      // Toggles
+      document.getElementById('safe-fab-btn').addEventListener('click', () => {
+        panel.classList.toggle('visible');
+      });
+      document.getElementById('safe-close').addEventListener('click', () => {
+        panel.classList.remove('visible');
+      });
+
+      toggle.addEventListener('change', (e) => {
+        if (e.target.checked) {
+          safeState = 'watching';
+          statusTxt.textContent = 'Watching your route';
+          statusTxt.style.color = '#10b981';
+          if (!window.watchId) {
+            window.toggleWatch(); // starts location polling if not already 
+          }
+        } else {
+          safeState = 'off';
+          statusTxt.textContent = 'Location sharing off';
+          statusTxt.style.color = '#a1a1aa';
+          if (countdownTimer) clearInterval(countdownTimer);
+          if (window.watchId && !document.getElementById('loc-watch-btn')?.classList.contains('active')) {
+             window.toggleWatch(); // Turn off if it was just turned on for safe mode
+          }
+        }
+      });
+      
+      // Fake Call
+      const fcOverlay = document.getElementById('fake-call');
+      let fcAudio = null;
+      
+      window.triggerFakeCall = function() {
+        if (!fcAudio) {
+           fcAudio = new Audio('https://www.soundjay.com/phone/sounds/telephone-ring-03a.mp3');
+           fcAudio.loop = true;
+        }
+        fcOverlay.classList.add('visible');
+        fcAudio.play().catch(e => console.log('Audio autoplay blocked', e));
+      };
+      
+      fcOverlay.addEventListener('click', () => {
+        if (fcAudio) {
+          fcAudio.pause();
+          fcAudio.currentTime = 0;
+        }
+        fcOverlay.classList.remove('visible');
+      });
+
+      initContacts();
+    })();
+
+    // Mobile Menu Toggle
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const lpCloseBtn = document.getElementById('lp-close-btn');
+    const filterLp = document.getElementById('filter-lp');
+    const mobileOverlay = document.getElementById('mobile-overlay');
+    const psHeader = document.querySelector('.ps-header');
+
+    function toggleMobileMenu() {
+      filterLp.classList.toggle('open');
+      mobileOverlay.classList.toggle('visible');
+    }
+
+    mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+    lpCloseBtn.addEventListener('click', toggleMobileMenu);
+    mobileOverlay.addEventListener('click', toggleMobileMenu);
   </script>
 </body>
 
