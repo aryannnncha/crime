@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Lucknow Crime Intelligence Map</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
   <link
@@ -1561,12 +1561,138 @@
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-10px); }
     }
+
+    /* Mobile Menu Overlay */
+    .mobile-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.4);
+      backdrop-filter: blur(4px);
+      z-index: 1999;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .mobile-overlay.visible {
+      display: block;
+      opacity: 1;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: transparent;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 1.2rem;
+      width: 38px;
+      height: 38px;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      background: var(--surface);
+    }
+    .lp-close-btn {
+      display: none;
+      background: var(--surface-2);
+      border: none;
+      border-radius: var(--radius-sm);
+      width: 32px;
+      height: 32px;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-soft);
+      font-size: 1.1rem;
+      margin-left: auto;
+    }
+    .ps-header {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .mobile-menu-btn {
+        display: flex;
+        flex-shrink: 0;
+        margin-right: 0.2rem;
+      }
+      .logo-row {
+        flex: 1;
+        min-width: 0;
+      }
+      header {
+        flex-wrap: wrap;
+        padding: 0.5rem;
+        gap: 0.5rem;
+      }
+      .ttl p {
+        display: none; /* Hide long subtitle */
+      }
+      .hstats {
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        scrollbar-width: none; /* Firefox */
+      }
+      .hstats::-webkit-scrollbar {
+        display: none; /* Chrome */
+      }
+      .live-pill {
+        display: none; /* Hide on small screens, save space */
+      }
+      
+      .lp {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        bottom: 0;
+        width: 85%;
+        max-width: 320px;
+        z-index: 2000;
+        background: rgba(255, 255, 255, 0.95);
+        transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border-right: none;
+        box-shadow: var(--shadow-md);
+      }
+      .lp.open {
+        left: 0;
+      }
+      .lp-close-btn {
+        display: flex;
+      }
+      .ps-header {
+        display: flex;
+        align-items: center;
+        background: var(--surface-2);
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--line);
+      }
+      .ps-header .ps-ttl {
+        margin-bottom: 0;
+      }
+      #city-ttl {
+        display: none;
+      }
+
+      .safe-panel {
+        width: calc(100% - 32px) !important;
+        right: 16px !important;
+        bottom: 80px;
+        left: 16px;
+        margin: auto;
+      }
+      #fake-call {
+        z-index: 10000;
+      }
+    }
   </style>
 </head>
 
 <body>
 
   <header>
+    <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open Filters">≡</button>
     <div class="logo-row">
       <div class="logo-hex">⬡</div>
       <div class="ttl">
@@ -1600,9 +1726,14 @@
   <div class="main">
 
     <!-- LEFT PANEL -->
-    <div class="lp">
+    <div class="mobile-overlay" id="mobile-overlay"></div>
+    <div class="lp" id="filter-lp">
+      <div class="ps-header lp-close-btn-wrapper">
+         <div class="ps-ttl">Filters & Data</div>
+         <button class="lp-close-btn" id="lp-close-btn">✕</button>
+      </div>
       <div class="ps">
-        <div class="ps-ttl">City</div>
+        <div class="ps-ttl" id="city-ttl">City</div>
         <div class="fg fg-row">
           <button type="button" class="fb fb-city active" data-city="lucknow"
             onclick="setCity('lucknow')">Lucknow</button>
@@ -2707,6 +2838,22 @@
 
       initContacts();
     })();
+
+    // Mobile Menu Toggle
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const lpCloseBtn = document.getElementById('lp-close-btn');
+    const filterLp = document.getElementById('filter-lp');
+    const mobileOverlay = document.getElementById('mobile-overlay');
+    const psHeader = document.querySelector('.ps-header');
+
+    function toggleMobileMenu() {
+      filterLp.classList.toggle('open');
+      mobileOverlay.classList.toggle('visible');
+    }
+
+    mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+    lpCloseBtn.addEventListener('click', toggleMobileMenu);
+    mobileOverlay.addEventListener('click', toggleMobileMenu);
   </script>
 </body>
 
