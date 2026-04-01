@@ -1379,44 +1379,6 @@
     <!-- MAP -->
     <div id="map"></div>
 
-    <!-- RIGHT AI PANEL -->
-    <div class="rp">
-      <div class="ch">
-        <div class="ai-orb">🤖</div>
-        <div>
-          <div class="ain">CRIME ANALYST AI</div>
-          <div class="ais" id="ai-sub">// GEMINI API · PATTERN INTELLIGENCE</div>
-        </div>
-      </div>
-
-      <div class="msgs" id="msgs">
-        <div class="msg assistant">
-          <div class="mwho">▶ ANALYST AI</div>
-          <div class="mbub">
-            Namaste! I cover <strong>Lucknow</strong>, <strong>Kanpur Nagar</strong>, <strong>Varanasi</strong>, and <strong>Prayagraj</strong> using NCRB headline statistics
-            (metro city tables) and UP Police as the official reporting chain.<br><br>
-            Ask about risk patterns, safety tips, or comparing the two cities. Map clusters are illustrative — not
-            individual FIRs.
-          </div>
-        </div>
-      </div>
-
-      <div class="qp">
-        <button class="qb" onclick="sq('Which area of Lucknow has the highest crime rate?')">Highest risk?</button>
-        <button class="qb" onclick="sq('What crimes happen most in Chowk area?')">Chowk crimes</button>
-        <button class="qb" onclick="sq('Is Gomti Nagar safe to live in?')">Gomti safe?</button>
-        <button class="qb" onclick="sq('Night safety tips for Lucknow')">Night safety</button>
-        <button class="qb" onclick="sq('Compare old city vs new city crime in Lucknow')">Old vs New</button>
-        <button class="qb" onclick="sq('Where should I avoid parking my vehicle in Lucknow?')">Parking safety</button>
-      </div>
-
-      <div class="cir">
-        <textarea class="ci" id="ci" placeholder="Ask about crime patterns..."
-          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}"></textarea>
-        <button class="sb" id="sbtn" onclick="sendMsg()">SEND</button>
-      </div>
-    </div>
-
   </div>
 
   <!-- FAB & Location Panel -->
@@ -1431,12 +1393,12 @@
     style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:10001;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-top:1px solid rgba(15,23,42,.08);padding:10px 16px;font-family:DM Sans,system-ui,sans-serif;font-size:.68rem;font-weight:500;color:#525252;text-align:center;box-shadow:0 -8px 32px rgba(15,23,42,.08)">
     You opened this page as a local file. Run the server and open
     <strong style="color:#6366f1;font-weight:600">http://localhost:3000/lucknow-crime-map.html</strong>
-    so the map and AI chat can load correctly.
+    so the map can load correctly.
   </div>
 
   <script>
-    /** Chat API: relative URLs break on file://; port may not be 3000 if that port was busy */
-    const API_BASE = (function () {
+    /** Asset base: relative URLs break on file:// */
+    const ASSET_BASE = (function () {
       try {
         const q = new URLSearchParams(window.location.search).get("api");
         if (q) return q.replace(/\/$/, "");
@@ -1444,43 +1406,6 @@
       if (window.location.protocol === "file:") return "http://localhost:3000";
       return "";
     })();
-
-    let resolvedChatBase = null;
-    let resolveChatBasePromise = null;
-
-    async function ensureChatBase() {
-      if (resolvedChatBase !== null) return resolvedChatBase;
-      if (resolveChatBasePromise) return resolveChatBasePromise;
-      resolveChatBasePromise = (async () => {
-        const bases = [];
-        if (API_BASE) bases.push(API_BASE);
-        if (window.location.protocol !== "file:" && window.location.hostname) {
-          bases.push("");
-        }
-        for (let p = 3000; p <= 3015; p++) {
-          bases.push("http://127.0.0.1:" + p);
-          bases.push("http://localhost:" + p);
-        }
-        const seen = new Set();
-        for (const b of bases) {
-          if (seen.has(b)) continue;
-          seen.add(b);
-          try {
-            const url = (b || "") + "/api/health";
-            const r = await fetch(url, { method: "GET", cache: "no-store" });
-            if (!r.ok) continue;
-            const j = await r.json();
-            if (j && j.ok === true) {
-              resolvedChatBase = b;
-              return b;
-            }
-          } catch (e) { }
-        }
-        resolvedChatBase = API_BASE;
-        return API_BASE;
-      })();
-      return resolveChatBasePromise;
-    }
 
     if (window.location.protocol === "file:") {
       window.addEventListener("load", function () {
@@ -1628,8 +1553,7 @@
 
     async function loadNcrbData() {
       try {
-        var base = await ensureChatBase();
-        var r = await fetch((base || '') + '/crime-data.json', { cache: 'no-store' });
+        var r = await fetch((ASSET_BASE || '') + '/crime-data.json', { cache: 'no-store' });
         if (r.ok) ncrbData = await r.json();
       } catch (e) { }
       applyNcrbHeader();
@@ -1810,75 +1734,6 @@
       if (map) map.panTo([z.lat, z.lng]);
     }
 
-    // ── AI (Gemini via server) ──
-    const hist = [];
-    function buildSystemPrompt() {
-      var cityName = currentCity;
-      if (currentCity === 'lucknow') cityName = 'Lucknow';
-      else if (currentCity === 'kanpur') cityName = 'Kanpur Nagar';
-      else if (currentCity === 'varanasi') cityName = 'Varanasi';
-      else if (currentCity === 'prayagraj') cityName = 'Prayagraj';
-      var ncrb = '';
-      if (ncrbData && ncrbData.ncrb2023Metropolitan) {
-        var k = currentCity;
-        var row = ncrbData.ncrb2023Metropolitan[k];
-        if (row) {
-          ncrb = ' NCRB Crime in India 2023 (metropolitan city / 20L+ pop) headline counts for ' + cityName + ': murder cases ' + row.murder_cases + ', rape cases ' + row.rape_cases + ', kidnapping/abduction cases ' + row.kidnapping_abduction_cases + '. These figures are compiled by NCRB from police records (UP Police reports into the national system). ';
-        }
-      }
-      return 'You are a public-safety analyst for ' + cityName + ', Uttar Pradesh, India.' + ncrb + 'The map shows illustrative cluster density for awareness, not individual FIR locations. Cite UP Police and NCRB as the official chain when discussing statistics. Answer concisely (under 140 words unless asked for detail). Do not invent FIR-level or suspect-level data.';
-    }
-
-    async function sendMsg() {
-      const inp = document.getElementById('ci');
-      const txt = inp.value.trim();
-      if (!txt) return;
-      inp.value = '';
-      addMsg('user', txt);
-      hist.push({ role: 'user', content: txt });
-      const btn = document.getElementById('sbtn');
-      btn.disabled = true;
-      const tid = 't' + Date.now();
-      const m = document.getElementById('msgs');
-      m.insertAdjacentHTML('beforeend', `<div id="${tid}" class="msg assistant"><div class="mwho">▶ ANALYST AI</div><div class="mbub"><div class="typing"><span></span><span></span><span></span></div></div></div>`);
-      m.scrollTop = m.scrollHeight;
-      try {
-        const base = await ensureChatBase();
-        const res = await fetch((base || '') + '/api/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ system: buildSystemPrompt(), messages: hist })
-        });
-        let data = {};
-        try { data = await res.json(); } catch (e) { }
-        if (!res.ok) {
-          document.getElementById(tid)?.remove();
-          const errText = data.reply || ('HTTP ' + res.status);
-          hist.pop();
-          addMsg('assistant', '⚠ ' + errText + '<br><br><span style="color:#737373;font-size:.7em">Please update your <code>.env</code> file with a valid <code>GEMINI_API_KEY</code> from Google AI Studio, then restart the server.</span>');
-          btn.disabled = false;
-          return;
-        }
-        const reply = data.reply || 'No response.';
-        hist.push({ role: 'assistant', content: reply });
-        document.getElementById(tid)?.remove();
-        addMsg('assistant', reply);
-      } catch (e) {
-        document.getElementById(tid)?.remove();
-        hist.pop();
-        addMsg('assistant', '⚠ Could not reach the chat API. Ensure your server is running and your <code>.env</code> file has a valid <code>GEMINI_API_KEY</code>.');
-      }
-      btn.disabled = false;
-    }
-
-    function sq(t) { document.getElementById('ci').value = t; sendMsg() }
-
-    function addMsg(role, text) {
-      const m = document.getElementById('msgs');
-      m.insertAdjacentHTML('beforeend', `<div class="msg ${role}"><div class="mwho">${role === 'user' ? '▷ YOU' : '▶ ANALYST AI'}</div><div class="mbub">${text.replace(/\n/g, '<br>')}</div></div>`);
-      m.scrollTop = m.scrollHeight;
-    }
-
     window.addEventListener('load', function () {
       init();
       var rr = document.getElementById('risk-range');
@@ -1889,13 +1744,6 @@
       }
       loadNcrbData().then(function () {
         setCity('lucknow');
-      });
-      ensureChatBase().then(function (base) {
-        var sub = document.getElementById('ai-sub');
-        if (sub) {
-          var label = base !== null && base !== '' ? base : (location.origin || '');
-          sub.textContent = '// GEMINI API · backend: ' + (label || 'detecting…');
-        }
       });
     });
 
