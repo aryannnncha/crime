@@ -158,6 +158,25 @@
       box-shadow: var(--shadow-sm);
     }
 
+    .weather-strip {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      padding: 0.42rem 1rem;
+      background: linear-gradient(90deg, rgba(14, 165, 233, 0.12), rgba(56, 189, 248, 0.08));
+      border-bottom: 1px solid rgba(14, 165, 233, 0.14);
+      color: #0f4c81;
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.03em;
+      z-index: 999;
+    }
+
+    .weather-strip.visible {
+      display: flex;
+    }
+
     .ldot {
       width: 6px;
       height: 6px;
@@ -328,6 +347,309 @@
       border-top: 1px solid var(--line);
       font-family: var(--font-mono);
       line-height: 1.4
+    }
+
+    .ws-panel-toggle {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
+      padding: 0.7rem 0.8rem;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      color: var(--text);
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+    }
+
+    .ws-panel-toggle:hover {
+      border-color: var(--line-strong);
+      background: var(--surface-2);
+    }
+
+    .ws-panel-heading {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.15rem;
+      text-align: left;
+      min-width: 0;
+    }
+
+    .ws-panel-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-soft);
+    }
+
+    .ws-panel-sub {
+      font-size: 0.68rem;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .ws-chevron {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      background: rgba(99, 102, 241, 0.08);
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      flex-shrink: 0;
+    }
+
+    .ws-panel-body {
+      display: none;
+      flex-direction: column;
+      gap: 0.55rem;
+      margin-top: 0.75rem;
+    }
+
+    .ws-panel-body.open {
+      display: flex;
+    }
+
+    .ws-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
+      padding: 0.7rem 0.8rem;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+    }
+
+    .ws-copy {
+      min-width: 0;
+    }
+
+    .ws-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.25;
+    }
+
+    .ws-sub {
+      font-size: 0.64rem;
+      color: var(--text-soft);
+      line-height: 1.45;
+      margin-top: 0.2rem;
+    }
+
+    .ws-extra {
+      display: none;
+      flex-direction: column;
+      gap: 0.55rem;
+      padding: 0.75rem;
+      background: rgba(255, 255, 255, 0.62);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+    }
+
+    .ws-extra.visible {
+      display: flex;
+    }
+
+    .ws-inline {
+      display: flex;
+      gap: 0.45rem;
+      align-items: center;
+    }
+
+    .ws-input {
+      width: 100%;
+      padding: 0.65rem 0.72rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 0.72rem;
+      outline: none;
+    }
+
+    .ws-input:focus {
+      border-color: rgba(99, 102, 241, 0.35);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08);
+    }
+
+    .ws-action-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      width: 100%;
+      padding: 0.68rem 0.8rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--text-soft);
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: 0.7rem;
+      font-weight: 600;
+      transition: border-color 0.2s, background 0.2s, color 0.2s;
+      text-decoration: none;
+    }
+
+    .ws-action-btn:hover {
+      border-color: var(--line-strong);
+      background: var(--surface-2);
+      color: var(--text);
+    }
+
+    .ws-action-btn.pink {
+      border-color: rgba(236, 72, 153, 0.22);
+      background: rgba(236, 72, 153, 0.08);
+      color: #be185d;
+    }
+
+    .ws-action-btn.green {
+      border-color: rgba(16, 185, 129, 0.22);
+      background: rgba(16, 185, 129, 0.09);
+      color: #047857;
+    }
+
+    .ws-action-btn.warn {
+      border-color: rgba(245, 158, 11, 0.26);
+      background: rgba(245, 158, 11, 0.08);
+      color: #b45309;
+    }
+
+    .ws-note,
+    .ws-warning {
+      padding: 0.62rem 0.7rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.64rem;
+      line-height: 1.45;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--text-soft);
+    }
+
+    .ws-note[data-tone="success"] {
+      color: #047857;
+      border-color: rgba(16, 185, 129, 0.2);
+      background: rgba(16, 185, 129, 0.08);
+    }
+
+    .ws-note[data-tone="warn"],
+    .ws-warning {
+      color: #b45309;
+      border-color: rgba(245, 158, 11, 0.2);
+      background: rgba(245, 158, 11, 0.08);
+    }
+
+    .ws-note[data-tone="error"] {
+      color: #be123c;
+      border-color: rgba(244, 63, 94, 0.2);
+      background: rgba(244, 63, 94, 0.08);
+    }
+
+    .ws-call-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.5rem;
+    }
+
+    .ws-route-results {
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
+
+    .ws-route-card {
+      padding: 0.75rem;
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .ws-route-card.active {
+      border-color: rgba(34, 197, 94, 0.32);
+      background: linear-gradient(180deg, rgba(34, 197, 94, 0.08), rgba(255, 255, 255, 0.95));
+    }
+
+    .ws-route-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.6rem;
+      margin-bottom: 0.45rem;
+    }
+
+    .ws-route-name {
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .ws-badge {
+      padding: 0.18rem 0.42rem;
+      border-radius: 999px;
+      font-family: var(--font-mono);
+      font-size: 0.54rem;
+      border: 1px solid rgba(99, 102, 241, 0.18);
+      background: rgba(99, 102, 241, 0.08);
+      color: var(--accent);
+      white-space: nowrap;
+    }
+
+    .ws-route-meta {
+      font-size: 0.64rem;
+      color: var(--text-soft);
+      line-height: 1.5;
+      margin-bottom: 0.6rem;
+    }
+
+    .ws-map-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 0.55rem;
+      padding: 0.48rem 0.62rem;
+      border-radius: 6px;
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.18);
+      color: #047857;
+      font-size: 0.64rem;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .ws-hidden {
+      display: none !important;
+    }
+
+    .ws-safe-spot-pin {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      border: 2px solid rgba(255, 255, 255, 0.96);
+      box-shadow: 0 6px 18px rgba(34, 197, 94, 0.28);
+    }
+
+    @media (max-width: 768px) {
+      .weather-strip {
+        font-size: 0.56rem;
+        padding: 0.38rem 0.75rem;
+      }
+
+      .ws-call-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     #map {
@@ -1195,6 +1517,8 @@
     </div>
   </header>
 
+  <div class="weather-strip" id="weather-strip">Lucknow 28 C | Haze | Wind 8 km/h | Advisory: stay on lit roads</div>
+
   <div class="main">
 
     <!-- LEFT PANEL -->
@@ -1254,6 +1578,103 @@
 
 
 
+      <div class="ps">
+        <button class="ws-panel-toggle" id="women-safety-toggle" type="button" aria-expanded="false">
+          <span class="ws-panel-heading">
+            <span class="ws-panel-title">Women Safety</span>
+            <span class="ws-panel-sub">SOS, safe walk, women-only layer, safe spots, disguise mode, and route safety tools</span>
+          </span>
+          <span class="ws-chevron" id="women-safety-chevron">+</span>
+        </button>
+
+        <div class="ws-panel-body" id="women-safety-body">
+          <div class="ws-row">
+            <div class="ws-copy">
+              <div class="ws-label">SOS Shake</div>
+              <div class="ws-sub">Detect a phone shake and send a WhatsApp emergency message with live location.</div>
+            </div>
+            <input type="checkbox" class="tgl" id="ws-shake-toggle">
+          </div>
+          <div class="ws-extra" id="ws-shake-extra">
+            <div class="ws-note" id="ws-shake-status">Off by default. Requires device-motion support and location access.</div>
+          </div>
+
+          <div class="ws-row">
+            <div class="ws-copy">
+              <div class="ws-label">Safe Walk Timer</div>
+              <div class="ws-sub">Set a walk duration. If it expires before check-in, an emergency WhatsApp link is opened.</div>
+            </div>
+            <input type="checkbox" class="tgl" id="ws-walk-toggle">
+          </div>
+          <div class="ws-extra" id="ws-walk-controls">
+            <div class="ws-inline">
+              <input class="ws-input" id="ws-walk-minutes" type="number" min="1" step="1" placeholder="Minutes for your walk">
+              <button class="ws-action-btn pink" id="ws-start-walk" type="button">Start Timer</button>
+            </div>
+            <button class="ws-action-btn green" id="ws-safe-btn" type="button">I'm Safe</button>
+            <div class="ws-note" id="ws-walk-status">Set your expected walk time, then start the timer.</div>
+          </div>
+
+          <div class="ws-row">
+            <div class="ws-copy">
+              <div class="ws-label">Women Incidents Layer</div>
+              <div class="ws-sub">Highlight harassment, stalking, assault, and similar markers in pink while muting the rest.</div>
+            </div>
+            <input type="checkbox" class="tgl" id="ws-women-layer-toggle">
+          </div>
+
+          <div class="ws-row">
+            <div class="ws-copy">
+              <div class="ws-label">Emergency Quick Dial</div>
+              <div class="ws-sub">Reveal one-tap emergency numbers for police, women helpline, and child helpline.</div>
+            </div>
+            <input type="checkbox" class="tgl" id="ws-dial-toggle">
+          </div>
+          <div class="ws-extra" id="ws-dial-actions">
+            <div class="ws-call-grid">
+              <a class="ws-action-btn" href="tel:112">Call 112</a>
+              <a class="ws-action-btn" href="tel:1091">Call 1091</a>
+              <a class="ws-action-btn" href="tel:1098">Call 1098</a>
+            </div>
+          </div>
+
+          <div class="ws-row">
+            <div class="ws-copy">
+              <div class="ws-label">Safe Spots on Map</div>
+              <div class="ws-sub">Load nearby police stations, hospitals, and pharmacies from Overpass as green map markers.</div>
+            </div>
+            <input type="checkbox" class="tgl" id="ws-safe-spots-toggle">
+          </div>
+          <div class="ws-extra" id="ws-safe-spots-extra">
+            <div class="ws-note" id="ws-safe-spots-status">Uses your live location if available; otherwise it uses the current map view.</div>
+          </div>
+
+          <div class="ws-row">
+            <div class="ws-copy">
+              <div class="ws-label">Disguise Mode</div>
+              <div class="ws-sub">Mask the page as a weather app while keeping all safety tools running underneath.</div>
+            </div>
+            <input type="checkbox" class="tgl" id="ws-disguise-toggle">
+          </div>
+
+          <div class="ws-row">
+            <div class="ws-copy">
+              <div class="ws-label">Safe Route Finder</div>
+              <div class="ws-sub">Search a start and destination, compare three walking routes, and rank them by crime proximity and safe spots.</div>
+            </div>
+            <input type="checkbox" class="tgl" id="ws-route-toggle">
+          </div>
+          <div class="ws-extra" id="ws-route-controls">
+            <input class="ws-input" id="ws-route-start" type="text" placeholder="Starting location">
+            <input class="ws-input" id="ws-route-end" type="text" placeholder="Destination">
+            <button class="ws-action-btn ws-hidden" id="ws-find-route" type="button">Find Safe Route</button>
+            <div class="ws-note" id="ws-route-status">Add your OpenRouteService API key in the script before using route search.</div>
+            <div class="ws-warning ws-hidden" id="ws-night-warning">Night travel detected. Prefer the green route and stay near safe spots.</div>
+            <div class="ws-route-results" id="ws-route-results"></div>
+          </div>
+        </div>
+      </div>
+
       <div class="dnote">Headline counts: NCRB Crime in India 2023 (metropolitan city). UP Police → NCRB pipeline. Map
         clusters are illustrative density, not FIR locations. <a href="https://uppolice.gov.in/article/en/crime"
           target="_blank" rel="noopener" style="color:#6366f1">UP Police</a> · <a href="https://ncrb.gov.in"
@@ -1274,6 +1695,7 @@
     <button class="fab-btn" id="fab-btn" title="Get my location" aria-label="Get my live location">
       <span id="fab-icon">📍</span>
     </button>
+    <div class="loc-card" id="loc-card"></div>
   </div>
 
   <!-- SafeMode Panel -->
@@ -1700,16 +2122,11 @@
 
       let gpsState = 'idle'; // idle | loading | located | tracking | error
       let watchId = null;
-
-
-
-
-
-
-
       let locMarker = null;
       let locCircle = null;
       let lastCoords = null;
+      window.watchId = null;
+      window.lastCoords = null;
 
       function setFabState(state) {
         gpsState = state;
@@ -1836,6 +2253,7 @@
           (err) => handleGeoError(err),
           { enableHighAccuracy: true, maximumAge: 5000, timeout: 15000 }
         );
+        window.watchId = watchId;
         const wb = document.getElementById('loc-watch-btn');
         if (wb) { wb.classList.add('active'); wb.innerHTML = '◉ Watching'; }
       }
@@ -1845,11 +2263,13 @@
           navigator.geolocation.clearWatch(watchId);
           watchId = null;
         }
+        window.watchId = null;
       }
 
       async function onPosition(pos, isWatch) {
         const { latitude: lat, longitude: lng, accuracy } = pos.coords;
         lastCoords = { lat, lng, accuracy };
+        window.lastCoords = lastCoords;
 
         updateMapLocation(lat, lng, accuracy);
 
@@ -1922,6 +2342,7 @@
           if (locCircle) { map.removeLayer(locCircle); locCircle = null; }
           hideCard();
           lastCoords = null;
+          window.lastCoords = null;
           return;
         }
 
@@ -2153,6 +2574,863 @@
 
 
       initContacts();
+    })();
+
+    (function () {
+      const WOMEN_SAFETY_ORS_API_KEY = 'ADD_OPENROUTESERVICE_API_KEY_HERE';
+
+      const panelToggle = document.getElementById('women-safety-toggle');
+      const panelBody = document.getElementById('women-safety-body');
+      const panelChevron = document.getElementById('women-safety-chevron');
+      const weatherStrip = document.getElementById('weather-strip');
+      const headerTitle = document.querySelector('header .ttl h1');
+      const headerSub = document.querySelector('header .ttl p');
+      const livePill = document.querySelector('.live-pill');
+      const logoHex = document.querySelector('.logo-hex');
+
+      const shakeToggle = document.getElementById('ws-shake-toggle');
+      const walkToggle = document.getElementById('ws-walk-toggle');
+      const womenLayerToggle = document.getElementById('ws-women-layer-toggle');
+      const dialToggle = document.getElementById('ws-dial-toggle');
+      const safeSpotsToggle = document.getElementById('ws-safe-spots-toggle');
+      const disguiseToggle = document.getElementById('ws-disguise-toggle');
+      const routeToggle = document.getElementById('ws-route-toggle');
+      const walkMinutesInput = document.getElementById('ws-walk-minutes');
+      const startWalkBtn = document.getElementById('ws-start-walk');
+      const safeBtn = document.getElementById('ws-safe-btn');
+      const routeStartInput = document.getElementById('ws-route-start');
+      const routeEndInput = document.getElementById('ws-route-end');
+      const findRouteBtn = document.getElementById('ws-find-route');
+      const routeResultsEl = document.getElementById('ws-route-results');
+      const nightWarningEl = document.getElementById('ws-night-warning');
+
+      if (!panelToggle || !panelBody) return;
+
+      const originalSetCity = setCity;
+      const cityNames = {
+        lucknow: 'Lucknow',
+        kanpur: 'Kanpur Nagar',
+        varanasi: 'Varanasi',
+        prayagraj: 'Prayagraj'
+      };
+      const womenKeywords = ['harassment', 'stalking', 'eve-teasing', 'eve teasing', 'assault', 'molestation', 'women'];
+      const normalHeatGradient = { .2: '#34d399', .4: '#fbbf24', .65: '#fb923c', .85: '#f43f5e', 1: '#7c3aed' };
+      const womenHeatGradient = { .2: '#fce7f3', .45: '#f9a8d4', .7: '#ec4899', 1: '#be185d' };
+      const routeColors = ['#22c55e', '#eab308', '#f97316'];
+
+      const state = {
+        shakeHandler: null,
+        lastShakeMagnitude: null,
+        shakeCooldownUntil: 0,
+        walkTimerId: null,
+        walkDeadline: 0,
+        safeSpotMarkers: [],
+        safeSpotData: [],
+        safeSpotFetchKey: '',
+        routeEntries: [],
+        selectedRouteIndex: null
+      };
+
+      const disguiseOriginal = {
+        title: document.title,
+        headerTitle: headerTitle ? headerTitle.textContent : '',
+        headerSub: headerSub ? headerSub.textContent : '',
+        livePillHtml: livePill ? livePill.innerHTML : '',
+        logoText: logoHex ? logoHex.textContent : ''
+      };
+
+      function cityLabel(city) {
+        return cityNames[city] || city || 'Lucknow';
+      }
+
+      function setExtraVisible(target, visible) {
+        const el = typeof target === 'string' ? document.getElementById(target) : target;
+        if (el) el.classList.toggle('visible', !!visible);
+      }
+
+      function setHidden(target, hidden) {
+        const el = typeof target === 'string' ? document.getElementById(target) : target;
+        if (el) el.classList.toggle('ws-hidden', !!hidden);
+      }
+
+      function setNote(target, text, tone) {
+        const el = typeof target === 'string' ? document.getElementById(target) : target;
+        if (!el) return;
+        el.textContent = text;
+        if (tone) {
+          el.dataset.tone = tone;
+        } else {
+          delete el.dataset.tone;
+        }
+      }
+
+      function shortLabel(text) {
+        return (text || '').split(',').slice(0, 3).join(', ') || text || '';
+      }
+
+      function hexToRgba(hex, alpha) {
+        if (!hex) return `rgba(148, 163, 184, ${alpha})`;
+        let value = hex.replace('#', '');
+        if (value.length === 3) value = value.split('').map(function (ch) { return ch + ch; }).join('');
+        const num = parseInt(value, 16);
+        const r = (num >> 16) & 255;
+        const g = (num >> 8) & 255;
+        const b = num & 255;
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+      }
+
+      function getSavedContacts() {
+        try {
+          return JSON.parse(localStorage.getItem('safemode_contacts') || '[]');
+        } catch (err) {
+          return [];
+        }
+      }
+
+      function getMapAnchor() {
+        if (window.lastCoords && typeof window.lastCoords.lat === 'number' && typeof window.lastCoords.lng === 'number') {
+          return { lat: window.lastCoords.lat, lng: window.lastCoords.lng };
+        }
+        if (map) {
+          const center = map.getCenter();
+          return { lat: center.lat, lng: center.lng };
+        }
+        return null;
+      }
+
+      function getLiveCoords(forceFresh) {
+        return new Promise(function (resolve, reject) {
+          if (!forceFresh && window.lastCoords && typeof window.lastCoords.lat === 'number' && typeof window.lastCoords.lng === 'number') {
+            resolve(window.lastCoords);
+            return;
+          }
+          if (!navigator.geolocation) {
+            reject(new Error('Geolocation is not supported in this browser.'));
+            return;
+          }
+          navigator.geolocation.getCurrentPosition(function (pos) {
+            const coords = {
+              lat: pos.coords.latitude,
+              lng: pos.coords.longitude,
+              accuracy: pos.coords.accuracy
+            };
+            window.lastCoords = coords;
+            resolve(coords);
+          }, function (err) {
+            reject(err || new Error('Unable to fetch live location.'));
+          }, {
+            enableHighAccuracy: true,
+            maximumAge: forceFresh ? 0 : 10000,
+            timeout: 15000
+          });
+        });
+      }
+
+      function buildMapsLink(coords) {
+        if (!coords) return '';
+        return `https://maps.google.com/?q=${coords.lat.toFixed(6)},${coords.lng.toFixed(6)}`;
+      }
+
+      async function openWhatsAppAlert(reason) {
+        const contacts = getSavedContacts();
+        if (!contacts.length) {
+          alert('No emergency contact found. Add one in SafeMode first.');
+          return false;
+        }
+
+        let coords = null;
+        try {
+          coords = await getLiveCoords(true);
+        } catch (err) {
+          coords = getMapAnchor();
+        }
+
+        let message = `Emergency! ${reason}.`;
+        if (coords) {
+          message += ` Live location: ${buildMapsLink(coords)}`;
+        } else {
+          message += ' Please call me urgently.';
+        }
+
+        const first = contacts[0];
+        const waLink = `https://wa.me/${String(first.phone || '').replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`;
+        const popup = window.open(waLink, '_blank');
+        if (!popup) window.location.href = waLink;
+        return true;
+      }
+
+      function isWomenRelatedCrime(crime) {
+        const corpus = [crime.type || '', crime.area || ''].concat(crime.tags || []).join(' ').toLowerCase();
+        return crime.type === 'assault' || womenKeywords.some(function (term) { return corpus.includes(term); });
+      }
+
+      function buildCrimeIcon(color, size, muted) {
+        const glowSize = Math.max(18, size * 4);
+        const offset = (glowSize - size) / 2;
+        const glowStrong = hexToRgba(color, muted ? 0.16 : 0.34);
+        const glowSoft = hexToRgba(color, muted ? 0.06 : 0.12);
+        const border = muted ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.55)';
+        return L.divIcon({
+          className: '',
+          html: `<div style="position:relative;width:${glowSize}px;height:${glowSize}px;pointer-events:none;opacity:${muted ? 0.68 : 1}">
+            <div style="position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,${glowStrong} 0%,${glowSoft} 34%,transparent 72%);animation:mp ${muted ? 2.4 : 1.8}s infinite"></div>
+            <div style="position:absolute;top:${offset}px;left:${offset}px;width:${size}px;height:${size}px;background:${color};border:1.5px solid ${border};border-radius:50%;pointer-events:auto"></div>
+          </div>`,
+          iconSize: [glowSize, glowSize],
+          iconAnchor: [glowSize / 2, glowSize / 2]
+        });
+      }
+
+      buildHeat = function () {
+        if (!map) return;
+        if (heat) map.removeLayer(heat);
+        const filtered = getFilt();
+        const source = womenLayerToggle.checked ? filtered.filter(isWomenRelatedCrime) : filtered;
+        if (!source.length) {
+          heat = null;
+          return;
+        }
+        heat = L.heatLayer(source.map(function (crime) {
+          return [crime.lat, crime.lng, womenLayerToggle.checked ? Math.min(1, crime.sev + 0.18) : crime.sev];
+        }), {
+          radius: 38,
+          blur: 28,
+          maxZoom: 17,
+          gradient: womenLayerToggle.checked ? womenHeatGradient : normalHeatGradient
+        }).addTo(map);
+      };
+
+      buildMarkers = function () {
+        markers.forEach(function (marker) { map.removeLayer(marker); });
+        markers = [];
+
+        getFilt().forEach(function (crime) {
+          const womenRelated = isWomenRelatedCrime(crime);
+          const muted = womenLayerToggle.checked && !womenRelated;
+          const color = womenLayerToggle.checked ? (womenRelated ? '#ec4899' : '#d4d4d8') : (tC[crime.type] || '#94a3b8');
+          const severity = muted ? Math.max(0.42, crime.sev * 0.7) : (womenLayerToggle.checked && womenRelated ? Math.min(1, crime.sev + 0.12) : crime.sev);
+          const size = muted ? 7 : (7 + severity * 9);
+          const icon = buildCrimeIcon(color, size, muted);
+          const riskColor = muted ? '#71717a' : (womenLayerToggle.checked && womenRelated ? '#be185d' : rC(crime.sev));
+          const riskLabel = muted ? 'BACKGROUND' : (womenLayerToggle.checked && womenRelated ? 'WOMEN SAFETY' : rL(crime.sev));
+          const womenTag = womenLayerToggle.checked && womenRelated
+            ? `<span class="pu-tag" style="border-color:${hexToRgba('#ec4899', 0.24)};background:${hexToRgba('#ec4899', 0.09)};color:#be185d">Women related</span>`
+            : '';
+          const pop = `<div class="pu">
+            <div class="pu-ttl">${crime.area}</div>
+            <div class="pu-risk" style="color:${riskColor};border-color:${hexToRgba(riskColor, 0.22)};background:${hexToRgba(riskColor, 0.1)}">● ${riskLabel}</div>
+            <div class="pu-tags">${womenTag}${(crime.tags || []).map(function (tag) { return `<span class="pu-tag">${tag}</span>`; }).join('')}</div>
+          </div>`;
+          markers.push(L.marker([crime.lat, crime.lng], { icon: icon }).bindPopup(pop, { maxWidth: 240 }).addTo(map));
+        });
+      };
+
+      function getWeatherLine() {
+        const lines = {
+          lucknow: 'Lucknow 28 C | Haze | Wind 8 km/h | Advisory: stay on lit roads',
+          kanpur: 'Kanpur 29 C | Dry breeze | Visibility moderate | Advisory: keep your route shared',
+          varanasi: 'Varanasi 27 C | River haze | Wind 6 km/h | Advisory: stay on busy corridors',
+          prayagraj: 'Prayagraj 28 C | Warm and calm | Visibility fair | Advisory: keep helplines ready'
+        };
+        return lines[currentCity] || `${cityLabel(currentCity)} 28 C | Local conditions stable | Advisory: keep contacts reachable`;
+      }
+
+      function applyDisguiseMode(enabled) {
+        if (enabled) {
+          document.title = 'City Weather Live';
+          if (headerTitle) headerTitle.textContent = `SkyWatch Weather · ${cityLabel(currentCity)}`;
+          if (headerSub) headerSub.textContent = 'Hourly city conditions, comfort index, and live local forecast';
+          if (livePill) livePill.innerHTML = '<div class="ldot"></div>Live Forecast';
+          if (logoHex) logoHex.textContent = 'WX';
+          if (weatherStrip) {
+            weatherStrip.textContent = getWeatherLine();
+            weatherStrip.classList.add('visible');
+          }
+        } else {
+          document.title = disguiseOriginal.title;
+          if (headerTitle) headerTitle.textContent = disguiseOriginal.headerTitle;
+          if (headerSub) headerSub.textContent = disguiseOriginal.headerSub;
+          if (livePill) livePill.innerHTML = disguiseOriginal.livePillHtml;
+          if (logoHex) logoHex.textContent = disguiseOriginal.logoText;
+          if (weatherStrip) weatherStrip.classList.remove('visible');
+        }
+      }
+
+      function removeSafeSpotMarkers() {
+        state.safeSpotMarkers.forEach(function (marker) {
+          if (map && map.hasLayer(marker)) map.removeLayer(marker);
+        });
+        state.safeSpotMarkers = [];
+      }
+
+      function createSafeSpotIcon() {
+        return L.divIcon({
+          className: '',
+          html: '<div class="ws-safe-spot-pin"></div>',
+          iconSize: [18, 18],
+          iconAnchor: [9, 9]
+        });
+      }
+
+      function safeSpotKindLabel(kind) {
+        if (kind === 'police') return 'Police Station';
+        if (kind === 'hospital') return 'Hospital';
+        if (kind === 'pharmacy') return 'Pharmacy';
+        return 'Safe Spot';
+      }
+
+      function normalizeSafeSpot(el) {
+        const center = el.center || el;
+        if (!center || typeof center.lat !== 'number' || typeof center.lon !== 'number') return null;
+        const tags = el.tags || {};
+        const kind = tags.amenity;
+        if (!kind) return null;
+        return {
+          lat: center.lat,
+          lng: center.lon,
+          kind: kind,
+          name: tags.name || safeSpotKindLabel(kind)
+        };
+      }
+
+      async function loadSafeSpots(options) {
+        const opts = options || {};
+        const anchor = opts.anchor || getMapAnchor();
+        const radius = opts.radius || 3000;
+        const statusTarget = opts.statusTarget || null;
+        if (!anchor) throw new Error('Map location is not ready yet.');
+
+        const cacheKey = `${anchor.lat.toFixed(3)},${anchor.lng.toFixed(3)}|${radius}`;
+        if (cacheKey === state.safeSpotFetchKey && state.safeSpotData.length) {
+          if (opts.drawMarkers) renderSafeSpotMarkers();
+          return state.safeSpotData;
+        }
+
+        if (statusTarget) setNote(statusTarget, 'Loading nearby safe spots...', 'warn');
+
+        const query = `[out:json][timeout:25];
+(
+  node["amenity"="police"](around:${radius},${anchor.lat},${anchor.lng});
+  way["amenity"="police"](around:${radius},${anchor.lat},${anchor.lng});
+  relation["amenity"="police"](around:${radius},${anchor.lat},${anchor.lng});
+  node["amenity"="hospital"](around:${radius},${anchor.lat},${anchor.lng});
+  way["amenity"="hospital"](around:${radius},${anchor.lat},${anchor.lng});
+  relation["amenity"="hospital"](around:${radius},${anchor.lat},${anchor.lng});
+  node["amenity"="pharmacy"](around:${radius},${anchor.lat},${anchor.lng});
+  way["amenity"="pharmacy"](around:${radius},${anchor.lat},${anchor.lng});
+  relation["amenity"="pharmacy"](around:${radius},${anchor.lat},${anchor.lng});
+);
+out center;`;
+
+        const response = await fetch('https://overpass-api.de/api/interpreter', {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+          body: query
+        });
+        if (!response.ok) throw new Error('Overpass API request failed.');
+
+        const data = await response.json();
+        const seen = new Set();
+        state.safeSpotData = (data.elements || []).map(normalizeSafeSpot).filter(function (spot) {
+          if (!spot) return false;
+          const key = `${spot.kind}|${spot.name}|${spot.lat.toFixed(5)}|${spot.lng.toFixed(5)}`;
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        });
+        state.safeSpotFetchKey = cacheKey;
+
+        if (opts.drawMarkers) renderSafeSpotMarkers();
+        if (statusTarget) {
+          setNote(statusTarget, state.safeSpotData.length ? `Loaded ${state.safeSpotData.length} safe spots.` : 'No safe spots were returned for this area.', state.safeSpotData.length ? 'success' : 'warn');
+        }
+        return state.safeSpotData;
+      }
+
+      function renderSafeSpotMarkers() {
+        removeSafeSpotMarkers();
+        if (!map) return;
+        state.safeSpotData.forEach(function (spot) {
+          const popup = `<div class="pu">
+            <div class="pu-ttl">${spot.name}</div>
+            <div class="pu-tags"><span class="pu-tag">${safeSpotKindLabel(spot.kind)}</span></div>
+            <a class="ws-map-link" href="https://www.google.com/maps/dir/?api=1&destination=${spot.lat},${spot.lng}&travelmode=walking" target="_blank" rel="noopener">Directions</a>
+          </div>`;
+          const marker = L.marker([spot.lat, spot.lng], { icon: createSafeSpotIcon() }).bindPopup(popup, { maxWidth: 240 }).addTo(map);
+          state.safeSpotMarkers.push(marker);
+        });
+      }
+
+      function toXY(lat, lng, refLat) {
+        const r = 6371000;
+        return {
+          x: lng * Math.PI / 180 * r * Math.cos(refLat * Math.PI / 180),
+          y: lat * Math.PI / 180 * r
+        };
+      }
+
+      function pointToSegmentDistanceMeters(pointLat, pointLng, startLat, startLng, endLat, endLng) {
+        const refLat = (pointLat + startLat + endLat) / 3;
+        const p = toXY(pointLat, pointLng, refLat);
+        const a = toXY(startLat, startLng, refLat);
+        const b = toXY(endLat, endLng, refLat);
+        const abx = b.x - a.x;
+        const aby = b.y - a.y;
+        const ab2 = abx * abx + aby * aby;
+        if (!ab2) return Math.hypot(p.x - a.x, p.y - a.y);
+        let t = ((p.x - a.x) * abx + (p.y - a.y) * aby) / ab2;
+        t = Math.max(0, Math.min(1, t));
+        const projX = a.x + abx * t;
+        const projY = a.y + aby * t;
+        return Math.hypot(p.x - projX, p.y - projY);
+      }
+
+      function isPointNearRoute(lat, lng, routeCoords, thresholdMeters) {
+        for (let i = 1; i < routeCoords.length; i++) {
+          if (pointToSegmentDistanceMeters(lat, lng, routeCoords[i - 1][0], routeCoords[i - 1][1], routeCoords[i][0], routeCoords[i][1]) <= thresholdMeters) {
+            return true;
+          }
+        }
+        return false;
+      }
+
+      function haversineMeters(a, b) {
+        const r = 6371000;
+        const dLat = (b.lat - a.lat) * Math.PI / 180;
+        const dLng = (b.lng - a.lng) * Math.PI / 180;
+        const lat1 = a.lat * Math.PI / 180;
+        const lat2 = b.lat * Math.PI / 180;
+        const x = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.cos(lat1) * Math.cos(lat2) *
+          Math.sin(dLng / 2) * Math.sin(dLng / 2);
+        return 2 * r * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x));
+      }
+
+      function decodePolyline(str, precision) {
+        const coordinates = [];
+        let index = 0;
+        let lat = 0;
+        let lng = 0;
+        const factor = Math.pow(10, precision || 5);
+
+        while (index < str.length) {
+          let result = 0;
+          let shift = 0;
+          let byte;
+          do {
+            byte = str.charCodeAt(index++) - 63;
+            result |= (byte & 0x1f) << shift;
+            shift += 5;
+          } while (byte >= 0x20);
+          const deltaLat = result & 1 ? ~(result >> 1) : (result >> 1);
+          lat += deltaLat;
+
+          result = 0;
+          shift = 0;
+          do {
+            byte = str.charCodeAt(index++) - 63;
+            result |= (byte & 0x1f) << shift;
+            shift += 5;
+          } while (byte >= 0x20);
+          const deltaLng = result & 1 ? ~(result >> 1) : (result >> 1);
+          lng += deltaLng;
+
+          coordinates.push([lat / factor, lng / factor]);
+        }
+
+        return coordinates;
+      }
+
+      function normalizeRoutes(data) {
+        if (Array.isArray(data.features)) {
+          return data.features.map(function (feature, index) {
+            return {
+              id: index,
+              coordinates: (feature.geometry && feature.geometry.coordinates ? feature.geometry.coordinates : []).map(function (coord) {
+                return [coord[1], coord[0]];
+              }),
+              distance: feature.properties && feature.properties.summary ? feature.properties.summary.distance : 0,
+              duration: feature.properties && feature.properties.summary ? feature.properties.summary.duration : 0
+            };
+          });
+        }
+        if (Array.isArray(data.routes)) {
+          return data.routes.map(function (route, index) {
+            return {
+              id: index,
+              coordinates: typeof route.geometry === 'string' ? decodePolyline(route.geometry, 5) : [],
+              distance: route.summary ? route.summary.distance : 0,
+              duration: route.summary ? route.summary.duration : 0
+            };
+          });
+        }
+        return [];
+      }
+
+      async function geocodePlace(query) {
+        const clean = query.trim();
+        if (!clean) throw new Error('Enter both a starting location and a destination.');
+        const attempts = clean.includes(',')
+          ? [clean]
+          : [`${clean}, ${cityLabel(currentCity)}, Uttar Pradesh, India`, `${clean}, ${cityLabel(currentCity)}, India`, clean];
+
+        for (let i = 0; i < attempts.length; i++) {
+          const response = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(attempts[i])}&format=json&limit=1`, {
+            headers: { 'Accept-Language': 'en' }
+          });
+          if (!response.ok) continue;
+          const matches = await response.json();
+          if (matches && matches.length) {
+            return {
+              lat: parseFloat(matches[0].lat),
+              lng: parseFloat(matches[0].lon),
+              label: matches[0].display_name
+            };
+          }
+        }
+
+        throw new Error(`Could not find "${clean}". Try a more specific place name.`);
+      }
+
+      async function fetchRouteOptions(start, end) {
+        if (!WOMEN_SAFETY_ORS_API_KEY || WOMEN_SAFETY_ORS_API_KEY === 'ADD_OPENROUTESERVICE_API_KEY_HERE') {
+          throw new Error('Add your OpenRouteService key to WOMEN_SAFETY_ORS_API_KEY in lucknow-crime-map.html.');
+        }
+
+        const response = await fetch('https://api.openrouteservice.org/v2/directions/foot-walking', {
+          method: 'POST',
+          headers: {
+            'Authorization': WOMEN_SAFETY_ORS_API_KEY,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json, application/geo+json'
+          },
+          body: JSON.stringify({
+            coordinates: [[start.lng, start.lat], [end.lng, end.lat]],
+            alternative_routes: {
+              target_count: 3,
+              share_factor: 0.6,
+              weight_factor: 1.4
+            },
+            instructions: false
+          })
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(errorText || 'OpenRouteService route request failed.');
+        }
+        return response.json();
+      }
+
+      function clearRouteLayers() {
+        state.routeEntries.forEach(function (route) {
+          if (route.layer && map && map.hasLayer(route.layer)) map.removeLayer(route.layer);
+        });
+        state.routeEntries = [];
+        state.selectedRouteIndex = null;
+        if (routeResultsEl) routeResultsEl.innerHTML = '';
+      }
+
+      function formatDuration(seconds) {
+        if (!seconds) return 'Time unavailable';
+        const mins = Math.round(seconds / 60);
+        return `${mins} min`;
+      }
+
+      function formatDistance(meters) {
+        if (!meters) return 'Distance unavailable';
+        return meters < 1000 ? `${Math.round(meters)} m` : `${(meters / 1000).toFixed(1)} km`;
+      }
+
+      function renderRouteCards() {
+        if (!routeResultsEl) return;
+        routeResultsEl.innerHTML = state.routeEntries.map(function (route, index) {
+          const active = state.selectedRouteIndex === index || (state.selectedRouteIndex === null && index === 0);
+          return `<div class="ws-route-card${active ? ' active' : ''}">
+            <div class="ws-route-head">
+              <div class="ws-route-name">Route ${index + 1}</div>
+              <span class="ws-badge">Score ${route.score}</span>
+            </div>
+            <div class="ws-route-meta">
+              Crime spots nearby: ${route.crimeCount}<br>
+              Safe spots nearby: ${route.safeCount}<br>
+              ${formatDistance(route.distance)} | ${formatDuration(route.duration)}
+            </div>
+            <button class="ws-action-btn${active ? ' green' : ''}" type="button" data-route-index="${index}">Use This Route</button>
+          </div>`;
+        }).join('');
+      }
+
+      function drawRoutes(entries) {
+        clearRouteLayers();
+        state.routeEntries = entries.map(function (route, index) {
+          route.layer = L.polyline(route.coordinates, {
+            color: route.color,
+            weight: index === 0 ? 6 : 5,
+            opacity: 0.9,
+            lineJoin: 'round',
+            lineCap: 'round'
+          }).addTo(map);
+          return route;
+        });
+        if (state.routeEntries[0] && state.routeEntries[0].layer) {
+          map.fitBounds(state.routeEntries[0].layer.getBounds(), { padding: [26, 26] });
+        }
+        renderRouteCards();
+      }
+
+      function chooseRoute(index) {
+        state.selectedRouteIndex = index;
+        state.routeEntries.forEach(function (route, routeIndex) {
+          if (!route.layer) return;
+          if (routeIndex === index) {
+            if (!map.hasLayer(route.layer)) route.layer.addTo(map);
+            route.layer.setStyle({ color: '#22c55e', weight: 7, opacity: 0.96 });
+          } else if (map.hasLayer(route.layer)) {
+            map.removeLayer(route.layer);
+          }
+        });
+        renderRouteCards();
+      }
+
+      async function findSafeRoute() {
+        clearRouteLayers();
+        setHidden(nightWarningEl, true);
+        setNote('ws-route-status', 'Finding start and destination...', 'warn');
+
+        try {
+          const start = await geocodePlace(routeStartInput.value);
+          const end = await geocodePlace(routeEndInput.value);
+          setNote('ws-route-status', 'Loading route options and safe spots...', 'warn');
+
+          const midpoint = { lat: (start.lat + end.lat) / 2, lng: (start.lng + end.lng) / 2 };
+          const span = haversineMeters({ lat: start.lat, lng: start.lng }, { lat: end.lat, lng: end.lng });
+          const safeSpotRadius = Math.max(2500, Math.min(7000, Math.round(span / 2 + 1500)));
+          const safeSpots = await loadSafeSpots({
+            anchor: midpoint,
+            radius: safeSpotRadius,
+            drawMarkers: safeSpotsToggle.checked,
+            statusTarget: safeSpotsToggle.checked ? 'ws-safe-spots-status' : 'ws-route-status'
+          });
+
+          const routeResponse = await fetchRouteOptions(start, end);
+          const routes = normalizeRoutes(routeResponse).filter(function (route) {
+            return Array.isArray(route.coordinates) && route.coordinates.length > 1;
+          }).slice(0, 3);
+
+          if (!routes.length) throw new Error('No route alternatives were returned.');
+
+          const rankedRoutes = routes.map(function (route) {
+            const crimeCount = crimes.filter(function (crime) {
+              return isPointNearRoute(crime.lat, crime.lng, route.coordinates, 200);
+            }).length;
+            const safeCount = safeSpots.filter(function (spot) {
+              return (spot.kind === 'police' || spot.kind === 'hospital') && isPointNearRoute(spot.lat, spot.lng, route.coordinates, 200);
+            }).length;
+            const distancePenalty = (route.distance || 0) / 1000;
+            const rawScore = safeCount * 18 - crimeCount * 24 - distancePenalty * 3;
+            const score = Math.max(1, Math.min(100, Math.round(75 + safeCount * 8 - crimeCount * 11 - distancePenalty * 2)));
+            return Object.assign({}, route, {
+              crimeCount: crimeCount,
+              safeCount: safeCount,
+              rawScore: rawScore,
+              score: score
+            });
+          }).sort(function (a, b) {
+            return b.rawScore - a.rawScore;
+          }).map(function (route, index) {
+            route.color = routeColors[index] || routeColors[routeColors.length - 1];
+            return route;
+          });
+
+          drawRoutes(rankedRoutes);
+          setNote('ws-route-status', `Compared ${rankedRoutes.length} route option(s) from ${shortLabel(start.label)} to ${shortLabel(end.label)}.`, 'success');
+
+          const hour = new Date().getHours();
+          setHidden(nightWarningEl, !(hour >= 20 || hour < 6));
+        } catch (err) {
+          clearRouteLayers();
+          setNote('ws-route-status', err && err.message ? err.message : 'Unable to calculate safe routes.', 'error');
+        }
+      }
+
+      function syncRouteButton() {
+        const ready = routeStartInput.value.trim() && routeEndInput.value.trim();
+        setHidden(findRouteBtn, !ready);
+      }
+
+      function resetWalkTimer(statusText, tone) {
+        if (state.walkTimerId) {
+          clearInterval(state.walkTimerId);
+          state.walkTimerId = null;
+        }
+        state.walkDeadline = 0;
+        setNote('ws-walk-status', statusText, tone);
+      }
+
+      function updateWalkCountdown() {
+        const msLeft = state.walkDeadline - Date.now();
+        if (msLeft <= 0) {
+          resetWalkTimer('Timer expired. Opening emergency WhatsApp alert...', 'warn');
+          openWhatsAppAlert('My Safe Walk timer expired and I have not checked in').then(function (sent) {
+            if (sent) setNote('ws-walk-status', 'Emergency WhatsApp alert opened for your first saved contact.', 'success');
+          });
+          return;
+        }
+        const totalSeconds = Math.ceil(msLeft / 1000);
+        const mins = Math.floor(totalSeconds / 60);
+        const secs = totalSeconds % 60;
+        setNote('ws-walk-status', `Timer running: ${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')} remaining.`, 'warn');
+      }
+
+      async function enableShakeMode(enabled) {
+        setExtraVisible('ws-shake-extra', enabled);
+        if (!enabled) {
+          if (state.shakeHandler) window.removeEventListener('devicemotion', state.shakeHandler);
+          state.shakeHandler = null;
+          state.lastShakeMagnitude = null;
+          state.shakeCooldownUntil = 0;
+          setNote('ws-shake-status', 'Shake detection is off.', '');
+          return;
+        }
+
+        if (!('DeviceMotionEvent' in window)) {
+          shakeToggle.checked = false;
+          setNote('ws-shake-status', 'Device motion is not supported on this browser.', 'error');
+          return;
+        }
+
+        if (typeof DeviceMotionEvent.requestPermission === 'function') {
+          try {
+            const permission = await DeviceMotionEvent.requestPermission();
+            if (permission !== 'granted') throw new Error('Motion permission was denied.');
+          } catch (err) {
+            shakeToggle.checked = false;
+            setNote('ws-shake-status', err && err.message ? err.message : 'Motion permission was denied.', 'error');
+            return;
+          }
+        }
+
+        state.shakeHandler = function (event) {
+          const acc = event.accelerationIncludingGravity;
+          if (!acc) return;
+          const magnitude = Math.sqrt(Math.pow(acc.x || 0, 2) + Math.pow(acc.y || 0, 2) + Math.pow(acc.z || 0, 2));
+          if (state.lastShakeMagnitude !== null && Math.abs(magnitude - state.lastShakeMagnitude) > 14 && Date.now() > state.shakeCooldownUntil) {
+            state.shakeCooldownUntil = Date.now() + 15000;
+            setNote('ws-shake-status', 'Shake detected. Opening emergency WhatsApp alert...', 'warn');
+            openWhatsAppAlert('SOS shake detected on my device').then(function (sent) {
+              if (sent) setNote('ws-shake-status', 'Emergency WhatsApp alert opened. Shake detection stays armed.', 'success');
+            });
+          }
+          state.lastShakeMagnitude = magnitude;
+        };
+
+        window.addEventListener('devicemotion', state.shakeHandler);
+        setNote('ws-shake-status', 'Shake detection is armed. A strong shake will open WhatsApp for your first saved contact.', 'success');
+      }
+
+      panelToggle.addEventListener('click', function () {
+        const open = panelBody.classList.toggle('open');
+        panelToggle.setAttribute('aria-expanded', String(open));
+        panelChevron.textContent = open ? '-' : '+';
+      });
+
+      shakeToggle.addEventListener('change', function () {
+        enableShakeMode(this.checked);
+      });
+
+      walkToggle.addEventListener('change', function () {
+        setExtraVisible('ws-walk-controls', this.checked);
+        if (!this.checked) {
+          resetWalkTimer('Set your expected walk time, then start the timer.', '');
+        }
+      });
+
+      startWalkBtn.addEventListener('click', function () {
+        const minutes = Math.max(1, Number(walkMinutesInput.value || 0));
+        if (!minutes || !Number.isFinite(minutes)) {
+          setNote('ws-walk-status', 'Enter a valid walk duration in minutes.', 'error');
+          return;
+        }
+        if (state.walkTimerId) clearInterval(state.walkTimerId);
+        state.walkDeadline = Date.now() + minutes * 60000;
+        updateWalkCountdown();
+        state.walkTimerId = setInterval(updateWalkCountdown, 1000);
+      });
+
+      safeBtn.addEventListener('click', function () {
+        resetWalkTimer('Walk closed. No alert was sent.', 'success');
+      });
+
+      womenLayerToggle.addEventListener('change', function () {
+        buildHeat();
+        buildMarkers();
+      });
+
+      dialToggle.addEventListener('change', function () {
+        setExtraVisible('ws-dial-actions', this.checked);
+      });
+
+      safeSpotsToggle.addEventListener('change', function () {
+        setExtraVisible('ws-safe-spots-extra', this.checked);
+        if (!this.checked) {
+          removeSafeSpotMarkers();
+          setNote('ws-safe-spots-status', 'Safe spots are hidden.', '');
+          return;
+        }
+        const center = map ? map.getCenter() : getMapAnchor();
+        loadSafeSpots({
+          anchor: center ? { lat: center.lat, lng: center.lng } : getMapAnchor(),
+          radius: 3000,
+          drawMarkers: true,
+          statusTarget: 'ws-safe-spots-status'
+        }).catch(function (err) {
+          setNote('ws-safe-spots-status', err && err.message ? err.message : 'Unable to load safe spots.', 'error');
+        });
+      });
+
+      disguiseToggle.addEventListener('change', function () {
+        applyDisguiseMode(this.checked);
+      });
+
+      routeToggle.addEventListener('change', function () {
+        setExtraVisible('ws-route-controls', this.checked);
+        if (!this.checked) {
+          clearRouteLayers();
+          setHidden(nightWarningEl, true);
+          setNote('ws-route-status', 'Add your OpenRouteService API key in the script before using route search.', '');
+        }
+        syncRouteButton();
+      });
+
+      routeStartInput.addEventListener('input', syncRouteButton);
+      routeEndInput.addEventListener('input', syncRouteButton);
+      findRouteBtn.addEventListener('click', findSafeRoute);
+
+      routeResultsEl.addEventListener('click', function (event) {
+        const button = event.target.closest('[data-route-index]');
+        if (!button) return;
+        chooseRoute(Number(button.dataset.routeIndex));
+      });
+
+      window.setCity = setCity = function (city) {
+        originalSetCity(city);
+        if (disguiseToggle.checked) applyDisguiseMode(true);
+        if (safeSpotsToggle.checked && map) {
+          const center = map.getCenter();
+          loadSafeSpots({
+            anchor: { lat: center.lat, lng: center.lng },
+            radius: 3000,
+            drawMarkers: true,
+            statusTarget: 'ws-safe-spots-status'
+          }).catch(function (err) {
+            setNote('ws-safe-spots-status', err && err.message ? err.message : 'Unable to refresh safe spots.', 'error');
+          });
+        }
+      };
+
+      syncRouteButton();
+      setHidden(nightWarningEl, true);
     })();
 
     // Mobile Menu Toggle
