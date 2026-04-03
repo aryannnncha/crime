@@ -6,10 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Lucknow Crime Intelligence Map</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet">
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap"
     rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.heat/0.2.0/leaflet-heat.js"></script>
   <style>
     :root {
@@ -613,6 +615,12 @@
       margin-bottom: 0.6rem;
     }
 
+    .ws-route-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+
     .ws-map-link {
       display: inline-flex;
       align-items: center;
@@ -641,6 +649,100 @@
       box-shadow: 0 6px 18px rgba(34, 197, 94, 0.28);
     }
 
+    .ws-safe-spot-pin.police {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+    }
+
+    .ws-safe-spot-pin.hospital {
+      background: linear-gradient(135deg, #ef4444, #b91c1c);
+      box-shadow: 0 6px 18px rgba(239, 68, 68, 0.3);
+    }
+
+    .ws-safe-spot-pin.pharmacy {
+      background: linear-gradient(135deg, #14b8a6, #0d9488);
+      box-shadow: 0 6px 18px rgba(20, 184, 166, 0.3);
+    }
+
+    .ws-safe-spot-pin.clinic,
+    .ws-safe-spot-pin.doctors {
+      background: linear-gradient(135deg, #22c55e, #15803d);
+      box-shadow: 0 6px 18px rgba(22, 163, 74, 0.28);
+    }
+
+    .ws-safe-spot-pin.fire_station {
+      background: linear-gradient(135deg, #f97316, #c2410c);
+      box-shadow: 0 6px 18px rgba(249, 115, 22, 0.32);
+    }
+
+    .ws-safe-spot-pin.shelter,
+    .ws-safe-spot-pin.women_safety {
+      background: linear-gradient(135deg, #a855f7, #7c3aed);
+      box-shadow: 0 6px 18px rgba(168, 85, 247, 0.32);
+    }
+
+    .journey-3d-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 12000;
+      background: #0b1220;
+      display: flex;
+      flex-direction: column;
+      font-family: var(--font);
+    }
+
+    .journey-3d-overlay.ws-hidden {
+      display: none !important;
+    }
+
+    .journey-3d-bar {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 14px;
+      background: rgba(15, 23, 42, 0.92);
+      color: #f8fafc;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+    }
+
+    .journey-3d-bar span {
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .journey-3d-bar small {
+      display: block;
+      font-size: 0.62rem;
+      font-weight: 400;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+
+    .journey-3d-close {
+      flex-shrink: 0;
+      padding: 0.45rem 0.85rem;
+      border-radius: 8px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: rgba(30, 41, 59, 0.9);
+      color: #e2e8f0;
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: var(--font);
+    }
+
+    .journey-3d-close:hover {
+      background: rgba(51, 65, 85, 0.95);
+    }
+
+    #journey-3d-map {
+      flex: 1;
+      min-height: 0;
+    }
+
     @media (max-width: 768px) {
       .weather-strip {
         font-size: 0.56rem;
@@ -659,8 +761,7 @@
     }
 
     .leaflet-tile-pane {
-      filter:
-        grayscale(0.08) contrast(1.02) saturate(1.05);
+      filter: grayscale(0.04) contrast(1.05) saturate(1.08);
     }
 
     .leaflet-container {
@@ -1178,19 +1279,37 @@
       color: #a1a1aa;
     }
 
-    .tgl {
+    /* Custom switches: full native reset so Edge/Chromium don’t paint a broken checkbox */
+    input[type="checkbox"].tgl {
+      -webkit-appearance: none;
+      -moz-appearance: none;
       appearance: none;
+      margin: 0;
       width: 44px;
+      min-width: 44px;
       height: 24px;
+      flex-shrink: 0;
       background: #3f3f46;
+      background-image: none;
+      border: 0;
       border-radius: 20px;
       position: relative;
       cursor: pointer;
       outline: none;
-      transition: 0.3s;
+      transition: background 0.25s ease;
+      overflow: hidden;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
     }
 
-    .tgl::after {
+    input[type="checkbox"].tgl::-ms-check {
+      display: none;
+    }
+
+    input[type="checkbox"].tgl:focus-visible {
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12), 0 0 0 3px rgba(99, 102, 241, 0.35);
+    }
+
+    input[type="checkbox"].tgl::after {
       content: '';
       position: absolute;
       top: 2px;
@@ -1199,15 +1318,17 @@
       height: 20px;
       background: #fff;
       border-radius: 50%;
-      transition: 0.3s;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+      transition: transform 0.25s ease;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.28);
+      z-index: 1;
+      pointer-events: none;
     }
 
-    .tgl:checked {
+    input[type="checkbox"].tgl:checked {
       background: #10b981;
     }
 
-    .tgl:checked::after {
+    input[type="checkbox"].tgl:checked::after {
       transform: translateX(20px);
     }
 
@@ -1641,7 +1762,7 @@
           <div class="ws-row">
             <div class="ws-copy">
               <div class="ws-label">Safe Spots on Map</div>
-              <div class="ws-sub">Load nearby police stations, hospitals, and pharmacies from Overpass as green map markers.</div>
+              <div class="ws-sub">Police, hospitals, clinics, pharmacies, fire stations, and shelters (OpenStreetMap) as colour-coded pins. Route search also shows help along your path.</div>
             </div>
             <input type="checkbox" class="tgl" id="ws-safe-spots-toggle">
           </div>
@@ -1668,7 +1789,7 @@
             <input class="ws-input" id="ws-route-start" type="text" placeholder="Starting location">
             <input class="ws-input" id="ws-route-end" type="text" placeholder="Destination">
             <button class="ws-action-btn ws-hidden" id="ws-find-route" type="button">Find Safe Route</button>
-            <div class="ws-note" id="ws-route-status">Add your OpenRouteService API key in the script before using route search.</div>
+            <div class="ws-note" id="ws-route-status">Walking routes work without a key (public OSRM). Optional: set OpenRouteService in the script for alternatives.</div>
             <div class="ws-warning ws-hidden" id="ws-night-warning">Night travel detected. Prefer the green route and stay near safe spots.</div>
             <div class="ws-route-results" id="ws-route-results"></div>
           </div>
@@ -1684,6 +1805,17 @@
     <!-- MAP -->
     <div id="map"></div>
 
+  </div>
+
+  <div id="journey-3d-overlay" class="journey-3d-overlay ws-hidden" aria-hidden="true">
+    <div class="journey-3d-bar">
+      <div>
+        <span id="journey-3d-title">Journey view</span>
+        <small id="journey-3d-sub">3D-style map tilt and camera follow your selected walking route.</small>
+      </div>
+      <button type="button" class="journey-3d-close" id="journey-3d-close">Exit</button>
+    </div>
+    <div id="journey-3d-map" role="application" aria-label="Tilted navigation map"></div>
   </div>
 
   <!-- FAB & Location Panel -->
@@ -1930,13 +2062,31 @@
     let map, heat, markers = [], filter = 'all', timeFilter = 'all', currentCity = 'lucknow', ncrbData = null;
 
     function init() {
-      map = L.map('map', { center: [26.8467, 80.9462], zoom: 13 });
+      map = L.map('map', { center: [26.8467, 80.9462], zoom: 13, maxZoom: 20 });
 
-      // CartoDB Dark Matter — shows ALL street/place names like Google Maps
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-        attribution: '© OpenStreetMap © CARTO',
-        subdomains: 'abcd', maxZoom: 19
-      }).addTo(map);
+      var streetsDetailed = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 20
+      });
+
+      var streetsLight = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 20
+      });
+
+      var osmStd = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        maxZoom: 19
+      });
+
+      streetsDetailed.addTo(map);
+      L.control.layers({
+        'Detailed (Voyager)': streetsDetailed,
+        'Light': streetsLight,
+        'OSM Standard': osmStd
+      }, {}, { position: 'topright' }).addTo(map);
 
       buildHeat(); buildMarkers();
     }
@@ -2001,7 +2151,7 @@
     function buildHeat() {
       if (heat) map.removeLayer(heat);
       heat = L.heatLayer(getFilt().map(d => [d.lat, d.lng, d.sev]), {
-        radius: 38, blur: 28, maxZoom: 17,
+        radius: 38, blur: 28, maxZoom: 19,
         gradient: { .2: '#34d399', .4: '#fbbf24', .65: '#fb923c', .85: '#f43f5e', 1: '#7c3aed' }
       }).addTo(map);
     }
@@ -2625,10 +2775,13 @@
         walkTimerId: null,
         walkDeadline: 0,
         safeSpotMarkers: [],
+        routeSafetyMarkers: [],
         safeSpotData: [],
         safeSpotFetchKey: '',
         routeEntries: [],
-        selectedRouteIndex: null
+        selectedRouteIndex: null,
+        journeyMap: null,
+        journeyAnimId: null
       };
 
       const disguiseOriginal = {
@@ -2863,10 +3016,22 @@
         state.safeSpotMarkers = [];
       }
 
-      function createSafeSpotIcon() {
+      function pinClassFromKind(kind) {
+        if (!kind) return '';
+        if (kind.indexOf('social_facility:') === 0) {
+          var sf = kind.slice(18);
+          if (sf === 'shelter') return 'shelter';
+          return 'women_safety';
+        }
+        if (kind === 'fire_station') return 'fire_station';
+        return String(kind).replace(/[^a-z0-9_]/gi, '_') || 'spot';
+      }
+
+      function createSafeSpotIcon(kind) {
+        var cls = pinClassFromKind(kind);
         return L.divIcon({
           className: '',
-          html: '<div class="ws-safe-spot-pin"></div>',
+          html: '<div class="ws-safe-spot-pin ' + cls + '"></div>',
           iconSize: [18, 18],
           iconAnchor: [9, 9]
         });
@@ -2876,14 +3041,32 @@
         if (kind === 'police') return 'Police Station';
         if (kind === 'hospital') return 'Hospital';
         if (kind === 'pharmacy') return 'Pharmacy';
-        return 'Safe Spot';
+        if (kind === 'clinic') return 'Clinic';
+        if (kind === 'doctors') return "Doctor's office";
+        if (kind === 'fire_station') return 'Fire Station';
+        if (kind === 'social_facility:shelter') return 'Shelter / crisis help';
+        if (kind && kind.indexOf('social_facility:') === 0) return 'Support service';
+        return 'Help nearby';
+      }
+
+      function isEmergencySafeKind(kind) {
+        if (!kind) return false;
+        if (kind === 'police' || kind === 'hospital' || kind === 'pharmacy' || kind === 'clinic' || kind === 'doctors' || kind === 'fire_station') return true;
+        if (kind.indexOf('social_facility:') === 0) {
+          var t = kind.slice(18);
+          return t === 'shelter' || t === 'ambulance_station' || t === 'outreach';
+        }
+        return false;
       }
 
       function normalizeSafeSpot(el) {
         const center = el.center || el;
         if (!center || typeof center.lat !== 'number' || typeof center.lon !== 'number') return null;
         const tags = el.tags || {};
-        const kind = tags.amenity;
+        var kind = tags.amenity;
+        if (!kind && tags.social_facility) {
+          kind = 'social_facility:' + tags.social_facility;
+        }
         if (!kind) return null;
         return {
           lat: center.lat,
@@ -2893,6 +3076,30 @@
         };
       }
 
+      var OVERPASS_ENDPOINTS = [
+        'https://overpass-api.de/api/interpreter',
+        'https://overpass.kumi.systems/api/interpreter',
+        'https://lz4.overpass-api.de/api/interpreter'
+      ];
+
+      async function fetchOverpass(query) {
+        var lastErr = null;
+        for (var i = 0; i < OVERPASS_ENDPOINTS.length; i++) {
+          try {
+            var response = await fetch(OVERPASS_ENDPOINTS[i], {
+              method: 'POST',
+              headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+              body: query
+            });
+            if (response.ok) return response;
+            lastErr = new Error('Overpass HTTP ' + response.status);
+          } catch (e) {
+            lastErr = e;
+          }
+        }
+        throw lastErr || new Error('Overpass API request failed.');
+      }
+
       async function loadSafeSpots(options) {
         const opts = options || {};
         const anchor = opts.anchor || getMapAnchor();
@@ -2900,7 +3107,7 @@
         const statusTarget = opts.statusTarget || null;
         if (!anchor) throw new Error('Map location is not ready yet.');
 
-        const cacheKey = `${anchor.lat.toFixed(3)},${anchor.lng.toFixed(3)}|${radius}`;
+        const cacheKey = `v4|${anchor.lat.toFixed(3)},${anchor.lng.toFixed(3)}|${radius}`;
         if (cacheKey === state.safeSpotFetchKey && state.safeSpotData.length) {
           if (opts.drawMarkers) renderSafeSpotMarkers();
           return state.safeSpotData;
@@ -2908,7 +3115,7 @@
 
         if (statusTarget) setNote(statusTarget, 'Loading nearby safe spots...', 'warn');
 
-        const query = `[out:json][timeout:25];
+        const query = `[out:json][timeout:45];
 (
   node["amenity"="police"](around:${radius},${anchor.lat},${anchor.lng});
   way["amenity"="police"](around:${radius},${anchor.lat},${anchor.lng});
@@ -2919,14 +3126,25 @@
   node["amenity"="pharmacy"](around:${radius},${anchor.lat},${anchor.lng});
   way["amenity"="pharmacy"](around:${radius},${anchor.lat},${anchor.lng});
   relation["amenity"="pharmacy"](around:${radius},${anchor.lat},${anchor.lng});
+  node["amenity"="clinic"](around:${radius},${anchor.lat},${anchor.lng});
+  way["amenity"="clinic"](around:${radius},${anchor.lat},${anchor.lng});
+  relation["amenity"="clinic"](around:${radius},${anchor.lat},${anchor.lng});
+  node["amenity"="doctors"](around:${radius},${anchor.lat},${anchor.lng});
+  way["amenity"="doctors"](around:${radius},${anchor.lat},${anchor.lng});
+  relation["amenity"="doctors"](around:${radius},${anchor.lat},${anchor.lng});
+  node["amenity"="fire_station"](around:${radius},${anchor.lat},${anchor.lng});
+  way["amenity"="fire_station"](around:${radius},${anchor.lat},${anchor.lng});
+  relation["amenity"="fire_station"](around:${radius},${anchor.lat},${anchor.lng});
+  node["social_facility"="shelter"](around:${radius},${anchor.lat},${anchor.lng});
+  way["social_facility"="shelter"](around:${radius},${anchor.lat},${anchor.lng});
+  node["social_facility"="outreach"](around:${radius},${anchor.lat},${anchor.lng});
+  way["social_facility"="outreach"](around:${radius},${anchor.lat},${anchor.lng});
+  node["social_facility"="ambulance_station"](around:${radius},${anchor.lat},${anchor.lng});
+  way["social_facility"="ambulance_station"](around:${radius},${anchor.lat},${anchor.lng});
 );
 out center;`;
 
-        const response = await fetch('https://overpass-api.de/api/interpreter', {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
-          body: query
-        });
+        const response = await fetchOverpass(query);
         if (!response.ok) throw new Error('Overpass API request failed.');
 
         const data = await response.json();
@@ -2956,7 +3174,7 @@ out center;`;
             <div class="pu-tags"><span class="pu-tag">${safeSpotKindLabel(spot.kind)}</span></div>
             <a class="ws-map-link" href="https://www.google.com/maps/dir/?api=1&destination=${spot.lat},${spot.lng}&travelmode=walking" target="_blank" rel="noopener">Directions</a>
           </div>`;
-          const marker = L.marker([spot.lat, spot.lng], { icon: createSafeSpotIcon() }).bindPopup(popup, { maxWidth: 240 }).addTo(map);
+          const marker = L.marker([spot.lat, spot.lng], { icon: createSafeSpotIcon(spot.kind) }).bindPopup(popup, { maxWidth: 240 }).addTo(map);
           state.safeSpotMarkers.push(marker);
         });
       }
@@ -3056,11 +3274,25 @@ out center;`;
         }
         if (Array.isArray(data.routes)) {
           return data.routes.map(function (route, index) {
+            var dist = route.distance;
+            var dur = route.duration;
+            if (route.legs && route.legs.length) {
+              if (dist == null || dist === 0) {
+                dist = route.legs.reduce(function (s, leg) { return s + (leg.distance || 0); }, 0);
+              }
+              if (dur == null || dur === 0) {
+                dur = route.legs.reduce(function (s, leg) { return s + (leg.duration || 0); }, 0);
+              }
+            }
+            if (route.summary) {
+              if (dist == null || dist === 0) dist = route.summary.distance;
+              if (dur == null || dur === 0) dur = route.summary.duration;
+            }
             return {
               id: index,
               coordinates: typeof route.geometry === 'string' ? decodePolyline(route.geometry, 5) : [],
-              distance: route.summary ? route.summary.distance : 0,
-              duration: route.summary ? route.summary.duration : 0
+              distance: dist || 0,
+              duration: dur || 0
             };
           });
         }
@@ -3093,33 +3325,196 @@ out center;`;
       }
 
       async function fetchRouteOptions(start, end) {
-        if (!WOMEN_SAFETY_ORS_API_KEY || WOMEN_SAFETY_ORS_API_KEY === 'ADD_OPENROUTESERVICE_API_KEY_HERE') {
-          throw new Error('Add your OpenRouteService key to WOMEN_SAFETY_ORS_API_KEY in lucknow-crime-map.html.');
-        }
+        var useOrs = WOMEN_SAFETY_ORS_API_KEY && WOMEN_SAFETY_ORS_API_KEY !== 'ADD_OPENROUTESERVICE_API_KEY_HERE';
 
-        const response = await fetch('https://api.openrouteservice.org/v2/directions/foot-walking', {
-          method: 'POST',
-          headers: {
-            'Authorization': WOMEN_SAFETY_ORS_API_KEY,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json, application/geo+json'
-          },
-          body: JSON.stringify({
-            coordinates: [[start.lng, start.lat], [end.lng, end.lat]],
-            alternative_routes: {
-              target_count: 3,
-              share_factor: 0.6,
-              weight_factor: 1.4
+        if (useOrs) {
+          const response = await fetch('https://api.openrouteservice.org/v2/directions/foot-walking', {
+            method: 'POST',
+            headers: {
+              'Authorization': WOMEN_SAFETY_ORS_API_KEY,
+              'Content-Type': 'application/json',
+              'Accept': 'application/json, application/geo+json'
             },
-            instructions: false
-          })
-        });
+            body: JSON.stringify({
+              coordinates: [[start.lng, start.lat], [end.lng, end.lat]],
+              alternative_routes: {
+                target_count: 3,
+                share_factor: 0.6,
+                weight_factor: 1.4
+              },
+              instructions: false
+            })
+          });
 
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || 'OpenRouteService route request failed.');
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText || 'OpenRouteService route request failed.');
+          }
+          return response.json();
         }
-        return response.json();
+
+        /* Public OSRM demo (no API key). For production, prefer OpenRouteService with your own key. */
+        var coords = start.lng + ',' + start.lat + ';' + end.lng + ',' + end.lat;
+        var osrmUrl = 'https://router.project-osrm.org/route/v1/walking/' + encodeURI(coords) +
+          '?alternatives=true&steps=false&overview=full&geometries=polyline';
+        var osrmRes = await fetch(osrmUrl);
+        if (!osrmRes.ok) {
+          throw new Error('Walking directions could not be loaded. Try again or add an OpenRouteService key.');
+        }
+        return osrmRes.json();
+      }
+
+      function removeRouteSafetyMarkers() {
+        state.routeSafetyMarkers.forEach(function (marker) {
+          if (map && map.hasLayer(marker)) map.removeLayer(marker);
+        });
+        state.routeSafetyMarkers = [];
+      }
+
+      function renderRouteSafetyAlongRoutes() {
+        removeRouteSafetyMarkers();
+        if (!map || !state.routeEntries.length || !state.safeSpotData.length) return;
+        if (safeSpotsToggle && safeSpotsToggle.checked) return;
+        var corridors = state.selectedRouteIndex != null && state.routeEntries[state.selectedRouteIndex]
+          ? [state.routeEntries[state.selectedRouteIndex]]
+          : state.routeEntries.slice();
+        var threshold = 240;
+        state.safeSpotData.forEach(function (spot) {
+          if (!isEmergencySafeKind(spot.kind)) return;
+          var near = corridors.some(function (route) {
+            return route.coordinates && isPointNearRoute(spot.lat, spot.lng, route.coordinates, threshold);
+          });
+          if (!near) return;
+          var popup = `<div class="pu">
+            <div class="pu-ttl">${spot.name}</div>
+            <div class="pu-tags"><span class="pu-tag">${safeSpotKindLabel(spot.kind)}</span></div>
+            <a class="ws-map-link" href="https://www.google.com/maps/dir/?api=1&destination=${spot.lat},${spot.lng}&travelmode=walking" target="_blank" rel="noopener">Directions</a>
+          </div>`;
+          var marker = L.marker([spot.lat, spot.lng], { icon: createSafeSpotIcon(spot.kind) }).bindPopup(popup, { maxWidth: 240 }).addTo(map);
+          state.routeSafetyMarkers.push(marker);
+        });
+      }
+
+      function bearingBetweenPoints(a, b) {
+        var lat1 = a[0] * Math.PI / 180;
+        var lat2 = b[0] * Math.PI / 180;
+        var dLon = (b[1] - a[1]) * Math.PI / 180;
+        var y = Math.sin(dLon) * Math.cos(lat2);
+        var x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+        return Math.atan2(y, x) * 180 / Math.PI;
+      }
+
+      function stopJourneyMapOnly() {
+        if (state.journeyAnimId) {
+          clearInterval(state.journeyAnimId);
+          state.journeyAnimId = null;
+        }
+        if (state.journeyMap) {
+          try { state.journeyMap.remove(); } catch (e) { }
+          state.journeyMap = null;
+        }
+      }
+
+      function closeJourney3d() {
+        stopJourneyMapOnly();
+        var overlay = document.getElementById('journey-3d-overlay');
+        if (overlay) {
+          overlay.classList.add('ws-hidden');
+          overlay.setAttribute('aria-hidden', 'true');
+        }
+      }
+
+      function openJourney3d(routeIndex) {
+        if (typeof maplibregl === 'undefined') {
+          setNote('ws-route-status', '3D map library did not load. Check your connection and refresh.', 'error');
+          return;
+        }
+        var route = state.routeEntries[routeIndex];
+        if (!route || !route.coordinates || route.coordinates.length < 2) return;
+
+        var coords = route.coordinates;
+        var geojson = {
+          type: 'Feature',
+          properties: {},
+          geometry: {
+            type: 'LineString',
+            coordinates: coords.map(function (c) { return [c[1], c[0]]; })
+          }
+        };
+
+        var overlay = document.getElementById('journey-3d-overlay');
+        var container = document.getElementById('journey-3d-map');
+        var titleEl = document.getElementById('journey-3d-title');
+        var subEl = document.getElementById('journey-3d-sub');
+        if (!overlay || !container) return;
+
+        stopJourneyMapOnly();
+
+        if (titleEl) titleEl.textContent = 'Route ' + (routeIndex + 1) + ' · journey view';
+        if (subEl) {
+          subEl.textContent = formatDistance(route.distance) + ' · ' + formatDuration(route.duration) + ' · tilt + follow (OpenFreeMap / OSM)';
+        }
+
+        overlay.classList.remove('ws-hidden');
+        overlay.setAttribute('aria-hidden', 'false');
+
+        var brg0 = bearingBetweenPoints(coords[0], coords[1]);
+
+        try {
+          state.journeyMap = new maplibregl.Map({
+            container: container,
+            style: 'https://tiles.openfreemap.org/styles/liberty',
+            center: [coords[0][1], coords[0][0]],
+            zoom: 16,
+            pitch: 60,
+            bearing: brg0,
+            maxPitch: 85,
+            antialias: true
+          });
+        } catch (err) {
+          closeJourney3d();
+          setNote('ws-route-status', 'Could not open 3D journey view.', 'error');
+          return;
+        }
+
+        state.journeyMap.addControl(new maplibregl.NavigationControl());
+
+        state.journeyMap.once('load', function () {
+          state.journeyMap.addSource('route-line', { type: 'geojson', data: geojson });
+          state.journeyMap.addLayer({
+            id: 'route-line-layer',
+            type: 'line',
+            source: 'route-line',
+            layout: { 'line-cap': 'round', 'line-join': 'round' },
+            paint: {
+              'line-color': '#22c55e',
+              'line-width': 6,
+              'line-opacity': 0.92
+            }
+          });
+
+          var bounds = new maplibregl.LngLatBounds();
+          coords.forEach(function (c) {
+            bounds.extend([c[1], c[0]]);
+          });
+          state.journeyMap.fitBounds(bounds, { padding: 72, duration: 900, maxZoom: 17.5 });
+
+          var step = 0;
+          state.journeyAnimId = setInterval(function () {
+            if (!state.journeyMap) return;
+            step = (step + 1) % coords.length;
+            var c = coords[step];
+            var c2 = coords[Math.min(step + 1, coords.length - 1)];
+            var brg = bearingBetweenPoints(c, c2);
+            state.journeyMap.easeTo({
+              center: [c[1], c[0]],
+              bearing: brg,
+              pitch: 62,
+              duration: 780,
+              essential: true
+            });
+          }, 820);
+        });
       }
 
       function clearRouteLayers() {
@@ -3129,6 +3524,7 @@ out center;`;
         state.routeEntries = [];
         state.selectedRouteIndex = null;
         if (routeResultsEl) routeResultsEl.innerHTML = '';
+        removeRouteSafetyMarkers();
       }
 
       function formatDuration(seconds) {
@@ -3156,7 +3552,10 @@ out center;`;
               Safe spots nearby: ${route.safeCount}<br>
               ${formatDistance(route.distance)} | ${formatDuration(route.duration)}
             </div>
-            <button class="ws-action-btn${active ? ' green' : ''}" type="button" data-route-index="${index}">Use This Route</button>
+            <div class="ws-route-actions">
+              <button class="ws-action-btn${active ? ' green' : ''}" type="button" data-route-index="${index}">Use This Route</button>
+              <button class="ws-action-btn warn" type="button" data-journey-index="${index}">Start 3D journey</button>
+            </div>
           </div>`;
         }).join('');
       }
@@ -3177,6 +3576,7 @@ out center;`;
           map.fitBounds(state.routeEntries[0].layer.getBounds(), { padding: [26, 26] });
         }
         renderRouteCards();
+        renderRouteSafetyAlongRoutes();
       }
 
       function chooseRoute(index) {
@@ -3191,6 +3591,7 @@ out center;`;
           }
         });
         renderRouteCards();
+        renderRouteSafetyAlongRoutes();
       }
 
       async function findSafeRoute() {
@@ -3206,12 +3607,22 @@ out center;`;
           const midpoint = { lat: (start.lat + end.lat) / 2, lng: (start.lng + end.lng) / 2 };
           const span = haversineMeters({ lat: start.lat, lng: start.lng }, { lat: end.lat, lng: end.lng });
           const safeSpotRadius = Math.max(2500, Math.min(7000, Math.round(span / 2 + 1500)));
-          const safeSpots = await loadSafeSpots({
-            anchor: midpoint,
-            radius: safeSpotRadius,
-            drawMarkers: safeSpotsToggle.checked,
-            statusTarget: safeSpotsToggle.checked ? 'ws-safe-spots-status' : 'ws-route-status'
-          });
+          var safeSpots = [];
+          try {
+            safeSpots = await loadSafeSpots({
+              anchor: midpoint,
+              radius: safeSpotRadius,
+              drawMarkers: safeSpotsToggle.checked,
+              statusTarget: safeSpotsToggle.checked ? 'ws-safe-spots-status' : 'ws-route-status'
+            });
+          } catch (spotErr) {
+            var spotMsg = spotErr && spotErr.message ? spotErr.message : 'Safe spots unavailable.';
+            if (safeSpotsToggle.checked) {
+              setNote('ws-safe-spots-status', spotMsg, 'error');
+            } else {
+              setNote('ws-route-status', spotMsg + ' Continuing with crime-only route scoring.', 'warn');
+            }
+          }
 
           const routeResponse = await fetchRouteOptions(start, end);
           const routes = normalizeRoutes(routeResponse).filter(function (route) {
@@ -3225,7 +3636,7 @@ out center;`;
               return isPointNearRoute(crime.lat, crime.lng, route.coordinates, 200);
             }).length;
             const safeCount = safeSpots.filter(function (spot) {
-              return (spot.kind === 'police' || spot.kind === 'hospital') && isPointNearRoute(spot.lat, spot.lng, route.coordinates, 200);
+              return isEmergencySafeKind(spot.kind) && isPointNearRoute(spot.lat, spot.lng, route.coordinates, 200);
             }).length;
             const distancePenalty = (route.distance || 0) / 1000;
             const rawScore = safeCount * 18 - crimeCount * 24 - distancePenalty * 3;
@@ -3398,7 +3809,7 @@ out center;`;
         if (!this.checked) {
           clearRouteLayers();
           setHidden(nightWarningEl, true);
-          setNote('ws-route-status', 'Add your OpenRouteService API key in the script before using route search.', '');
+          setNote('ws-route-status', 'Enter start and destination, then Find Safe Route. Uses free walking directions if no ORS key is set.', '');
         }
         syncRouteButton();
       });
@@ -3408,10 +3819,18 @@ out center;`;
       findRouteBtn.addEventListener('click', findSafeRoute);
 
       routeResultsEl.addEventListener('click', function (event) {
+        var journeyBtn = event.target.closest('[data-journey-index]');
+        if (journeyBtn) {
+          openJourney3d(Number(journeyBtn.dataset.journeyIndex));
+          return;
+        }
         const button = event.target.closest('[data-route-index]');
         if (!button) return;
         chooseRoute(Number(button.dataset.routeIndex));
       });
+
+      var journeyCloseBtn = document.getElementById('journey-3d-close');
+      if (journeyCloseBtn) journeyCloseBtn.addEventListener('click', closeJourney3d);
 
       window.setCity = setCity = function (city) {
         originalSetCity(city);
