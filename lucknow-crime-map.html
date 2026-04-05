@@ -2637,7 +2637,7 @@
     let map, heat, markers = [], filter = 'all', timeFilter = 'all', currentCity = 'lucknow', ncrbData = null;
 
     function init() {
-      map = L.map('map', { center: [26.8467, 80.9462], zoom: 13, maxZoom: 20 });
+      window.map = map = L.map('map', { center: [26.8467, 80.9462], zoom: 13, maxZoom: 20 });
 
       var streetsDetailed = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
         attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/">CARTO</a>',
@@ -2666,10 +2666,10 @@
       const currentTheme = localStorage.getItem('theme') || 'light';
       const initialLayer = currentTheme === 'dark' ? streetsDark : streetsDetailed;
       initialLayer.addTo(map);
-      
+
       state.currentTileLayer = initialLayer;
       state.tileLayers = { 'Detailed (Voyager)': streetsDetailed, 'Light': streetsLight, 'Dark': streetsDark, 'OSM Standard': osmStd };
-      
+
       L.control.layers(state.tileLayers, {}, { position: 'topright' }).addTo(map);
 
       buildHeat(); buildMarkers();
@@ -3352,7 +3352,7 @@
       const womenHeatGradient = { .2: '#fce7f3', .45: '#f9a8d4', .7: '#ec4899', 1: '#be185d' };
       const routeColors = ['#22c55e', '#eab308', '#f97316'];
 
-      const state = {
+      window.state = {
         shakeHandler: null,
         lastShakeMagnitude: null,
         shakeCooldownUntil: 0,
@@ -4767,10 +4767,10 @@ out center;`;
         themeToggle.textContent = '🌙';
         themeToggle.title = 'Dark Mode';
         // Switch to light map
-        if (window.map && state && state.tileLayers) {
-          window.map.removeLayer(state.currentTileLayer);
-          state.currentTileLayer = state.tileLayers['Detailed (Voyager)'];
-          state.currentTileLayer.addTo(window.map);
+        if (window.map && window.state && window.state.tileLayers) {
+          window.map.removeLayer(window.state.currentTileLayer);
+          window.state.currentTileLayer = window.state.tileLayers['Detailed (Voyager)'];
+          window.state.currentTileLayer.addTo(window.map);
         }
       } else {
         body.setAttribute('data-theme', 'dark');
@@ -4778,10 +4778,10 @@ out center;`;
         themeToggle.textContent = '☀️';
         themeToggle.title = 'Light Mode';
         // Switch to dark map
-        if (window.map && state && state.tileLayers) {
-          window.map.removeLayer(state.currentTileLayer);
-          state.currentTileLayer = state.tileLayers['Dark'];
-          state.currentTileLayer.addTo(window.map);
+        if (window.map && window.state && window.state.tileLayers) {
+          window.map.removeLayer(window.state.currentTileLayer);
+          window.state.currentTileLayer = window.state.tileLayers['Dark'];
+          window.state.currentTileLayer.addTo(window.map);
         }
       }
     });
