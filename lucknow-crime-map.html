@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-  
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Lucknow Crime Intelligence Map</title>
+  <title>MyRakshak for women - Crime Safety Map</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
   <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet">
   <link
@@ -41,6 +41,21 @@
       --font-mono: "JetBrains Mono", ui-monospace, monospace;
     }
 
+    body[data-theme="dark"] {
+      --bg: #000000;
+      --surface: #1c1c1e;
+      --surface-2: #2c2c2e;
+      --text: #ffffff;
+      --text-soft: #a1a1a6;
+      --muted: #707075;
+      --line: rgba(255, 255, 255, 0.1);
+      --line-strong: rgba(255, 255, 255, 0.15);
+      --grad-pop: linear-gradient(135deg, #6366f1 0%, #8b5cf6 45%, #ec4899 100%);
+      --grad-soft: linear-gradient(180deg, rgba(99, 102, 241, 0.12) 0%, rgba(236, 72, 153, 0.08) 100%);
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
+      --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.6);
+    }
+
     *,
     *::before,
     *::after {
@@ -58,11 +73,17 @@
       display: flex;
       flex-direction: column;
       -webkit-font-smoothing: antialiased;
+      -webkit-font-smoothing: subpixel-antialiased;
       background-color: var(--bg);
       background-image:
-        radial-gradient(ellipse 80% 60% at 10% 0%, rgba(99, 102, 241, 0.09) 0%, transparent 55%),
-        radial-gradient(ellipse 70% 50% at 90% 100%, rgba(236, 72, 153, 0.07) 0%, transparent 50%),
-        radial-gradient(ellipse 50% 40% at 50% 50%, rgba(34, 211, 238, 0.04) 0%, transparent 60%);
+        radial-gradient(ellipse 80% 60% at 10% 0%, rgba(99, 102, 241, 0.06) 0%, transparent 55%),
+        radial-gradient(ellipse 70% 50% at 90% 100%, rgba(236, 72, 153, 0.04) 0%, transparent 50%),
+        radial-gradient(ellipse 50% 40% at 50% 50%, rgba(34, 211, 238, 0.02) 0%, transparent 60%);
+    }
+
+    body[data-theme="dark"] {
+      background-image: none;
+      background-color: #000000;
     }
 
     /* subtle paper grain */
@@ -83,12 +104,18 @@
       align-items: center;
       justify-content: space-between;
       padding: 0.65rem 1.25rem;
-      background: rgba(255, 255, 255, 0.72);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      background: rgba(28, 28, 30, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--line);
       flex-shrink: 0;
       z-index: 1000;
+      box-shadow: none;
+    }
+
+    body[data-theme="light"] header {
+      background: rgba(255, 255, 255, 0.72);
+      border-bottom: 1px solid var(--line);
       box-shadow: var(--shadow-sm);
     }
 
@@ -111,6 +138,7 @@
       box-shadow: var(--shadow-sm);
       position: relative;
       overflow: hidden;
+      color: var(--accent-2);
     }
 
     .logo-hex::before {
@@ -124,23 +152,34 @@
       mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       -webkit-mask-composite: xor;
       mask-composite: exclude;
+      z-index: 0;
+    }
+
+    .logo-hex svg {
+      position: relative;
+      z-index: 1;
     }
 
     .ttl h1 {
-      font-size: 0.95rem;
-      font-weight: 600;
-      letter-spacing: -0.02em;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
       color: var(--text);
       text-transform: none;
+      background: linear-gradient(135deg, #6366f1 0%, #ec4899 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .ttl p {
-      font-family: var(--font-mono);
-      font-size: 0.58rem;
+      font-family: var(--font);
+      font-size: 0.65rem;
       font-weight: 400;
-      color: var(--muted);
-      letter-spacing: 0.04em;
-      margin-top: 0.15rem;
+      color: var(--text-soft);
+      letter-spacing: 0.02em;
+      margin-top: 0.25rem;
+      line-height: 1.3;
     }
 
 
@@ -217,6 +256,13 @@
       flex-shrink: 0;
       scrollbar-width: thin;
       scrollbar-color: rgba(0, 0, 0, 0.12) transparent;
+    }
+
+    body[data-theme="dark"] .lp {
+      background: rgba(28, 28, 30, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
     }
 
     .ps {
@@ -757,15 +803,28 @@
     #map {
       flex: 1;
       z-index: 1;
-      min-width: 0
+      min-width: 0;
+      background: var(--bg);
+    }
+
+    body[data-theme="dark"] #map {
+      background: #000000;
     }
 
     .leaflet-tile-pane {
       filter: grayscale(0.04) contrast(1.05) saturate(1.08);
     }
 
+    body[data-theme="dark"] .leaflet-tile-pane {
+      filter: brightness(0.9) contrast(1.1) saturate(0.95);
+    }
+
     .leaflet-container {
       background: #eef0f6 !important
+    }
+
+    body[data-theme="dark"] .leaflet-container {
+      background: #000000 !important;
     }
 
     .leaflet-control-zoom a {
@@ -777,8 +836,20 @@
       box-shadow: var(--shadow-sm) !important
     }
 
+    body[data-theme="dark"] .leaflet-control-zoom a {
+      background: rgba(60, 60, 67, 0.8) !important;
+      color: #ffffff !important;
+      border-color: rgba(255, 255, 255, 0.1) !important;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
     .leaflet-control-zoom a:hover {
       background: var(--surface-2) !important
+    }
+
+    body[data-theme="dark"] .leaflet-control-zoom a:hover {
+      background: rgba(76, 76, 80, 0.9) !important;
     }
 
     .leaflet-control-attribution {
@@ -788,12 +859,27 @@
       border-radius: 6px !important
     }
 
+    body[data-theme="dark"] .leaflet-control-attribution {
+      background: rgba(44, 44, 46, 0.9) !important;
+      color: rgba(255, 255, 255, 0.6) !important;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
     .leaflet-popup-content-wrapper {
       background: var(--surface) !important;
       border: 1px solid var(--line) !important;
       border-radius: var(--radius-sm) !important;
       box-shadow: var(--shadow-md) !important;
       color: var(--text) !important;
+    }
+
+    body[data-theme="dark"] .leaflet-popup-content-wrapper {
+      background: rgba(44, 44, 46, 0.95) !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: #ffffff !important;
     }
 
     .leaflet-popup-tip {
@@ -885,7 +971,8 @@
       right: 20px;
       z-index: 9000;
       display: flex;
-      flex-direction: row; /* Horizontal pill */
+      flex-direction: row;
+      /* Horizontal pill */
       align-items: center;
       gap: 4px;
       background: rgba(255, 255, 255, 0.85);
@@ -929,7 +1016,7 @@
       color: var(--accent);
       animation: pulse-light 2s ease-in-out infinite;
     }
-    
+
     .fab-sep {
       width: 1px;
       height: 24px;
@@ -938,8 +1025,15 @@
     }
 
     @keyframes pulse-light {
-      0%, 100% { box-shadow: inset 0 0 0 1px rgba(99, 102, 241, 0.2); }
-      50% { box-shadow: inset 0 0 0 2px rgba(99, 102, 241, 0.5); }
+
+      0%,
+      100% {
+        box-shadow: inset 0 0 0 1px rgba(99, 102, 241, 0.2);
+      }
+
+      50% {
+        box-shadow: inset 0 0 0 2px rgba(99, 102, 241, 0.5);
+      }
     }
 
     .fab-spinner {
@@ -952,7 +1046,9 @@
     }
 
     @keyframes fab-spin {
-      to { transform: rotate(360deg); }
+      to {
+        transform: rotate(360deg);
+      }
     }
 
     /* Location Card */
@@ -1184,10 +1280,12 @@
       .fab-wrap {
         right: 20px;
       }
+
       .safe-panel {
         right: 20px !important;
       }
     }
+
     /* --- SafeMode Feature --- */
     .safe-panel {
       position: fixed;
@@ -1197,7 +1295,7 @@
       background: #1c1c1e;
       border-radius: 28px;
       color: #fff;
-      box-shadow: 0 12px 48px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.1);
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1);
       overflow: hidden;
       display: none;
       flex-direction: column;
@@ -1220,7 +1318,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .sp-title {
@@ -1232,7 +1330,7 @@
     }
 
     .sp-close {
-      background: rgba(255,255,255,0.1);
+      background: rgba(255, 255, 255, 0.1);
       border: none;
       color: #fff;
       width: 26px;
@@ -1251,7 +1349,7 @@
       flex-direction: column;
       gap: 16px;
     }
-    
+
     .sp-view.active {
       display: flex;
     }
@@ -1261,7 +1359,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(255,255,255,0.06);
+      background: rgba(255, 255, 255, 0.06);
       padding: 12px 14px;
       border-radius: 12px;
     }
@@ -1352,7 +1450,7 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      background: rgba(255,255,255,0.06);
+      background: rgba(255, 255, 255, 0.06);
       padding: 10px 12px;
       border-radius: 12px;
     }
@@ -1376,11 +1474,19 @@
       gap: 2px;
     }
 
-    .sp-cname { font-size: 0.85rem; font-weight: 500; }
-    .sp-cnum { font-size: 0.65rem; color: #a1a1aa; font-family: monospace; }
-    
+    .sp-cname {
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .sp-cnum {
+      font-size: 0.65rem;
+      color: #a1a1aa;
+      font-family: monospace;
+    }
+
     .sp-btn-outline {
-      border: 1px dashed rgba(255,255,255,0.2);
+      border: 1px dashed rgba(255, 255, 255, 0.2);
       background: transparent;
       color: #e4e4e7;
       border-radius: 12px;
@@ -1391,7 +1497,10 @@
       text-align: center;
       transition: 0.2s;
     }
-    .sp-btn-outline:hover { background: rgba(255,255,255,0.05); }
+
+    .sp-btn-outline:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
 
     /* Countdown View */
     .sp-warn-box {
@@ -1403,9 +1512,17 @@
       flex-direction: column;
       gap: 6px;
     }
-    .sp-warn-title { font-weight: 600; font-size: 0.9rem; }
-    .sp-warn-desc { font-size: 0.75rem; opacity: 0.8; }
-    
+
+    .sp-warn-title {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .sp-warn-desc {
+      font-size: 0.75rem;
+      opacity: 0.8;
+    }
+
     .sp-timer {
       display: flex;
       align-items: center;
@@ -1428,13 +1545,21 @@
     }
 
     @keyframes pulse-red {
-      0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-      70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+      0% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+      }
+
+      70% {
+        box-shadow: 0 0 0 15px rgba(239, 68, 68, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+      }
     }
 
     .sp-btn-cancel {
-      background: rgba(255,255,255,0.1);
+      background: rgba(255, 255, 255, 0.1);
       border: none;
       padding: 12px;
       border-radius: 12px;
@@ -1454,7 +1579,7 @@
       flex-direction: column;
       gap: 6px;
     }
-    
+
     .sp-alert-msg {
       background: #14532d;
       color: #fff;
@@ -1463,13 +1588,15 @@
       font-size: 0.75rem;
       line-height: 1.4;
     }
+
     .sp-alert-links {
       display: flex;
       gap: 6px;
       margin-top: 6px;
     }
+
     .sp-alert-tag {
-      background: rgba(255,255,255,0.2);
+      background: rgba(255, 255, 255, 0.2);
       padding: 4px 8px;
       border-radius: 20px;
       font-size: 0.6rem;
@@ -1486,15 +1613,15 @@
       font-size: 0.85rem;
       cursor: pointer;
     }
-    
+
     .sp-tracking-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 8px 0;
-      border-bottom: 1px dashed rgba(255,255,255,0.1);
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
     }
-    
+
     .sp-live-tag {
       color: #10b981;
       font-size: 0.65rem;
@@ -1515,6 +1642,7 @@
       opacity: 0;
       transition: opacity 0.3s;
     }
+
     .mobile-overlay.visible {
       display: block;
       opacity: 1;
@@ -1535,6 +1663,7 @@
       box-shadow: var(--shadow-sm);
       background: var(--surface);
     }
+
     .lp-close-btn {
       display: none;
       background: var(--surface-2);
@@ -1549,6 +1678,7 @@
       font-size: 1.1rem;
       margin-left: auto;
     }
+
     .ps-header {
       display: none;
     }
@@ -1559,23 +1689,28 @@
         flex-shrink: 0;
         margin-right: 0.2rem;
       }
+
       .logo-row {
         flex: 1;
         min-width: 0;
       }
+
       header {
         flex-wrap: wrap;
         padding: 0.5rem;
         gap: 0.5rem;
       }
+
       .ttl p {
-        display: none; /* Hide long subtitle */
+        display: none;
+        /* Hide long subtitle */
       }
 
       .live-pill {
-        display: none; /* Hide on small screens, save space */
+        display: none;
+        /* Hide on small screens, save space */
       }
-      
+
       .lp {
         position: fixed;
         top: 0;
@@ -1589,12 +1724,15 @@
         border-right: none;
         box-shadow: var(--shadow-md);
       }
+
       .lp.open {
         left: 0;
       }
+
       .lp-close-btn {
         display: flex;
       }
+
       .ps-header {
         display: flex;
         align-items: center;
@@ -1602,9 +1740,11 @@
         padding: 0.75rem 1rem;
         border-bottom: 1px solid var(--line);
       }
+
       .ps-header .ps-ttl {
         margin-bottom: 0;
       }
+
       #city-ttl {
         display: none;
       }
@@ -1618,6 +1758,354 @@
       }
 
     }
+
+    /* ── Live Route Intelligence Panel ── */
+    .lri-panel {
+      position: absolute;
+      left: 16px;
+      top: 80px;
+      width: 280px;
+      background: rgba(30, 41, 59, 0.78);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      border-radius: 12px;
+      padding: 16px;
+      font-family: 'DM Sans', system-ui, sans-serif;
+      font-size: 0.75rem;
+      color: rgba(226, 232, 240, 0.9);
+      box-shadow: 0 8px 32px rgba(15, 23, 42, 0.2);
+      z-index: 1000;
+      transition: all 320ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .lri-panel.ws-hidden {
+      display: none !important;
+    }
+
+    .lri-panel.pulse-alert {
+      animation: lri-pulse-red 800ms ease-in-out;
+    }
+
+    @keyframes lri-pulse-red {
+
+      0%,
+      100% {
+        border-color: rgba(148, 163, 184, 0.12);
+        background: rgba(30, 41, 59, 0.78);
+      }
+
+      50% {
+        border-color: rgba(239, 68, 68, 0.5);
+        background: rgba(127, 29, 29, 0.4);
+      }
+    }
+
+    .lri-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+    }
+
+    .lri-title {
+      font-weight: 600;
+      font-size: 0.8rem;
+      color: #f1f5f9;
+    }
+
+    .lri-timestamp {
+      font-size: 0.65rem;
+      color: rgba(226, 232, 240, 0.6);
+      font-weight: 500;
+    }
+
+    .lri-progress-bar {
+      position: relative;
+      width: 100%;
+      height: 4px;
+      background: rgba(148, 163, 184, 0.1);
+      border-radius: 2px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .lri-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #6366f1, #a855f7);
+      border-radius: 2px;
+      width: 0%;
+      transition: width 400ms ease-out;
+    }
+
+    .lri-progress-text {
+      position: absolute;
+      top: 6px;
+      right: 0;
+      font-size: 0.6rem;
+      color: rgba(226, 232, 240, 0.5);
+      font-weight: 500;
+    }
+
+    .lri-score-widget {
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .lri-score-label {
+      font-size: 0.65rem;
+      color: rgba(226, 232, 240, 0.6);
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .lri-score-value {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #6366f1;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .lri-zone-card {
+      background: rgba(15, 23, 42, 0.4);
+      border: 1px solid rgba(148, 163, 184, 0.08);
+      border-radius: 8px;
+      padding: 10px;
+      transition: all 300ms ease-out;
+    }
+
+    .lri-zone-card.alert {
+      border-color: rgba(239, 68, 68, 0.4);
+      background: rgba(127, 29, 29, 0.15);
+    }
+
+    .lri-zone-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 8px;
+    }
+
+    .lri-zone-name {
+      font-weight: 600;
+      font-size: 0.8rem;
+      color: #e0e7ff;
+    }
+
+    .lri-zone-risk {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      min-width: 50px;
+      text-align: center;
+    }
+
+    .lri-zone-risk.lo {
+      background: rgba(16, 185, 129, 0.2);
+      color: #6ee7b7;
+    }
+
+    .lri-zone-risk.mo {
+      background: rgba(202, 138, 4, 0.2);
+      color: #fcd34d;
+    }
+
+    .lri-zone-risk.hi {
+      background: rgba(234, 88, 12, 0.2);
+      color: #fb923c;
+    }
+
+    .lri-zone-risk.cr {
+      background: rgba(239, 68, 68, 0.3);
+      color: #ff6b7a;
+    }
+
+    .lri-zone-risk-bar {
+      width: 100%;
+      height: 3px;
+      background: rgba(148, 163, 184, 0.1);
+      border-radius: 2px;
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+
+    .lri-zone-risk-bar::after {
+      content: '';
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #6366f1, #a855f7);
+      transition: width 300ms ease-out;
+    }
+
+    .lri-zone-risk-bar.lo::after {
+      width: 25%;
+      background: #10b981;
+    }
+
+    .lri-zone-risk-bar.mo::after {
+      width: 50%;
+      background: #ca8a04;
+    }
+
+    .lri-zone-risk-bar.hi::after {
+      width: 75%;
+      background: #ea580c;
+    }
+
+    .lri-zone-risk-bar.cr::after {
+      width: 100%;
+      background: #e11d48;
+    }
+
+    .lri-crimes-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+
+    .lri-crime-tag {
+      font-size: 0.65rem;
+      font-weight: 600;
+      background: rgba(168, 85, 247, 0.15);
+      color: #d8b4fe;
+      padding: 3px 6px;
+      border-radius: 3px;
+      border: 0.5px solid rgba(168, 85, 247, 0.25);
+      transition: all 200ms ease-out;
+    }
+
+    .lri-crime-tag:hover {
+      background: rgba(168, 85, 247, 0.25);
+    }
+
+    .lri-warning-box {
+      background: rgba(239, 68, 68, 0.12);
+      border-left: 3px solid rgba(239, 68, 68, 0.5);
+      border-radius: 4px;
+      padding: 8px;
+      margin-top: 8px;
+      animation: lri-fade-in 400ms ease-out;
+    }
+
+    @keyframes lri-fade-in {
+      from {
+        opacity: 0;
+        transform: translateY(-4px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .lri-warning-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #fca5a5;
+      margin-bottom: 3px;
+    }
+
+    .lri-warning-msg {
+      font-size: 0.7rem;
+      line-height: 1.3;
+      color: rgba(226, 232, 240, 0.8);
+      font-weight: 500;
+    }
+
+    .lri-night-warning {
+      background: rgba(59, 130, 246, 0.12);
+      border-left: 3px solid rgba(59, 130, 246, 0.4);
+      padding: 6px 8px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      color: #93c5fd;
+      font-weight: 600;
+      margin-top: 8px;
+      animation: lri-fade-in 300ms ease-out;
+    }
+
+    .lri-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .lri-btn {
+      padding: 8px 12px;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      font-family: 'DM Sans', system-ui, sans-serif;
+      cursor: pointer;
+      transition: all 200ms ease-out;
+      box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+    }
+
+    .lri-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.5);
+    }
+
+    .lri-btn:active {
+      transform: translateY(0);
+    }
+
+    .lri-btn-secondary {
+      background: rgba(148, 163, 184, 0.15);
+      color: #cbd5e1;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      box-shadow: none;
+    }
+
+    .lri-btn-secondary:hover {
+      background: rgba(148, 163, 184, 0.25);
+      box-shadow: 0 2px 6px rgba(148, 163, 184, 0.1);
+    }
+
+    .lri-btn.playing {
+      background: linear-gradient(135deg, #ec4899, #f43f5e);
+    }
+
+    @media (max-width: 1100px) {
+      .lri-panel {
+        width: 260px;
+        left: 8px;
+        top: 72px;
+        padding: 12px;
+      }
+
+      .lri-title {
+        font-size: 0.75rem;
+      }
+
+      .lri-zone-name {
+        font-size: 0.75rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .lri-panel {
+        width: calc(100% - 32px);
+        left: 16px;
+        right: 16px;
+        top: auto;
+        bottom: 286px;
+        max-width: 320px;
+      }
+    }
   </style>
 </head>
 
@@ -1626,15 +2114,39 @@
   <header>
     <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open Filters">≡</button>
     <div class="logo-row">
-      <div class="logo-hex">⬡</div>
+      <div class="logo-hex">
+        <svg width="100%" height="100%" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" style="display: block;">
+          <!-- Shield outline -->
+          <path d="M24 2 L38 8 L38 22 C38 34 28 42 24 45 C20 42 10 34 10 22 L10 8 Z" fill="none" stroke="currentColor"
+            stroke-width="1.4" stroke-linejoin="round" />
+          <!-- Shield fill accent -->
+          <path d="M24 8 L32 12 L32 22 C32 30 26 36 24 38 C22 36 16 30 16 22 L16 12 Z" fill="currentColor"
+            opacity="0.2" />
+          <!-- Center dot -->
+          <circle cx="24" cy="20" r="3" fill="currentColor" opacity="0.6" />
+        </svg>
+      </div>
       <div class="ttl">
-        <h1>UP Crime Map · UP Cities</h1>
-        <p>Police data is compiled nationally by NCRB from state police (including UP Police) records</p>
+        <h1>MyRakshak for women</h1>
+        <p>Real-time crime intelligence & safety insights to keep you informed</p>
       </div>
     </div>
+
+    <!-- Search Bar -->
+    <div class="search-container">
+      <input type="text" id="search-input" class="search-input" placeholder="🔍 Search areas, zones...">
+      <div id="search-results" class="search-results ws-hidden"></div>
+    </div>
+
+    <div class="header-controls">
+      <button class="header-btn" id="theme-toggle" title="Dark Mode">🌙</button>
+      <button class="header-btn" id="stats-toggle" title="Crime Stats">📊</button>
+      <button class="header-btn" id="help-btn" title="Help & Tutorial">❓</button>
+      <button class="header-btn" id="settings-btn" title="Settings">⚙️</button>
+    </div>
+
     <div class="live-pill">
       <div class="ldot"></div>Live Safety Data
-    </div>
     </div>
   </header>
 
@@ -1646,8 +2158,8 @@
     <div class="mobile-overlay" id="mobile-overlay"></div>
     <div class="lp" id="filter-lp">
       <div class="ps-header lp-close-btn-wrapper">
-         <div class="ps-ttl">Filters & Data</div>
-         <button class="lp-close-btn" id="lp-close-btn">✕</button>
+        <div class="ps-ttl">Filters & Data</div>
+        <button class="lp-close-btn" id="lp-close-btn">✕</button>
       </div>
       <div class="ps">
         <div class="ps-ttl" id="city-ttl">City</div>
@@ -1676,6 +2188,12 @@
           <button class="fb" data-type="assault" onclick="filterCrimes('assault')">
             <span class="fdot" style="background:#ff9a00"></span>Assault / Violence<span class="fc">189</span>
           </button>
+          <button class="fb" data-type="vehicle" onclick="filterCrimes('vehicle')">
+            <span class="fdot" style="background:#0ea5e9"></span>Vehicle Theft<span class="fc">0</span>
+          </button>
+          <button class="fb" data-type="fraud" onclick="filterCrimes('fraud')">
+            <span class="fdot" style="background:#8b5cf6"></span>Cyber Scam<span class="fc">0</span>
+          </button>
 
         </div>
       </div>
@@ -1703,7 +2221,8 @@
         <button class="ws-panel-toggle" id="women-safety-toggle" type="button" aria-expanded="false">
           <span class="ws-panel-heading">
             <span class="ws-panel-title">Women Safety</span>
-            <span class="ws-panel-sub">SOS, safe walk, women-only layer, safe spots, disguise mode, and route safety tools</span>
+            <span class="ws-panel-sub">SOS, safe walk, women-only layer, safe spots, disguise mode, and route safety
+              tools</span>
           </span>
           <span class="ws-chevron" id="women-safety-chevron">+</span>
         </button>
@@ -1717,19 +2236,22 @@
             <input type="checkbox" class="tgl" id="ws-shake-toggle">
           </div>
           <div class="ws-extra" id="ws-shake-extra">
-            <div class="ws-note" id="ws-shake-status">Off by default. Requires device-motion support and location access.</div>
+            <div class="ws-note" id="ws-shake-status">Off by default. Requires device-motion support and location
+              access.</div>
           </div>
 
           <div class="ws-row">
             <div class="ws-copy">
               <div class="ws-label">Safe Walk Timer</div>
-              <div class="ws-sub">Set a walk duration. If it expires before check-in, an emergency WhatsApp link is opened.</div>
+              <div class="ws-sub">Set a walk duration. If it expires before check-in, an emergency WhatsApp link is
+                opened.</div>
             </div>
             <input type="checkbox" class="tgl" id="ws-walk-toggle">
           </div>
           <div class="ws-extra" id="ws-walk-controls">
             <div class="ws-inline">
-              <input class="ws-input" id="ws-walk-minutes" type="number" min="1" step="1" placeholder="Minutes for your walk">
+              <input class="ws-input" id="ws-walk-minutes" type="number" min="1" step="1"
+                placeholder="Minutes for your walk">
               <button class="ws-action-btn pink" id="ws-start-walk" type="button">Start Timer</button>
             </div>
             <button class="ws-action-btn green" id="ws-safe-btn" type="button">I'm Safe</button>
@@ -1739,7 +2261,8 @@
           <div class="ws-row">
             <div class="ws-copy">
               <div class="ws-label">Women Incidents Layer</div>
-              <div class="ws-sub">Highlight harassment, stalking, assault, and similar markers in pink while muting the rest.</div>
+              <div class="ws-sub">Highlight harassment, stalking, assault, and similar markers in pink while muting the
+                rest.</div>
             </div>
             <input type="checkbox" class="tgl" id="ws-women-layer-toggle">
           </div>
@@ -1762,18 +2285,21 @@
           <div class="ws-row">
             <div class="ws-copy">
               <div class="ws-label">Safe Spots on Map</div>
-              <div class="ws-sub">Police, hospitals, clinics, pharmacies, fire stations, and shelters (OpenStreetMap) as colour-coded pins. Route search also shows help along your path.</div>
+              <div class="ws-sub">Police, hospitals, clinics, pharmacies, fire stations, and shelters (OpenStreetMap) as
+                colour-coded pins. Route search also shows help along your path.</div>
             </div>
             <input type="checkbox" class="tgl" id="ws-safe-spots-toggle">
           </div>
           <div class="ws-extra" id="ws-safe-spots-extra">
-            <div class="ws-note" id="ws-safe-spots-status">Uses your live location if available; otherwise it uses the current map view.</div>
+            <div class="ws-note" id="ws-safe-spots-status">Uses your live location if available; otherwise it uses the
+              current map view.</div>
           </div>
 
           <div class="ws-row">
             <div class="ws-copy">
               <div class="ws-label">Disguise Mode</div>
-              <div class="ws-sub">Mask the page as a weather app while keeping all safety tools running underneath.</div>
+              <div class="ws-sub">Mask the page as a weather app while keeping all safety tools running underneath.
+              </div>
             </div>
             <input type="checkbox" class="tgl" id="ws-disguise-toggle">
           </div>
@@ -1781,7 +2307,8 @@
           <div class="ws-row">
             <div class="ws-copy">
               <div class="ws-label">Safe Route Finder</div>
-              <div class="ws-sub">Search a start and destination, compare three walking routes, and rank them by crime proximity and safe spots.</div>
+              <div class="ws-sub">Search a start and destination, compare three walking routes, and rank them by crime
+                proximity and safe spots.</div>
             </div>
             <input type="checkbox" class="tgl" id="ws-route-toggle">
           </div>
@@ -1789,8 +2316,10 @@
             <input class="ws-input" id="ws-route-start" type="text" placeholder="Starting location">
             <input class="ws-input" id="ws-route-end" type="text" placeholder="Destination">
             <button class="ws-action-btn ws-hidden" id="ws-find-route" type="button">Find Safe Route</button>
-            <div class="ws-note" id="ws-route-status">Walking routes work without a key (public OSRM). Optional: set OpenRouteService in the script for alternatives.</div>
-            <div class="ws-warning ws-hidden" id="ws-night-warning">Night travel detected. Prefer the green route and stay near safe spots.</div>
+            <div class="ws-note" id="ws-route-status">Walking routes work without a key (public OSRM). Optional: set
+              OpenRouteService in the script for alternatives.</div>
+            <div class="ws-warning ws-hidden" id="ws-night-warning">Night travel detected. Prefer the green route and
+              stay near safe spots.</div>
             <div class="ws-route-results" id="ws-route-results"></div>
           </div>
         </div>
@@ -1816,6 +2345,52 @@
       <button type="button" class="journey-3d-close" id="journey-3d-close">Exit</button>
     </div>
     <div id="journey-3d-map" role="application" aria-label="Tilted navigation map"></div>
+
+    <!-- Live Route Intelligence Panel -->
+    <!-- Live Route Intelligence Panel -->
+    <div id="lri-panel" class="lri-panel ws-hidden" aria-hidden="true">
+      <div class="lri-header">
+        <div class="lri-title">🚨 Route Intelligence</div>
+        <div class="lri-timestamp" id="lri-timestamp">Live Tracking</div>
+      </div>
+
+      <div class="lri-progress-bar">
+        <div class="lri-progress-fill" id="lri-progress-fill"></div>
+        <span class="lri-progress-text" id="lri-progress-text">0%</span>
+      </div>
+
+      <div class="lri-score-widget">
+        <div class="lri-score-label">Route Safety Score</div>
+        <div class="lri-score-value" id="lri-score-value">—</div>
+      </div>
+
+      <div class="lri-zone-card" id="lri-zone-card">
+        <div class="lri-zone-header">
+          <div class="lri-zone-name" id="lri-zone-name">—</div>
+          <div class="lri-zone-risk" id="lri-zone-risk">—</div>
+        </div>
+        <div class="lri-zone-risk-bar" id="lri-zone-risk-bar"></div>
+
+        <div class="lri-crimes-list" id="lri-crimes-list">
+          <div class="lri-crime-tag">—</div>
+        </div>
+
+        <div class="lri-warning-box" id="lri-warning-box" style="display: none;">
+          <div class="lri-warning-title">⚠️ Alert</div>
+          <div class="lri-warning-msg" id="lri-warning-msg"></div>
+        </div>
+
+        <div class="lri-night-warning" id="lri-night-warning" style="display: none;">
+          🌙 Night Zone — Extra Alert
+        </div>
+
+        <div class="lri-controls">
+          <button class="lri-btn" id="lri-play-btn" title="Start journey walk">▶ Start Walk</button>
+          <button class="lri-btn lri-btn-secondary" id="lri-my-location-btn" title="Use your current location">📍 My
+            Location</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- FAB & Location Panel -->
@@ -1846,7 +2421,7 @@
         </div>
         <input type="checkbox" class="tgl" id="safemode-tgl">
       </div>
-      
+
 
 
       <div style="margin-top: 8px;">
@@ -1888,7 +2463,7 @@
       <div class="sp-alert-box">
         <div style="font-weight:600; font-size:0.9rem;">Alert sent</div>
         <div style="font-size:0.75rem;">Your location shared with <span id="sp-alert-count">2</span> contacts</div>
-        
+
         <div class="sp-alert-msg" id="sp-alert-msg-box">
           <!-- message preview -->
         </div>
@@ -1899,7 +2474,7 @@
       </div>
 
       <button class="sp-btn-sos" onclick="dispatchSafeModeAlerts()">SOS · Send again</button>
-      
+
       <div class="sp-tracking-row">
         <div>
           <div style="font-size:0.85rem; font-weight:500;">Live tracking on</div>
@@ -1907,7 +2482,7 @@
         </div>
         <div class="sp-live-tag">LIVE</div>
       </div>
-      
+
       <div class="sp-contact-list" id="sp-alert-contacts" style="margin-top:8px;">
         <!-- Notified contacts -->
       </div>
@@ -2055,7 +2630,7 @@
       { city: "prayagraj", lat: 25.4340, lng: 81.8426, area: "Attarsuiya", type: "robbery", sev: 0.80, hour: 22, tags: ["Robbery"] }
     ];
 
-    const tC = { theft: '#ea580c', robbery: '#e11d48', assault: '#d97706' };
+    const tC = { theft: '#ea580c', robbery: '#e11d48', assault: '#d97706', vehicle: '#0ea5e9', fraud: '#8b5cf6' };
     const rC = s => s >= .85 ? '#e11d48' : s >= .70 ? '#ea580c' : s >= .50 ? '#ca8a04' : '#059669';
     const rL = s => s >= .85 ? 'CRITICAL' : s >= .70 ? 'HIGH' : s >= .50 ? 'MODERATE' : 'LOW';
 
@@ -2076,17 +2651,26 @@
         maxZoom: 20
       });
 
+      var streetsDark = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 20
+      });
+
       var osmStd = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
         maxZoom: 19
       });
 
-      streetsDetailed.addTo(map);
-      L.control.layers({
-        'Detailed (Voyager)': streetsDetailed,
-        'Light': streetsLight,
-        'OSM Standard': osmStd
-      }, {}, { position: 'topright' }).addTo(map);
+      // Apply appropriate tile layer based on theme
+      const currentTheme = localStorage.getItem('theme') || 'light';
+      const initialLayer = currentTheme === 'dark' ? streetsDark : streetsDetailed;
+      initialLayer.addTo(map);
+      
+      state.currentTileLayer = initialLayer;
+      state.tileLayers = { 'Detailed (Voyager)': streetsDetailed, 'Light': streetsLight, 'Dark': streetsDark, 'OSM Standard': osmStd };
+      
+      L.control.layers(state.tileLayers, {}, { position: 'topright' }).addTo(map);
 
       buildHeat(); buildMarkers();
     }
@@ -2108,11 +2692,11 @@
 
     function updateTypeCounts() {
       const base = crimes.filter(function (d) { return d.city === currentCity; });
-      const c = { all: base.length, theft: 0, robbery: 0, assault: 0 };
+      const c = { all: base.length };
       base.forEach(function (d) { c[d.type] = (c[d.type] || 0) + 1; });
       var allBtn = document.querySelector('[data-type="all"] .fc');
       if (allBtn) allBtn.textContent = String(c.all);
-      ['theft', 'robbery', 'assault'].forEach(function (t) {
+      ['theft', 'robbery', 'assault', 'vehicle', 'fraud'].forEach(function (t) {
         var el = document.querySelector('[data-type="' + t + '"] .fc');
         if (el) el.textContent = String(c[t] || 0);
       });
@@ -2518,14 +3102,14 @@
 
       fabBtn.addEventListener('click', requestLocation);
     })();
-    
+
     // ── Safe Mode Feature Logic ──
-    (function() {
+    (function () {
       const panel = document.getElementById('safe-panel');
       const toggle = document.getElementById('safemode-tgl');
       const statusTxt = document.getElementById('sp-status-text');
       const contactsDiv = document.getElementById('sp-contacts');
-      
+
       const vSetup = document.getElementById('sp-view-setup');
       const vCount = document.getElementById('sp-view-countdown');
       const vAlert = document.getElementById('sp-view-alert');
@@ -2533,7 +3117,7 @@
       let safeState = 'off'; // 'off' | 'watching' | 'countdown' | 'alert'
       let contacts = JSON.parse(localStorage.getItem('safemode_contacts') || '[]');
       let checkInterval;
-      
+
       // Countdown states
       let countdownTimer = null;
       let timeLeft = 10;
@@ -2548,15 +3132,15 @@
         }
         renderContacts();
       }
-      
+
       function saveContacts() {
         localStorage.setItem('safemode_contacts', JSON.stringify(contacts));
       }
-      
+
       function renderContacts() {
         contactsDiv.innerHTML = contacts.map((c, i) => `
           <div class="sp-contact">
-            <div class="sp-initials">${c.name.substring(0,2).toUpperCase()}</div>
+            <div class="sp-initials">${c.name.substring(0, 2).toUpperCase()}</div>
             <div class="sp-cinfo">
               <div class="sp-cname">${c.name}</div>
               <div class="sp-cnum">${c.phone}</div>
@@ -2566,7 +3150,7 @@
         `).join('');
       }
 
-      window.addSafeModeContact = function() {
+      window.addSafeModeContact = function () {
         const name = prompt("Contact Name (e.g. Mom):");
         if (!name) return;
         const phone = prompt("Phone Number (with country code):");
@@ -2575,8 +3159,8 @@
         saveContacts();
         renderContacts();
       };
-      
-      window.removeSafeContact = function(i) {
+
+      window.removeSafeContact = function (i) {
         contacts.splice(i, 1);
         saveContacts();
         renderContacts();
@@ -2598,24 +3182,24 @@
       // Geofence check using Haversine
       function calcDist(lat1, lon1, lat2, lon2) {
         const R = 6371e3; // metres
-        const f1 = lat1 * Math.PI/180;
-        const f2 = lat2 * Math.PI/180;
-        const df = (lat2-lat1) * Math.PI/180;
-        const dl = (lon2-lon1) * Math.PI/180;
-        const a = Math.sin(df/2) * Math.sin(df/2) +
-                  Math.cos(f1) * Math.cos(f2) *
-                  Math.sin(dl/2) * Math.sin(dl/2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        return R * c; 
+        const f1 = lat1 * Math.PI / 180;
+        const f2 = lat2 * Math.PI / 180;
+        const df = (lat2 - lat1) * Math.PI / 180;
+        const dl = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(df / 2) * Math.sin(df / 2) +
+          Math.cos(f1) * Math.cos(f2) *
+          Math.sin(dl / 2) * Math.sin(dl / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
       }
 
-      window.safeModeCheckGeofence = function(lat, lng) {
+      window.safeModeCheckGeofence = function (lat, lng) {
         if (safeState !== 'watching') return;
-        
+
         // Find if in any Hi/Critical zone (within radius = 300m)
         const zones = getRiskZones().filter(z => z.band === 'hi' || z.band === 'cr');
         const inDanger = zones.find(z => calcDist(lat, lng, z.lat, z.lng) <= 300);
-        
+
         if (inDanger) {
           triggerCountdown(inDanger);
         }
@@ -2625,15 +3209,15 @@
         if (safeState !== 'watching') return;
         safeState = 'countdown';
         currentDangerZone = zone;
-        
+
         document.getElementById('sp-zone-desc').textContent = `High assault reports near ${zone.name} area`;
         document.getElementById('sp-zone-badge').textContent = `${bandLabels[zone.band]} · ${zone.name}`;
         document.getElementById('sp-zone-badge').className = `risk-band ${zone.band}`;
-        
+
         timeLeft = 10;
         document.getElementById('sp-countdown').textContent = timeLeft;
         transitionView(vSetup, vCount);
-        
+
         countdownTimer = setInterval(() => {
           timeLeft--;
           document.getElementById('sp-countdown').textContent = timeLeft;
@@ -2644,7 +3228,7 @@
         }, 1000);
       }
 
-      window.cancelSafeModeAlert = function() {
+      window.cancelSafeModeAlert = function () {
         if (countdownTimer) clearInterval(countdownTimer);
         safeState = 'watching';
         transitionView(vCount, vSetup);
@@ -2655,43 +3239,43 @@
       function executeSafeAlerts() {
         safeState = 'alert';
         transitionView(vCount, vAlert);
-        
+
         // Populate alert view
         document.getElementById('sp-alert-count').textContent = contacts.length;
-        
+
         const cZone = currentDangerZone ? currentDangerZone.name : currentCity;
         // The message
         const msg = `Emergency! I need help near ${cZone}. Live location: https://maps.google.com/?q=${window.lastCoords ? window.lastCoords.lat.toFixed(4) : ''},${window.lastCoords ? window.lastCoords.lng.toFixed(4) : ''}`;
         document.getElementById('sp-alert-msg-box').textContent = msg;
-        
+
         // Notified list
         document.getElementById('sp-alert-contacts').innerHTML = contacts.map(c => `
           <div class="sp-contact" style="padding: 6px 12px">
-             <div class="sp-initials" style="width:24px;height:24px;font-size:0.6rem;background:#10b981">${c.name.substring(0,2).toUpperCase()}</div>
+             <div class="sp-initials" style="width:24px;height:24px;font-size:0.6rem;background:#10b981">${c.name.substring(0, 2).toUpperCase()}</div>
              <div class="sp-cinfo">
                <div class="sp-cname" style="font-size:0.75rem">${c.name} · Notified</div>
                <div class="sp-cnum" style="font-size:0.6rem">Delivered just now</div>
              </div>
           </div>
         `).join('');
-        
+
         // Dispatch
         window.dispatchSafeModeAlerts(msg);
       }
 
-      window.dispatchSafeModeAlerts = function(overMsg) {
+      window.dispatchSafeModeAlerts = function (overMsg) {
         const cZone = currentDangerZone ? currentDangerZone.name : currentCity;
         const msg = overMsg || `Emergency! I need help near ${cZone}. Live tracking: https://maps.google.com/?q=${window.lastCoords ? window.lastCoords.lat.toFixed(4) : ''},${window.lastCoords ? window.lastCoords.lng.toFixed(4) : ''}`;
-        
+
         if (contacts.length === 0) return alert("No contacts saved to notify!");
-        
+
         const first = contacts[0];
         // Open WhatsApp for primary
         const waLink = `https://wa.me/${first.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(msg)}`;
         window.open(waLink, '_blank');
-        
+
         // Fallback or secondary SMS
-        console.log(`[SafeMode] Mocking SMS dispatch via Fast2SMS API to ${contacts.map(c=>c.phone).join(', ')}: ${msg}`);
+        console.log(`[SafeMode] Mocking SMS dispatch via Fast2SMS API to ${contacts.map(c => c.phone).join(', ')}: ${msg}`);
       };
 
       // Toggles
@@ -2716,11 +3300,11 @@
           statusTxt.style.color = '#a1a1aa';
           if (countdownTimer) clearInterval(countdownTimer);
           if (window.watchId && !document.getElementById('loc-watch-btn')?.classList.contains('active')) {
-             window.toggleWatch(); // Turn off if it was just turned on for safe mode
+            window.toggleWatch(); // Turn off if it was just turned on for safe mode
           }
         }
       });
-      
+
 
 
       initContacts();
@@ -3422,6 +4006,12 @@ out center;`;
           overlay.classList.add('ws-hidden');
           overlay.setAttribute('aria-hidden', 'true');
         }
+        // Hide Live Route Intelligence Panel
+        const lriPanel = document.getElementById('lri-panel');
+        if (lriPanel) {
+          lriPanel.classList.add('ws-hidden');
+          lriPanel.setAttribute('aria-hidden', 'true');
+        }
       }
 
       function openJourney3d(routeIndex) {
@@ -3499,21 +4089,313 @@ out center;`;
           });
           state.journeyMap.fitBounds(bounds, { padding: 72, duration: 900, maxZoom: 17.5 });
 
-          var step = 0;
-          state.journeyAnimId = setInterval(function () {
-            if (!state.journeyMap) return;
-            step = (step + 1) % coords.length;
-            var c = coords[step];
-            var c2 = coords[Math.min(step + 1, coords.length - 1)];
-            var brg = bearingBetweenPoints(c, c2);
+          // Initialize Live Route Intelligence Panel
+          const lriPanel = document.getElementById('lri-panel');
+          const lriZoneName = document.getElementById('lri-zone-name');
+          const lriZoneRisk = document.getElementById('lri-zone-risk');
+          const lriZoneRiskBar = document.getElementById('lri-zone-risk-bar');
+          const lriCrimesList = document.getElementById('lri-crimes-list');
+          const lriScoreValue = document.getElementById('lri-score-value');
+          const lriProgressFill = document.getElementById('lri-progress-fill');
+          const lriProgressText = document.getElementById('lri-progress-text');
+          const lriWarningBox = document.getElementById('lri-warning-box');
+          const lriWarningMsg = document.getElementById('lri-warning-msg');
+          const lriNightWarning = document.getElementById('lri-night-warning');
+          const lriZoneCard = document.getElementById('lri-zone-card');
+
+          let lriCurrentZone = null;
+          let lriAICache = {};
+
+          function lriGetCurrentHour() {
+            return new Date().getHours();
+          }
+
+          function lriIsCurrentlyNight() {
+            const hour = lriGetCurrentHour();
+            return hour >= 18 || hour < 6;
+          }
+
+          function lriFindNearestZone(lat, lng) {
+            const riskZones = getRiskZones();
+            let nearest = null;
+            let minDist = Infinity;
+            riskZones.forEach(function (zone) {
+              const dist = haversineMeters({ lat: lat, lng: lng }, { lat: zone.lat, lng: zone.lng });
+              if (dist < minDist) {
+                minDist = dist;
+                nearest = { zone: zone, distance: dist };
+              }
+            });
+            return minDist < 800 ? nearest : null;
+          }
+
+          function lriGetDominantCrimes(areaName) {
+            const zoneCrimes = crimes.filter(function (c) { return c.area === areaName && c.city === currentCity; });
+            const crimeTypeCount = {};
+            zoneCrimes.forEach(function (c) {
+              crimeTypeCount[c.type] = (crimeTypeCount[c.type] || 0) + 1;
+            });
+            return Object.entries(crimeTypeCount)
+              .sort(function (a, b) { return b[1] - a[1]; })
+              .slice(0, 3)
+              .map(function (entry) { return entry[0]; });
+          }
+
+          function lriCalculateZoneSafety(zoneName) {
+            const zoneCrimes = crimes.filter(function (c) { return c.area === zoneName && c.city === currentCity; });
+            if (!zoneCrimes.length) return 0.3;
+            let totalSev = 0;
+            const weights = { robbery: 1.2, assault: 1.0, theft: 0.6, vehicle: 0.9, fraud: 0.4 };
+            zoneCrimes.forEach(function (c) {
+              totalSev += c.sev * (weights[c.type] || 0.6);
+            });
+            return Math.min(1.0, totalSev / zoneCrimes.length);
+          }
+
+          function lriCalculateRouteScore(coords) {
+            let totalScore = 0;
+            const sampleSize = Math.min(coords.length, 10);
+            const step = Math.max(1, Math.floor(coords.length / sampleSize));
+            let count = 0;
+            for (let i = 0; i < coords.length; i += step) {
+              const nearest = lriFindNearestZone(coords[i][0], coords[i][1]);
+              if (nearest) {
+                totalScore += lriCalculateZoneSafety(nearest.zone.name);
+                count++;
+              }
+            }
+            return Math.round((1 - (totalScore / Math.max(count, 1))) * 100);
+          }
+
+          async function lriFetchAIWarning(zoneName, crimeType) {
+            const key = zoneName + '|' + crimeType;
+            if (lriAICache[key]) return lriAICache[key];
+            try {
+              const prompt = `Give a concise 1-sentence safety tip for someone currently passing through ${zoneName} in Lucknow which has elevated ${crimeType} activity. Keep it practical and under 12 words.`;
+              const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prompt: prompt })
+              });
+              if (!response.ok) throw new Error('API failed');
+              const data = await response.json();
+              const msg = data.message || data.reply || 'Stay alert in this area.';
+              lriAICache[key] = msg;
+              return msg;
+            } catch (err) {
+              lriAICache[key] = 'Stay alert and avoid isolated spots.';
+              return lriAICache[key];
+            }
+          }
+
+          const lriInitialScore = lriCalculateRouteScore(coords);
+          lriScoreValue.textContent = lriInitialScore;
+          lriPanel.classList.remove('ws-hidden');
+          lriPanel.setAttribute('aria-hidden', 'false');
+
+          // Set initial view to start point (no auto-animation)
+          const startCoord = coords[0];
+          const endCoord = coords[coords.length - 1];
+          state.journeyMap.flyTo({
+            center: [startCoord[1], startCoord[0]],
+            zoom: 16,
+            pitch: 60,
+            bearing: 0,
+            duration: 1200
+          });
+
+          // Add start point marker
+          const startMarkerEl = document.createElement('div');
+          startMarkerEl.style.width = '32px';
+          startMarkerEl.style.height = '32px';
+          startMarkerEl.style.backgroundImage = 'url("data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><circle cx=%2216%22 cy=%2216%22 r=%2214%22 fill=%22%2322c55e%22 stroke=%22white%22 stroke-width=%222%22/><circle cx=%2216%22 cy=%2216%22 r=%226%22 fill=%22white%22/></svg>")';
+          startMarkerEl.style.backgroundSize = 'contain';
+          startMarkerEl.style.backgroundRepeat = 'no-repeat';
+          startMarkerEl.style.backgroundPosition = 'center';
+          new maplibregl.Marker({ element: startMarkerEl }).setLngLat([startCoord[1], startCoord[0]]).addTo(state.journeyMap);
+
+          // Add end point marker
+          const endMarkerEl = document.createElement('div');
+          endMarkerEl.style.width = '32px';
+          endMarkerEl.style.height = '32px';
+          endMarkerEl.style.backgroundImage = 'url("data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><circle cx=%2216%22 cy=%2216%22 r=%2214%22 fill=%22%23e11d48%22 stroke=%22white%22 stroke-width=%222%22/><circle cx=%2216%22 cy=%2216%22 r=%226%22 fill=%22white%22/></svg>")';
+          endMarkerEl.style.backgroundSize = 'contain';
+          endMarkerEl.style.backgroundRepeat = 'no-repeat';
+          endMarkerEl.style.backgroundPosition = 'center';
+          new maplibregl.Marker({ element: endMarkerEl }).setLngLat([endCoord[1], endCoord[0]]).addTo(state.journeyMap);
+
+          // Update progress to start
+          lriProgressFill.style.width = '0%';
+          lriProgressText.textContent = '0%';
+
+          // Show start zone info
+          const startNearest = lriFindNearestZone(startCoord[0], startCoord[1]);
+          if (startNearest) {
+            const zone = startNearest.zone;
+            const bandLabel = bandLabels[zone.band] || 'UNKNOWN';
+            const dominantCrimes = lriGetDominantCrimes(zone.name);
+
+            lriZoneName.textContent = zone.name;
+            lriZoneRisk.textContent = bandLabel;
+            lriZoneRisk.className = 'lri-zone-risk ' + zone.band;
+            lriZoneRiskBar.className = 'lri-zone-risk-bar ' + zone.band;
+
+            if (dominantCrimes.length > 0) {
+              lriCrimesList.innerHTML = dominantCrimes.map(function (crimeType) {
+                return '<div class="lri-crime-tag">' + crimeType.charAt(0).toUpperCase() + crimeType.slice(1) + '</div>';
+              }).join('');
+            } else {
+              lriCrimesList.innerHTML = '<div class="lri-crime-tag">No pattern</div>';
+            }
+
+            const isNight = lriIsCurrentlyNight();
+            if (isNight && (zone.band === 'hi' || zone.band === 'cr')) {
+              lriNightWarning.style.display = 'block';
+            }
+          }
+
+          lriCurrentZone = startNearest ? startNearest.zone : null;
+
+          // Journey navigation controls
+          const playBtn = document.getElementById('lri-play-btn');
+          const myLocationBtn = document.getElementById('lri-my-location-btn');
+          let journeyPlaying = false;
+          let journeyStep = 0;
+          let journeyAnimInterval = null;
+
+          function updateJourneyStep() {
+            if (journeyStep >= coords.length - 1) {
+              journeyStep = coords.length - 1;
+              journeyPlaying = false;
+              playBtn.innerHTML = '▶ Start Walk';
+              playBtn.classList.remove('playing');
+              if (journeyAnimInterval) clearInterval(journeyAnimInterval);
+              return;
+            }
+
+            journeyStep++;
+            const currentCoord = coords[journeyStep];
+            const nextCoord = coords[Math.min(journeyStep + 1, coords.length - 1)];
+            const bearing = bearingBetweenPoints(currentCoord, nextCoord);
+
+            // Update progress
+            const progress = Math.round((journeyStep / coords.length) * 100);
+            lriProgressFill.style.width = progress + '%';
+            lriProgressText.textContent = progress + '%';
+
+            // Update map to user perspective
             state.journeyMap.easeTo({
-              center: [c[1], c[0]],
-              bearing: brg,
-              pitch: 62,
-              duration: 780,
+              center: [currentCoord[1], currentCoord[0]],
+              bearing: bearing,
+              pitch: 70,
+              duration: 400,
               essential: true
             });
-          }, 820);
+
+            // Update zone info
+            const nearest = lriFindNearestZone(currentCoord[0], currentCoord[1]);
+            if (nearest) {
+              const zone = nearest.zone;
+              const zoneChanged = !lriCurrentZone || lriCurrentZone.name !== zone.name;
+              const bandLabel = bandLabels[zone.band] || 'UNKNOWN';
+              const dominantCrimes = lriGetDominantCrimes(zone.name);
+
+              lriZoneName.textContent = zone.name;
+              lriZoneRisk.textContent = bandLabel;
+              lriZoneRisk.className = 'lri-zone-risk ' + zone.band;
+              lriZoneRiskBar.className = 'lri-zone-risk-bar ' + zone.band;
+
+              if (dominantCrimes.length > 0) {
+                lriCrimesList.innerHTML = dominantCrimes.map(function (crimeType) {
+                  return '<div class="lri-crime-tag">' + crimeType.charAt(0).toUpperCase() + crimeType.slice(1) + '</div>';
+                }).join('');
+              }
+
+              if (zoneChanged && (zone.band === 'hi' || zone.band === 'cr')) {
+                const mainCrime = dominantCrimes[0] || 'crime';
+                lriFetchAIWarning(zone.name, mainCrime).then(function (aiMsg) {
+                  lriWarningMsg.textContent = aiMsg;
+                  lriWarningBox.style.display = 'block';
+                });
+                lriZoneCard.classList.add('alert');
+                lriPanel.classList.add('pulse-alert');
+                setTimeout(function () { lriPanel.classList.remove('pulse-alert'); }, 800);
+              } else {
+                lriWarningBox.style.display = 'none';
+                if (zone.band !== 'hi' && zone.band !== 'cr') lriZoneCard.classList.remove('alert');
+              }
+
+              lriCurrentZone = zone;
+            }
+          }
+
+          playBtn.addEventListener('click', function () {
+            journeyPlaying = !journeyPlaying;
+            if (journeyPlaying) {
+              playBtn.innerHTML = '⏸ Stop Walk';
+              playBtn.classList.add('playing');
+              journeyAnimInterval = setInterval(updateJourneyStep, 600);
+            } else {
+              playBtn.innerHTML = '▶ Start Walk';
+              playBtn.classList.remove('playing');
+              if (journeyAnimInterval) clearInterval(journeyAnimInterval);
+            }
+          });
+
+          myLocationBtn.addEventListener('click', function () {
+            if (!navigator.geolocation) {
+              alert('Location not supported on this device');
+              return;
+            }
+
+            myLocationBtn.disabled = true;
+            myLocationBtn.textContent = '📍 Getting location...';
+
+            navigator.geolocation.getCurrentPosition(
+              function (position) {
+                const userLat = position.coords.latitude;
+                const userLng = position.coords.longitude;
+
+                // Update start marker to user location
+                startMarkerEl.innerHTML = '<div style="width:100%;height:100%;background:radial-gradient(circle,#6366f1,#4f46e5);border:2px solid white;border-radius:50%;display:flex;align-items:center;justify-content:center"><div style="width:6px;height:6px;background:white;border-radius:50%\"></div></div>';
+
+                // Recalculate route from user location
+                setNote('ws-route-status', 'Finding route from your location...', 'warn');
+
+                const routeEndInput = document.getElementById('ws-route-end');
+                if (routeEndInput && routeEndInput.value) {
+                  // Keep existing destination, recompute route
+                  const destValue = routeEndInput.value;
+
+                  geocodePlace(destValue).then(function (endPlace) {
+                    fetchRouteOptions(
+                      { lat: userLat, lng: userLng },
+                      { lat: endPlace.lat, lng: endPlace.lng }
+                    ).then(function (routeData) {
+                      const newRoutes = normalizeRoutes(routeData);
+                      drawRoutes(newRoutes);
+                      chooseRoute(0);
+                      setNote('ws-route-status', 'Route updated from your location!', 'success');
+                    }).catch(function (err) {
+                      setNote('ws-route-status', 'Could not recalculate route: ' + (err.message || 'Unknown error'), 'error');
+                    });
+                  }).catch(function (err) {
+                    setNote('ws-route-status', 'Could not find destination: ' + (err.message || 'Unknown error'), 'error');
+                  });
+                } else {
+                  setNote('ws-route-status', 'Please enter a destination first', 'warn');
+                }
+
+                myLocationBtn.disabled = false;
+                myLocationBtn.textContent = '📍 My Location';
+              },
+              function (error) {
+                myLocationBtn.disabled = false;
+                myLocationBtn.textContent = '📍 My Location';
+                setNote('ws-route-status', 'Location access denied. ' + error.message, 'error');
+              }
+            );
+          });
         });
       }
 
@@ -3867,7 +4749,43 @@ out center;`;
     mobileMenuBtn.addEventListener('click', toggleMobileMenu);
     lpCloseBtn.addEventListener('click', toggleMobileMenu);
     mobileOverlay.addEventListener('click', toggleMobileMenu);
+
+    // Theme Toggle
+    const themeToggle = document.getElementById('theme-toggle');
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    if (currentTheme === 'dark') {
+      document.body.setAttribute('data-theme', 'dark');
+      themeToggle.textContent = '☀️';
+    }
+
+    themeToggle.addEventListener('click', function () {
+      const body = document.body;
+      const isDark = body.getAttribute('data-theme') === 'dark';
+      if (isDark) {
+        body.removeAttribute('data-theme');
+        localStorage.setItem('theme', 'light');
+        themeToggle.textContent = '🌙';
+        themeToggle.title = 'Dark Mode';
+        // Switch to light map
+        if (window.map && state && state.tileLayers) {
+          window.map.removeLayer(state.currentTileLayer);
+          state.currentTileLayer = state.tileLayers['Detailed (Voyager)'];
+          state.currentTileLayer.addTo(window.map);
+        }
+      } else {
+        body.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+        themeToggle.textContent = '☀️';
+        themeToggle.title = 'Light Mode';
+        // Switch to dark map
+        if (window.map && state && state.tileLayers) {
+          window.map.removeLayer(state.currentTileLayer);
+          state.currentTileLayer = state.tileLayers['Dark'];
+          state.currentTileLayer.addTo(window.map);
+        }
+      }
+    });
   </script>
 </body>
 
-</html>  
+</html>
