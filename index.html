@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-  
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -528,6 +528,42 @@
       color: #b45309;
     }
 
+    .heart-btn {
+      width: auto !important;
+      padding: 0.68rem !important;
+      font-size: 1.2rem !important;
+      border-color: rgba(59, 130, 246, 0.2) !important;
+      background: rgba(59, 130, 246, 0.05) !important;
+      color: #3b82f6 !important;
+      transition: all 0.2s ease !important;
+    }
+
+    .heart-btn:hover {
+      border-color: rgba(59, 130, 246, 0.4) !important;
+      background: rgba(59, 130, 246, 0.12) !important;
+    }
+
+    .heart-btn.heart-active {
+      border-color: rgba(239, 68, 68, 0.3) !important;
+      background: rgba(239, 68, 68, 0.1) !important;
+      color: #ef4444 !important;
+    }
+
+    .share-btn {
+      width: auto !important;
+      padding: 0.68rem !important;
+      font-size: 1.2rem !important;
+      border-color: rgba(34, 197, 94, 0.2) !important;
+      background: rgba(34, 197, 94, 0.05) !important;
+      color: #22c55e !important;
+      transition: all 0.2s ease !important;
+    }
+
+    .share-btn:hover {
+      border-color: rgba(34, 197, 94, 0.4) !important;
+      background: rgba(34, 197, 94, 0.12) !important;
+    }
+
     .ws-note,
     .ws-warning {
       padding: 0.62rem 0.7rem;
@@ -885,7 +921,8 @@
       right: 20px;
       z-index: 9000;
       display: flex;
-      flex-direction: row; /* Horizontal pill */
+      flex-direction: row;
+      /* Horizontal pill */
       align-items: center;
       gap: 4px;
       background: rgba(255, 255, 255, 0.85);
@@ -929,7 +966,7 @@
       color: var(--accent);
       animation: pulse-light 2s ease-in-out infinite;
     }
-    
+
     .fab-sep {
       width: 1px;
       height: 24px;
@@ -938,8 +975,15 @@
     }
 
     @keyframes pulse-light {
-      0%, 100% { box-shadow: inset 0 0 0 1px rgba(99, 102, 241, 0.2); }
-      50% { box-shadow: inset 0 0 0 2px rgba(99, 102, 241, 0.5); }
+
+      0%,
+      100% {
+        box-shadow: inset 0 0 0 1px rgba(99, 102, 241, 0.2);
+      }
+
+      50% {
+        box-shadow: inset 0 0 0 2px rgba(99, 102, 241, 0.5);
+      }
     }
 
     .fab-spinner {
@@ -952,7 +996,9 @@
     }
 
     @keyframes fab-spin {
-      to { transform: rotate(360deg); }
+      to {
+        transform: rotate(360deg);
+      }
     }
 
     /* Location Card */
@@ -1184,10 +1230,12 @@
       .fab-wrap {
         right: 20px;
       }
+
       .safe-panel {
         right: 20px !important;
       }
     }
+
     /* --- SafeMode Feature --- */
     .safe-panel {
       position: fixed;
@@ -1197,7 +1245,7 @@
       background: #1c1c1e;
       border-radius: 28px;
       color: #fff;
-      box-shadow: 0 12px 48px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.1);
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1);
       overflow: hidden;
       display: none;
       flex-direction: column;
@@ -1220,7 +1268,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .sp-title {
@@ -1232,7 +1280,7 @@
     }
 
     .sp-close {
-      background: rgba(255,255,255,0.1);
+      background: rgba(255, 255, 255, 0.1);
       border: none;
       color: #fff;
       width: 26px;
@@ -1251,7 +1299,7 @@
       flex-direction: column;
       gap: 16px;
     }
-    
+
     .sp-view.active {
       display: flex;
     }
@@ -1261,7 +1309,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(255,255,255,0.06);
+      background: rgba(255, 255, 255, 0.06);
       padding: 12px 14px;
       border-radius: 12px;
     }
@@ -1352,7 +1400,7 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      background: rgba(255,255,255,0.06);
+      background: rgba(255, 255, 255, 0.06);
       padding: 10px 12px;
       border-radius: 12px;
     }
@@ -1376,11 +1424,19 @@
       gap: 2px;
     }
 
-    .sp-cname { font-size: 0.85rem; font-weight: 500; }
-    .sp-cnum { font-size: 0.65rem; color: #a1a1aa; font-family: monospace; }
-    
+    .sp-cname {
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .sp-cnum {
+      font-size: 0.65rem;
+      color: #a1a1aa;
+      font-family: monospace;
+    }
+
     .sp-btn-outline {
-      border: 1px dashed rgba(255,255,255,0.2);
+      border: 1px dashed rgba(255, 255, 255, 0.2);
       background: transparent;
       color: #e4e4e7;
       border-radius: 12px;
@@ -1391,7 +1447,10 @@
       text-align: center;
       transition: 0.2s;
     }
-    .sp-btn-outline:hover { background: rgba(255,255,255,0.05); }
+
+    .sp-btn-outline:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
 
     /* Countdown View */
     .sp-warn-box {
@@ -1403,9 +1462,17 @@
       flex-direction: column;
       gap: 6px;
     }
-    .sp-warn-title { font-weight: 600; font-size: 0.9rem; }
-    .sp-warn-desc { font-size: 0.75rem; opacity: 0.8; }
-    
+
+    .sp-warn-title {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .sp-warn-desc {
+      font-size: 0.75rem;
+      opacity: 0.8;
+    }
+
     .sp-timer {
       display: flex;
       align-items: center;
@@ -1428,13 +1495,21 @@
     }
 
     @keyframes pulse-red {
-      0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-      70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+      0% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+      }
+
+      70% {
+        box-shadow: 0 0 0 15px rgba(239, 68, 68, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+      }
     }
 
     .sp-btn-cancel {
-      background: rgba(255,255,255,0.1);
+      background: rgba(255, 255, 255, 0.1);
       border: none;
       padding: 12px;
       border-radius: 12px;
@@ -1454,7 +1529,7 @@
       flex-direction: column;
       gap: 6px;
     }
-    
+
     .sp-alert-msg {
       background: #14532d;
       color: #fff;
@@ -1463,13 +1538,15 @@
       font-size: 0.75rem;
       line-height: 1.4;
     }
+
     .sp-alert-links {
       display: flex;
       gap: 6px;
       margin-top: 6px;
     }
+
     .sp-alert-tag {
-      background: rgba(255,255,255,0.2);
+      background: rgba(255, 255, 255, 0.2);
       padding: 4px 8px;
       border-radius: 20px;
       font-size: 0.6rem;
@@ -1486,15 +1563,15 @@
       font-size: 0.85rem;
       cursor: pointer;
     }
-    
+
     .sp-tracking-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 8px 0;
-      border-bottom: 1px dashed rgba(255,255,255,0.1);
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
     }
-    
+
     .sp-live-tag {
       color: #10b981;
       font-size: 0.65rem;
@@ -1515,6 +1592,7 @@
       opacity: 0;
       transition: opacity 0.3s;
     }
+
     .mobile-overlay.visible {
       display: block;
       opacity: 1;
@@ -1535,6 +1613,7 @@
       box-shadow: var(--shadow-sm);
       background: var(--surface);
     }
+
     .lp-close-btn {
       display: none;
       background: var(--surface-2);
@@ -1549,6 +1628,7 @@
       font-size: 1.1rem;
       margin-left: auto;
     }
+
     .ps-header {
       display: none;
     }
@@ -1559,23 +1639,28 @@
         flex-shrink: 0;
         margin-right: 0.2rem;
       }
+
       .logo-row {
         flex: 1;
         min-width: 0;
       }
+
       header {
         flex-wrap: wrap;
         padding: 0.5rem;
         gap: 0.5rem;
       }
+
       .ttl p {
-        display: none; /* Hide long subtitle */
+        display: none;
+        /* Hide long subtitle */
       }
 
       .live-pill {
-        display: none; /* Hide on small screens, save space */
+        display: none;
+        /* Hide on small screens, save space */
       }
-      
+
       .lp {
         position: fixed;
         top: 0;
@@ -1589,12 +1674,15 @@
         border-right: none;
         box-shadow: var(--shadow-md);
       }
+
       .lp.open {
         left: 0;
       }
+
       .lp-close-btn {
         display: flex;
       }
+
       .ps-header {
         display: flex;
         align-items: center;
@@ -1602,9 +1690,11 @@
         padding: 0.75rem 1rem;
         border-bottom: 1px solid var(--line);
       }
+
       .ps-header .ps-ttl {
         margin-bottom: 0;
       }
+
       #city-ttl {
         display: none;
       }
@@ -1617,6 +1707,253 @@
         margin: auto;
       }
 
+    }
+
+    /* Search & Header Controls CSS */
+    .search-container {
+      flex: 1;
+      max-width: 350px;
+      position: relative;
+      margin: 0 16px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 16px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.95);
+      font-size: 13px;
+      outline: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .search-input:focus {
+      border-color: #2196F3;
+      background: white;
+      box-shadow: 0 2px 12px rgba(33, 150, 243, 0.2);
+    }
+
+    .search-input::placeholder {
+      color: #999;
+    }
+
+    .search-results {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border-radius: 8px;
+      margin-top: 4px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+      max-height: 300px;
+      overflow-y: auto;
+      z-index: 1001;
+    }
+
+    .search-results.ws-hidden {
+      display: none;
+    }
+
+    .search-result-item {
+      padding: 12px 16px;
+      border-bottom: 1px solid #f0f0f0;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .search-result-item:last-child {
+      border-bottom: none;
+    }
+
+    .search-result-item:hover {
+      background: #f5f5f5;
+    }
+
+    .search-result-name {
+      font-weight: 500;
+      color: #1a1a1a;
+    }
+
+    .search-result-count {
+      font-size: 12px;
+      color: #999;
+      background: #f0f0f0;
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+
+    .header-controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .header-btn {
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.9);
+      cursor: pointer;
+      font-size: 20px;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      position: relative;
+    }
+
+    .header-btn:hover {
+      background: white;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+      transform: scale(1.05);
+    }
+
+    .header-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* Dark Mode Styling */
+    [data-theme="dark"] {
+      --bg-primary: #0d1117;
+      --bg-secondary: #161b22;
+      --text-primary: #e6edf3;
+      --text-secondary: #8b949e;
+      --border-color: #30363d;
+      --accent-light: rgba(255, 255, 255, 0.1);
+    }
+
+    [data-theme="dark"] .search-input {
+      background: rgba(22, 27, 34, 0.95);
+      border-color: rgba(48, 54, 61, 0.5);
+      color: #e6edf3;
+    }
+
+    [data-theme="dark"] .search-input:focus {
+      border-color: #58a6ff;
+      background: #0d1117;
+      box-shadow: 0 2px 12px rgba(88, 166, 255, 0.2);
+    }
+
+    [data-theme="dark"] .search-input::placeholder {
+      color: #6e7681;
+    }
+
+    [data-theme="dark"] .search-results {
+      background: #161b22;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    [data-theme="dark"] .search-result-item {
+      border-bottom-color: #30363d;
+      color: #e6edf3;
+    }
+
+    [data-theme="dark"] .search-result-item:hover {
+      background: #0d1117;
+    }
+
+    [data-theme="dark"] .search-result-count {
+      background: #30363d;
+      color: #8b949e;
+    }
+
+    [data-theme="dark"] .header-btn {
+      background: rgba(22, 27, 34, 0.9);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    [data-theme="dark"] .header-btn:hover {
+      background: #161b22;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Dark mode for map container and existing elements */
+    [data-theme="dark"] body {
+      background: #0d1117;
+      color: #e6edf3;
+    }
+
+    [data-theme="dark"] .header {
+      background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    [data-theme="dark"] .left-panel {
+      background: #161b22;
+      border-right-color: #30363d;
+    }
+
+    [data-theme="dark"] .btn {
+      background: #238636;
+      color: #fff;
+    }
+
+    [data-theme="dark"] .btn:hover {
+      background: #2ea043;
+    }
+
+    [data-theme="dark"] .filter-item {
+      background: #0d1117;
+      border-color: #30363d;
+      color: #e6edf3;
+    }
+
+    [data-theme="dark"] .filter-item.active {
+      background: #238636;
+      border-color: #238636;
+    }
+
+    /* Mobile Responsive for Header Controls */
+    @media (max-width: 1100px) {
+      .search-container {
+        max-width: 250px;
+        margin: 0 8px;
+      }
+
+      .header-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+      }
+
+      #incident-details-panel {
+        width: 320px !important;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .search-container {
+        display: none;
+      }
+
+      .header-controls {
+        gap: 4px;
+      }
+
+      .header-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+      }
+
+      #incident-details-panel {
+        width: 100% !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        top: auto !important;
+        height: auto !important;
+        max-height: 80vh;
+        border-left: none;
+        border-top: 1px solid #e0e0e0;
+      }
     }
   </style>
 </head>
@@ -1646,8 +1983,8 @@
     <div class="mobile-overlay" id="mobile-overlay"></div>
     <div class="lp" id="filter-lp">
       <div class="ps-header lp-close-btn-wrapper">
-         <div class="ps-ttl">Filters & Data</div>
-         <button class="lp-close-btn" id="lp-close-btn">✕</button>
+        <div class="ps-ttl">Filters & Data</div>
+        <button class="lp-close-btn" id="lp-close-btn">✕</button>
       </div>
       <div class="ps">
         <div class="ps-ttl" id="city-ttl">City</div>
@@ -1703,7 +2040,8 @@
         <button class="ws-panel-toggle" id="women-safety-toggle" type="button" aria-expanded="false">
           <span class="ws-panel-heading">
             <span class="ws-panel-title">Women Safety</span>
-            <span class="ws-panel-sub">SOS, safe walk, women-only layer, safe spots, disguise mode, and route safety tools</span>
+            <span class="ws-panel-sub">SOS, safe walk, women-only layer, safe spots, disguise mode, and route safety
+              tools</span>
           </span>
           <span class="ws-chevron" id="women-safety-chevron">+</span>
         </button>
@@ -1717,19 +2055,22 @@
             <input type="checkbox" class="tgl" id="ws-shake-toggle">
           </div>
           <div class="ws-extra" id="ws-shake-extra">
-            <div class="ws-note" id="ws-shake-status">Off by default. Requires device-motion support and location access.</div>
+            <div class="ws-note" id="ws-shake-status">Off by default. Requires device-motion support and location
+              access.</div>
           </div>
 
           <div class="ws-row">
             <div class="ws-copy">
               <div class="ws-label">Safe Walk Timer</div>
-              <div class="ws-sub">Set a walk duration. If it expires before check-in, an emergency WhatsApp link is opened.</div>
+              <div class="ws-sub">Set a walk duration. If it expires before check-in, an emergency WhatsApp link is
+                opened.</div>
             </div>
             <input type="checkbox" class="tgl" id="ws-walk-toggle">
           </div>
           <div class="ws-extra" id="ws-walk-controls">
             <div class="ws-inline">
-              <input class="ws-input" id="ws-walk-minutes" type="number" min="1" step="1" placeholder="Minutes for your walk">
+              <input class="ws-input" id="ws-walk-minutes" type="number" min="1" step="1"
+                placeholder="Minutes for your walk">
               <button class="ws-action-btn pink" id="ws-start-walk" type="button">Start Timer</button>
             </div>
             <button class="ws-action-btn green" id="ws-safe-btn" type="button">I'm Safe</button>
@@ -1739,7 +2080,8 @@
           <div class="ws-row">
             <div class="ws-copy">
               <div class="ws-label">Women Incidents Layer</div>
-              <div class="ws-sub">Highlight harassment, stalking, assault, and similar markers in pink while muting the rest.</div>
+              <div class="ws-sub">Highlight harassment, stalking, assault, and similar markers in pink while muting the
+                rest.</div>
             </div>
             <input type="checkbox" class="tgl" id="ws-women-layer-toggle">
           </div>
@@ -1762,18 +2104,21 @@
           <div class="ws-row">
             <div class="ws-copy">
               <div class="ws-label">Safe Spots on Map</div>
-              <div class="ws-sub">Police, hospitals, clinics, pharmacies, fire stations, and shelters (OpenStreetMap) as colour-coded pins. Route search also shows help along your path.</div>
+              <div class="ws-sub">Police, hospitals, clinics, pharmacies, fire stations, and shelters (OpenStreetMap) as
+                colour-coded pins. Route search also shows help along your path.</div>
             </div>
             <input type="checkbox" class="tgl" id="ws-safe-spots-toggle">
           </div>
           <div class="ws-extra" id="ws-safe-spots-extra">
-            <div class="ws-note" id="ws-safe-spots-status">Uses your live location if available; otherwise it uses the current map view.</div>
+            <div class="ws-note" id="ws-safe-spots-status">Uses your live location if available; otherwise it uses the
+              current map view.</div>
           </div>
 
           <div class="ws-row">
             <div class="ws-copy">
               <div class="ws-label">Disguise Mode</div>
-              <div class="ws-sub">Mask the page as a weather app while keeping all safety tools running underneath.</div>
+              <div class="ws-sub">Mask the page as a weather app while keeping all safety tools running underneath.
+              </div>
             </div>
             <input type="checkbox" class="tgl" id="ws-disguise-toggle">
           </div>
@@ -1781,7 +2126,8 @@
           <div class="ws-row">
             <div class="ws-copy">
               <div class="ws-label">Safe Route Finder</div>
-              <div class="ws-sub">Search a start and destination, compare three walking routes, and rank them by crime proximity and safe spots.</div>
+              <div class="ws-sub">Search a start and destination, compare three walking routes, and rank them by crime
+                proximity and safe spots.</div>
             </div>
             <input type="checkbox" class="tgl" id="ws-route-toggle">
           </div>
@@ -1789,8 +2135,10 @@
             <input class="ws-input" id="ws-route-start" type="text" placeholder="Starting location">
             <input class="ws-input" id="ws-route-end" type="text" placeholder="Destination">
             <button class="ws-action-btn ws-hidden" id="ws-find-route" type="button">Find Safe Route</button>
-            <div class="ws-note" id="ws-route-status">Walking routes work without a key (public OSRM). Optional: set OpenRouteService in the script for alternatives.</div>
-            <div class="ws-warning ws-hidden" id="ws-night-warning">Night travel detected. Prefer the green route and stay near safe spots.</div>
+            <div class="ws-note" id="ws-route-status">Walking routes work without a key (public OSRM). Optional: set
+              OpenRouteService in the script for alternatives.</div>
+            <div class="ws-warning ws-hidden" id="ws-night-warning">Night travel detected. Prefer the green route and
+              stay near safe spots.</div>
             <div class="ws-route-results" id="ws-route-results"></div>
           </div>
         </div>
@@ -1846,7 +2194,7 @@
         </div>
         <input type="checkbox" class="tgl" id="safemode-tgl">
       </div>
-      
+
 
 
       <div style="margin-top: 8px;">
@@ -1888,7 +2236,7 @@
       <div class="sp-alert-box">
         <div style="font-weight:600; font-size:0.9rem;">Alert sent</div>
         <div style="font-size:0.75rem;">Your location shared with <span id="sp-alert-count">2</span> contacts</div>
-        
+
         <div class="sp-alert-msg" id="sp-alert-msg-box">
           <!-- message preview -->
         </div>
@@ -1899,7 +2247,7 @@
       </div>
 
       <button class="sp-btn-sos" onclick="dispatchSafeModeAlerts()">SOS · Send again</button>
-      
+
       <div class="sp-tracking-row">
         <div>
           <div style="font-size:0.85rem; font-weight:500;">Live tracking on</div>
@@ -1907,7 +2255,7 @@
         </div>
         <div class="sp-live-tag">LIVE</div>
       </div>
-      
+
       <div class="sp-contact-list" id="sp-alert-contacts" style="margin-top:8px;">
         <!-- Notified contacts -->
       </div>
@@ -2158,7 +2506,7 @@
 
     function buildMarkers() {
       markers.forEach(m => map.removeLayer(m)); markers = [];
-      getFilt().forEach(d => {
+      getFilt().forEach((d, idx) => {
         const c = tC[d.type] || '#fff', sz = 7 + d.sev * 9;
         // Use a larger wrapper with radial-gradient glow instead of box-shadow.
         // box-shadow can desync from the element during Leaflet CSS transforms (pan/zoom).
@@ -2169,7 +2517,7 @@
           className: '',
           html: `<div style="position:relative;width:${glowSz}px;height:${glowSz}px;pointer-events:none">` +
             `<div style="position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,${c}55 0%,${c}22 30%,transparent 70%);animation:mp ${1.8 + d.sev}s infinite"></div>` +
-            `<div style="position:absolute;top:${off}px;left:${off}px;width:${sz}px;height:${sz}px;background:${c};border:1.5px solid rgba(255,255,255,.5);border-radius:50%;pointer-events:auto"></div>` +
+            `<div style="position:absolute;top:${off}px;left:${off}px;width:${sz}px;height:${sz}px;background:${c};border:1.5px solid rgba(255,255,255,.5);border-radius:50%;pointer-events:auto" data-marker-id="${idx}"></div>` +
             `</div>`,
           iconSize: [glowSz, glowSz], iconAnchor: [glowSz / 2, glowSz / 2]
         });
@@ -2179,7 +2527,14 @@
       <div class="pu-risk" style="color:${rc};border-color:${rc}30;background:${rc}15">● ${rl} RISK</div>
       <div class="pu-tags">${d.tags.map(t => `<span class="pu-tag">${t}</span>`).join('')}</div>
     </div>`;
-        markers.push(L.marker([d.lat, d.lng], { icon }).bindPopup(pop, { maxWidth: 240 }).addTo(map));
+        const marker = L.marker([d.lat, d.lng], { icon }).bindPopup(pop, { maxWidth: 240 }).addTo(map);
+
+        // Add click handler for detailed popup
+        marker.on('click', () => {
+          showIncidentDetails(d, idx);
+        });
+
+        markers.push(marker);
       });
     }
 
@@ -2518,14 +2873,14 @@
 
       fabBtn.addEventListener('click', requestLocation);
     })();
-    
+
     // ── Safe Mode Feature Logic ──
-    (function() {
+    (function () {
       const panel = document.getElementById('safe-panel');
       const toggle = document.getElementById('safemode-tgl');
       const statusTxt = document.getElementById('sp-status-text');
       const contactsDiv = document.getElementById('sp-contacts');
-      
+
       const vSetup = document.getElementById('sp-view-setup');
       const vCount = document.getElementById('sp-view-countdown');
       const vAlert = document.getElementById('sp-view-alert');
@@ -2533,7 +2888,7 @@
       let safeState = 'off'; // 'off' | 'watching' | 'countdown' | 'alert'
       let contacts = JSON.parse(localStorage.getItem('safemode_contacts') || '[]');
       let checkInterval;
-      
+
       // Countdown states
       let countdownTimer = null;
       let timeLeft = 10;
@@ -2548,15 +2903,15 @@
         }
         renderContacts();
       }
-      
+
       function saveContacts() {
         localStorage.setItem('safemode_contacts', JSON.stringify(contacts));
       }
-      
+
       function renderContacts() {
         contactsDiv.innerHTML = contacts.map((c, i) => `
           <div class="sp-contact">
-            <div class="sp-initials">${c.name.substring(0,2).toUpperCase()}</div>
+            <div class="sp-initials">${c.name.substring(0, 2).toUpperCase()}</div>
             <div class="sp-cinfo">
               <div class="sp-cname">${c.name}</div>
               <div class="sp-cnum">${c.phone}</div>
@@ -2566,7 +2921,7 @@
         `).join('');
       }
 
-      window.addSafeModeContact = function() {
+      window.addSafeModeContact = function () {
         const name = prompt("Contact Name (e.g. Mom):");
         if (!name) return;
         const phone = prompt("Phone Number (with country code):");
@@ -2575,8 +2930,8 @@
         saveContacts();
         renderContacts();
       };
-      
-      window.removeSafeContact = function(i) {
+
+      window.removeSafeContact = function (i) {
         contacts.splice(i, 1);
         saveContacts();
         renderContacts();
@@ -2598,24 +2953,24 @@
       // Geofence check using Haversine
       function calcDist(lat1, lon1, lat2, lon2) {
         const R = 6371e3; // metres
-        const f1 = lat1 * Math.PI/180;
-        const f2 = lat2 * Math.PI/180;
-        const df = (lat2-lat1) * Math.PI/180;
-        const dl = (lon2-lon1) * Math.PI/180;
-        const a = Math.sin(df/2) * Math.sin(df/2) +
-                  Math.cos(f1) * Math.cos(f2) *
-                  Math.sin(dl/2) * Math.sin(dl/2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        return R * c; 
+        const f1 = lat1 * Math.PI / 180;
+        const f2 = lat2 * Math.PI / 180;
+        const df = (lat2 - lat1) * Math.PI / 180;
+        const dl = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(df / 2) * Math.sin(df / 2) +
+          Math.cos(f1) * Math.cos(f2) *
+          Math.sin(dl / 2) * Math.sin(dl / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
       }
 
-      window.safeModeCheckGeofence = function(lat, lng) {
+      window.safeModeCheckGeofence = function (lat, lng) {
         if (safeState !== 'watching') return;
-        
+
         // Find if in any Hi/Critical zone (within radius = 300m)
         const zones = getRiskZones().filter(z => z.band === 'hi' || z.band === 'cr');
         const inDanger = zones.find(z => calcDist(lat, lng, z.lat, z.lng) <= 300);
-        
+
         if (inDanger) {
           triggerCountdown(inDanger);
         }
@@ -2625,15 +2980,15 @@
         if (safeState !== 'watching') return;
         safeState = 'countdown';
         currentDangerZone = zone;
-        
+
         document.getElementById('sp-zone-desc').textContent = `High assault reports near ${zone.name} area`;
         document.getElementById('sp-zone-badge').textContent = `${bandLabels[zone.band]} · ${zone.name}`;
         document.getElementById('sp-zone-badge').className = `risk-band ${zone.band}`;
-        
+
         timeLeft = 10;
         document.getElementById('sp-countdown').textContent = timeLeft;
         transitionView(vSetup, vCount);
-        
+
         countdownTimer = setInterval(() => {
           timeLeft--;
           document.getElementById('sp-countdown').textContent = timeLeft;
@@ -2644,7 +2999,7 @@
         }, 1000);
       }
 
-      window.cancelSafeModeAlert = function() {
+      window.cancelSafeModeAlert = function () {
         if (countdownTimer) clearInterval(countdownTimer);
         safeState = 'watching';
         transitionView(vCount, vSetup);
@@ -2655,43 +3010,43 @@
       function executeSafeAlerts() {
         safeState = 'alert';
         transitionView(vCount, vAlert);
-        
+
         // Populate alert view
         document.getElementById('sp-alert-count').textContent = contacts.length;
-        
+
         const cZone = currentDangerZone ? currentDangerZone.name : currentCity;
         // The message
         const msg = `Emergency! I need help near ${cZone}. Live location: https://maps.google.com/?q=${window.lastCoords ? window.lastCoords.lat.toFixed(4) : ''},${window.lastCoords ? window.lastCoords.lng.toFixed(4) : ''}`;
         document.getElementById('sp-alert-msg-box').textContent = msg;
-        
+
         // Notified list
         document.getElementById('sp-alert-contacts').innerHTML = contacts.map(c => `
           <div class="sp-contact" style="padding: 6px 12px">
-             <div class="sp-initials" style="width:24px;height:24px;font-size:0.6rem;background:#10b981">${c.name.substring(0,2).toUpperCase()}</div>
+             <div class="sp-initials" style="width:24px;height:24px;font-size:0.6rem;background:#10b981">${c.name.substring(0, 2).toUpperCase()}</div>
              <div class="sp-cinfo">
                <div class="sp-cname" style="font-size:0.75rem">${c.name} · Notified</div>
                <div class="sp-cnum" style="font-size:0.6rem">Delivered just now</div>
              </div>
           </div>
         `).join('');
-        
+
         // Dispatch
         window.dispatchSafeModeAlerts(msg);
       }
 
-      window.dispatchSafeModeAlerts = function(overMsg) {
+      window.dispatchSafeModeAlerts = function (overMsg) {
         const cZone = currentDangerZone ? currentDangerZone.name : currentCity;
         const msg = overMsg || `Emergency! I need help near ${cZone}. Live tracking: https://maps.google.com/?q=${window.lastCoords ? window.lastCoords.lat.toFixed(4) : ''},${window.lastCoords ? window.lastCoords.lng.toFixed(4) : ''}`;
-        
+
         if (contacts.length === 0) return alert("No contacts saved to notify!");
-        
+
         const first = contacts[0];
         // Open WhatsApp for primary
         const waLink = `https://wa.me/${first.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(msg)}`;
         window.open(waLink, '_blank');
-        
+
         // Fallback or secondary SMS
-        console.log(`[SafeMode] Mocking SMS dispatch via Fast2SMS API to ${contacts.map(c=>c.phone).join(', ')}: ${msg}`);
+        console.log(`[SafeMode] Mocking SMS dispatch via Fast2SMS API to ${contacts.map(c => c.phone).join(', ')}: ${msg}`);
       };
 
       // Toggles
@@ -2716,11 +3071,11 @@
           statusTxt.style.color = '#a1a1aa';
           if (countdownTimer) clearInterval(countdownTimer);
           if (window.watchId && !document.getElementById('loc-watch-btn')?.classList.contains('active')) {
-             window.toggleWatch(); // Turn off if it was just turned on for safe mode
+            window.toggleWatch(); // Turn off if it was just turned on for safe mode
           }
         }
       });
-      
+
 
 
       initContacts();
@@ -3542,6 +3897,7 @@ out center;`;
         if (!routeResultsEl) return;
         routeResultsEl.innerHTML = state.routeEntries.map(function (route, index) {
           const active = state.selectedRouteIndex === index || (state.selectedRouteIndex === null && index === 0);
+          const isSaved = isFavoriteRoute(routeStartInput.value, routeEndInput.value, index);
           return `<div class="ws-route-card${active ? ' active' : ''}">
             <div class="ws-route-head">
               <div class="ws-route-name">Route ${index + 1}</div>
@@ -3555,9 +3911,38 @@ out center;`;
             <div class="ws-route-actions">
               <button class="ws-action-btn${active ? ' green' : ''}" type="button" data-route-index="${index}">Use This Route</button>
               <button class="ws-action-btn warn" type="button" data-journey-index="${index}">Start 3D journey</button>
+              <button class="ws-action-btn${isSaved ? ' heart-active' : ''} heart-btn" type="button" data-save-route="${index}" title="${isSaved ? 'Remove from favorites' : 'Save route'}">${isSaved ? '❤️' : '🤍'}</button>
+              <button class="ws-action-btn share-btn" type="button" data-share-route="${index}" title="Share route">📤</button>
             </div>
           </div>`;
         }).join('');
+
+        // Add event listeners to save buttons
+        routeResultsEl.querySelectorAll('.heart-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const index = parseInt(btn.dataset.saveRoute);
+            const start = routeStartInput.value;
+            const end = routeEndInput.value;
+            const isSaved = isFavoriteRoute(start, end, index);
+
+            if (isSaved) {
+              removeFavoriteRoute(start, end, index);
+            } else {
+              saveFavoriteRoute(start, end, state.routeEntries[index]);
+            }
+            renderRouteCards();
+          });
+        });
+
+        // Add event listeners to share buttons
+        routeResultsEl.querySelectorAll('.share-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const index = parseInt(btn.dataset.shareRoute);
+            showRouteShareModal(routeStartInput.value, routeEndInput.value, state.routeEntries[index], index);
+          });
+        });
       }
 
       function drawRoutes(entries) {
@@ -3867,7 +4252,1235 @@ out center;`;
     mobileMenuBtn.addEventListener('click', toggleMobileMenu);
     lpCloseBtn.addEventListener('click', toggleMobileMenu);
     mobileOverlay.addEventListener('click', toggleMobileMenu);
+
+    // ==================== SAVED ROUTES MANAGEMENT ====================
+
+    function saveFavoriteRoute(startPlace, endPlace, routeData) {
+      try {
+        let saved = JSON.parse(localStorage.getItem('favoriteRoutes') || '[]');
+
+        // Prevent duplicates
+        const exists = saved.some(r => r.startPlace === startPlace && r.endPlace === endPlace);
+        if (exists) return;
+
+        const routeEntry = {
+          id: Date.now(),
+          startPlace,
+          endPlace,
+          distance: routeData.distance,
+          duration: routeData.duration,
+          score: routeData.score,
+          crimeCount: routeData.crimeCount,
+          safeCount: routeData.safeCount,
+          coordinates: routeData.coordinates,
+          timestamp: new Date().toISOString()
+        };
+
+        saved.push(routeEntry);
+        localStorage.setItem('favoriteRoutes', JSON.stringify(saved.slice(-50))); // Keep last 50
+      } catch (e) {
+        console.error('Error saving route:', e);
+      }
+    }
+
+    function isFavoriteRoute(startPlace, endPlace, index) {
+      try {
+        const saved = JSON.parse(localStorage.getItem('favoriteRoutes') || '[]');
+        return saved.some(r => r.startPlace === startPlace && r.endPlace === endPlace);
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function removeFavoriteRoute(startPlace, endPlace, index) {
+      try {
+        let saved = JSON.parse(localStorage.getItem('favoriteRoutes') || '[]');
+        saved = saved.filter(r => !(r.startPlace === startPlace && r.endPlace === endPlace));
+        localStorage.setItem('favoriteRoutes', JSON.stringify(saved));
+      } catch (e) {
+        console.error('Error removing route:', e);
+      }
+    }
+
+    function getFavoriteRoutes() {
+      try {
+        return JSON.parse(localStorage.getItem('favoriteRoutes') || '[]');
+      } catch (e) {
+        return [];
+      }
+    }
+
+    // ==================== NEW FEATURES: Search, Dark Mode, Stats, Help, Settings ====================
+
+    // Route Sharing Modal
+    function showRouteShareModal(startPlace, endPlace, routeData, routeIndex) {
+      const existing = document.getElementById('route-share-modal');
+      if (existing) existing.remove();
+
+      const theme = document.documentElement.getAttribute('data-theme');
+      const bgColor = theme === 'dark' ? '#161b22' : 'white';
+      const textColor = theme === 'dark' ? '#e6edf3' : '#1a1a1a';
+      const borderColor = theme === 'dark' ? '#30363d' : '#e0e0e0';
+
+      // Generate shareable URL
+      const routeLink = `${window.location.origin}${window.location.pathname}?route=${btoa(JSON.stringify({ start: startPlace, end: endPlace, score: routeData.score }))}`;
+      const shareMessage = `Check out this safe route from ${startPlace} to ${endPlace}! Safety Score: ${routeData.score} 🛣️ via ${document.title}`;
+
+      const modal = document.createElement('div');
+      modal.id = 'route-share-modal';
+      modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+      `;
+
+      modal.innerHTML = `
+        <div style="
+          background: ${bgColor};
+          color: ${textColor};
+          border-radius: 12px;
+          padding: 28px;
+          max-width: 420px;
+          box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+          border: 1px solid ${borderColor};
+        ">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="margin: 0; font-size: 18px; font-weight: 600;">Share Route</h2>
+            <button onclick="this.closest('#route-share-modal').remove()" style="
+              background: none;
+              border: none;
+              font-size: 24px;
+              cursor: pointer;
+              color: inherit;
+            ">×</button>
+          </div>
+
+          <div style="margin-bottom: 20px;">
+            <div style="font-size: 12px; font-weight: 600; text-transform: uppercase; opacity: 0.7; margin-bottom: 8px;">Route Summary</div>
+            <div style="
+              padding: 12px;
+              background: rgba(0,0,0,0.05);
+              border-radius: 8px;
+              font-size: 12px;
+              line-height: 1.6;
+            ">
+              <strong>From:</strong> ${startPlace}<br>
+              <strong>To:</strong> ${endPlace}<br>
+              <strong>Distance:</strong> ${formatDistance(routeData.distance)}<br>
+              <strong>Duration:</strong> ${formatDuration(routeData.duration)}<br>
+              <strong>Safety Score:</strong> ${routeData.score}
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+            <button onclick="
+              const text = '${shareMessage.replace(/'/g, "\\'")}';
+              const link = '${routeLink}';
+              window.open(\`https://wa.me/?text=\${encodeURIComponent(text + ' ' + link)}\`, '_blank');
+            " style="
+              width: 100%;
+              padding: 12px;
+              background: #25D366;
+              color: white;
+              border: none;
+              border-radius: 6px;
+              cursor: pointer;
+              font-weight: 600;
+              font-size: 13px;
+              transition: background 0.2s ease;
+            " onmouseover="this.style.background='#1eaa4c'" onmouseout="this.style.background='#25D366'">
+              💬 Share on WhatsApp
+            </button>
+
+            <button onclick="
+              const subject = encodeURIComponent('Safe Route: ${startPlace} to ${endPlace}');
+              const body = encodeURIComponent('${shareMessage}\\n\\nRoute Link: ${routeLink}');
+              window.open(\`mailto:?subject=\${subject}&body=\${body}\`, '_blank');
+            " style="
+              width: 100%;
+              padding: 12px;
+              background: #EA4335;
+              color: white;
+              border: none;
+              border-radius: 6px;
+              cursor: pointer;
+              font-weight: 600;
+              font-size: 13px;
+              transition: background 0.2s ease;
+            " onmouseover="this.style.background='#d33426'" onmouseout="this.style.background='#EA4335'">
+              📧 Share via Email
+            </button>
+          </div>
+
+          <div style="margin-bottom: 16px;">
+            <div style="font-size: 12px; font-weight: 600; text-transform: uppercase; opacity: 0.7; margin-bottom: 8px;">Copy Link</div>
+            <div style="display: flex; gap: 8px;">
+              <input type="text" value="${routeLink}" readonly style="
+                flex: 1;
+                padding: 10px 12px;
+                border: 1px solid ${borderColor};
+                border-radius: 6px;
+                background: rgba(0,0,0,0.05);
+                color: ${textColor};
+                font-size: 12px;
+                font-family: monospace;
+              ">
+              <button onclick="
+                const link = this.previousElementSibling.value;
+                navigator.clipboard.writeText(link).then(() => {
+                  this.textContent = '✓ Copied!';
+                  setTimeout(() => { this.textContent = 'Copy'; }, 2000);
+                });
+              " style="
+                padding: 10px 16px;
+                background: #2196F3;
+                color: white;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                font-weight: 600;
+                font-size: 12px;
+                white-space: nowrap;
+                transition: background 0.2s ease;
+              " onmouseover="this.style.background='#1976D2'" onmouseout="this.style.background='#2196F3'">
+                Copy
+              </button>
+            </div>
+          </div>
+
+          <div style="
+            padding: 12px;
+            background: rgba(33, 150, 243, 0.1);
+            border-radius: 6px;
+            font-size: 11px;
+            text-align: center;
+            opacity: 0.8;
+          ">
+            💡 Tip: Share this route with friends and family for accountability and safety!
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(modal);
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.remove();
+      });
+    }
+
+    // Incident Details Popup
+    function showIncidentDetails(incident, incidentIndex) {
+      const existing = document.getElementById('incident-details-panel');
+      if (existing) existing.remove();
+
+      const theme = document.documentElement.getAttribute('data-theme');
+      const bgColor = theme === 'dark' ? '#161b22' : 'white';
+      const textColor = theme === 'dark' ? '#e6edf3' : '#1a1a1a';
+      const borderColor = theme === 'dark' ? '#30363d' : '#e0e0e0';
+      const severityColor = rC(incident.sev);
+      const riskLevel = rL(incident.sev);
+
+      // Find related incidents in same zone
+      const relatedIncidents = crimes.filter(c =>
+        c.city === incident.city &&
+        c.lat === incident.lat &&
+        c.lng === incident.lng &&
+        crimes.indexOf(c) !== incidentIndex
+      ).slice(0, 3);
+
+      // Get estimated date from hour
+      const hours = ['12 AM', '1 AM', '2 AM', '3 AM', '4 AM', '5 AM', '6 AM', '7 AM', '8 AM', '9 AM', '10 AM', '11 AM',
+        '12 PM', '1 PM', '2 PM', '3 PM', '4 PM', '5 PM', '6 PM', '7 PM', '8 PM', '9 PM', '10 PM', '11 PM'];
+      const timeStr = hours[incident.hour] || 'Unknown Time';
+
+      const panel = document.createElement('div');
+      panel.id = 'incident-details-panel';
+      panel.style.cssText = `
+        position: fixed;
+        right: 0;
+        top: 0;
+        width: 360px;
+        height: 100vh;
+        background: ${bgColor};
+        border-left: 1px solid ${borderColor};
+        color: ${textColor};
+        z-index: 998;
+        overflow-y: auto;
+        box-shadow: -2px 0 12px rgba(0,0,0,0.15);
+      `;
+
+      panel.innerHTML = `
+        <div style="padding: 20px 24px; border-bottom: 1px solid ${borderColor}; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: ${bgColor};">
+          <h2 style="margin: 0; font-size: 18px; font-weight: 600;">Incident Details</h2>
+          <button onclick="document.getElementById('incident-details-panel').remove()" style="
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: inherit;
+          ">×</button>
+        </div>
+
+        <div style="padding: 24px;">
+          <!-- Location & Area -->
+          <div style="margin-bottom: 24px;">
+            <h3 style="margin: 0 0 12px 0; font-size: 12px; font-weight: 600; text-transform: uppercase; opacity: 0.7;">Location</h3>
+            <div style="font-size: 18px; font-weight: 600; margin-bottom: 4px;">${incident.area}</div>
+            <div style="font-size: 12px; opacity: 0.6;">${incident.city}</div>
+            <div style="font-size: 11px; opacity: 0.5; margin-top: 8px;">📍 ${incident.lat.toFixed(4)}, ${incident.lng.toFixed(4)}</div>
+          </div>
+
+          <!-- Crime Type & Severity -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px;">
+            <div style="
+              padding: 12px;
+              background: rgba(0,0,0,0.05);
+              border-radius: 8px;
+              border-left: 3px solid ${tC[incident.type] || '#2196F3'};
+            ">
+              <div style="font-size: 11px; opacity: 0.7; margin-bottom: 4px;">Crime Type</div>
+              <div style="font-size: 14px; font-weight: 600; text-transform: capitalize;">${incident.type}</div>
+            </div>
+            <div style="
+              padding: 12px;
+              background: ${severityColor}15;
+              border-radius: 8px;
+              border-left: 3px solid ${severityColor};
+            ">
+              <div style="font-size: 11px; opacity: 0.7; margin-bottom: 4px;">Risk Level</div>
+              <div style="font-size: 14px; font-weight: 600; color: ${severityColor};">${riskLevel}</div>
+            </div>
+          </div>
+
+          <!-- Time Information -->
+          <div style="margin-bottom: 24px;">
+            <h3 style="margin: 0 0 12px 0; font-size: 12px; font-weight: 600; text-transform: uppercase; opacity: 0.7;">Time</h3>
+            <div style="
+              padding: 12px;
+              background: rgba(0,0,0,0.05);
+              border-radius: 8px;
+              border-left: 3px solid #2196F3;
+            ">
+              <div style="font-size: 14px; font-weight: 500;">🕐 ${timeStr}</div>
+              <div style="font-size: 11px; opacity: 0.6; margin-top: 4px;">Hour #${incident.hour}</div>
+            </div>
+          </div>
+
+          <!-- Tags/Incidents -->
+          ${incident.tags.length > 0 ? `
+            <div style="margin-bottom: 24px;">
+              <h3 style="margin: 0 0 12px 0; font-size: 12px; font-weight: 600; text-transform: uppercase; opacity: 0.7;">Tags</h3>
+              <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                ${incident.tags.map(tag => `
+                  <span style="
+                    display: inline-block;
+                    padding: 4px 10px;
+                    background: ${tC[incident.type] || '#2196F3'}20;
+                    border: 1px solid ${tC[incident.type] || '#2196F3'}40;
+                    border-radius: 12px;
+                    font-size: 11px;
+                    font-weight: 500;
+                  ">${tag}</span>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+
+          <!-- Related Incidents -->
+          ${relatedIncidents.length > 0 ? `
+            <div style="margin-bottom: 24px;">
+              <h3 style="margin: 0 0 12px 0; font-size: 12px; font-weight: 600; text-transform: uppercase; opacity: 0.7;">Related Incidents (${relatedIncidents.length})</h3>
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                ${relatedIncidents.map(rel => `
+                  <div style="
+                    padding: 10px 12px;
+                    background: rgba(0,0,0,0.05);
+                    border-radius: 6px;
+                    border-left: 2px solid ${tC[rel.type] || '#ccc'};
+                    cursor: pointer;
+                    transition: background 0.2s ease;
+                  " onmouseover="this.style.background='rgba(0,0,0,0.08)'" onmouseout="this.style.background='rgba(0,0,0,0.05)'">
+                    <div style="font-size: 12px; font-weight: 500; text-transform: capitalize;">${rel.type}</div>
+                    <div style="font-size: 11px; opacity: 0.6; margin-top: 2px;">${rel.tags.join(', ') || 'No tags'}</div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : `
+            <div style="
+              padding: 16px;
+              background: rgba(0,0,0,0.05);
+              border-radius: 8px;
+              text-align: center;
+              font-size: 12px;
+              opacity: 0.6;
+            ">
+              No related incidents in this location
+            </div>
+          `}
+
+          <!-- Action Buttons -->
+          <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 24px;">
+            <button onclick="
+              map.setView([${incident.lat}, ${incident.lng}], 16, {animate: true});
+              document.getElementById('incident-details-panel').remove();
+            " style="
+              width: 100%;
+              padding: 12px;
+              background: #2196F3;
+              color: white;
+              border: none;
+              border-radius: 6px;
+              cursor: pointer;
+              font-weight: 600;
+              font-size: 13px;
+              transition: background 0.2s ease;
+            " onmouseover="this.style.background='#1976D2'" onmouseout="this.style.background='#2196F3'">
+              📍 Center on Map
+            </button>
+            <button onclick="
+              searchInput.value = '${incident.area}';
+              searchInput.dispatchEvent(new Event('input'));
+            " style="
+              width: 100%;
+              padding: 12px;
+              background: #4CAF50;
+              color: white;
+              border: none;
+              border-radius: 6px;
+              cursor: pointer;
+              font-weight: 600;
+              font-size: 13px;
+              transition: background 0.2s ease;
+            " onmouseover="this.style.background='#45a049'" onmouseout="this.style.background='#4CAF50'">
+              🔍 Search Area
+            </button>
+            <button onclick="
+              alert('Report submitted. Our team will review this incident.');
+            " style="
+              width: 100%;
+              padding: 12px;
+              background: #FF6B6B;
+              color: white;
+              border: none;
+              border-radius: 6px;
+              cursor: pointer;
+              font-weight: 600;
+              font-size: 13px;
+              transition: background 0.2s ease;
+            " onmouseover="this.style.background='#ee5a52'" onmouseout="this.style.background='#FF6B6B'">
+              ⚠️ Report Incident
+            </button>
+          </div>
+
+          <!-- Safety Recommendations -->
+          <div style="margin-top: 24px; padding: 16px; background: rgba(255,193,7,0.1); border-left: 3px solid #FFC107; border-radius: 6px;">
+            <div style="font-size: 12px; font-weight: 600; margin-bottom: 8px;">💡 Safety Tips</div>
+            <ul style="margin: 0; padding-left: 16px; font-size: 11px; line-height: 1.6;">
+              <li>Avoid this area during late night hours</li>
+              <li>Travel with companions when possible</li>
+              <li>Keep emergency contacts accessible</li>
+              <li>Trust your instincts about safety</li>
+            </ul>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(panel);
+    }
+
+
+    // Initialize Theme from localStorage
+    const savedTheme = localStorage.getItem('crimeMapTheme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+
+    // Check if first visit and show onboarding
+    const hasSeenOnboarding = localStorage.getItem('crimeMapOnboarded');
+    if (!hasSeenOnboarding) {
+      setTimeout(() => {
+        showOnboardingCarousel();
+      }, 1500); // Show after 1.5s
+    }
+
+    // Theme Toggle (Dark Mode)
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    themeToggleBtn.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('crimeMapTheme', newTheme);
+
+      // Update button appearance
+      themeToggleBtn.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+    });
+
+    // Set initial theme toggle button text
+    if (savedTheme === 'dark') {
+      themeToggleBtn.textContent = '☀️';
+    }
+
+    // Search Feature
+    const searchInput = document.getElementById('search-input');
+    const searchResults = document.getElementById('search-results');
+    let searchDebounceTimer;
+
+    // Helper function to get all risk zones for current city
+    function getCurrentRiskZones() {
+      const zones = {
+        'Lucknow': riskZonesLucknow,
+        'Kanpur': riskZonesKanpur,
+        'Varanasi': riskZonesVaranasi,
+        'Prayagraj': riskZonesPrayagraj
+      };
+      return zones[state.currentCity] || [];
+    }
+
+    // Helper function to count crimes in a zone
+    function countCrimesInZone(zone) {
+      const threshold = 800; // 800 meters
+      return crimes.filter(crime => {
+        if (crime.city !== state.currentCity) return false;
+        const distance = haversineMeters(
+          parseFloat(zone.lat),
+          parseFloat(zone.lng),
+          parseFloat(crime.lat),
+          parseFloat(crime.lng)
+        );
+        return distance <= threshold;
+      }).length;
+    }
+
+    searchInput.addEventListener('input', (e) => {
+      clearTimeout(searchDebounceTimer);
+      const query = e.target.value.toLowerCase().trim();
+
+      if (!query) {
+        setHidden(searchResults, true);
+        return;
+      }
+
+      searchDebounceTimer = setTimeout(() => {
+        const zones = getCurrentRiskZones();
+        const filtered = zones.filter(zone =>
+          zone.name.toLowerCase().includes(query)
+        ).slice(0, 8); // Limit to 8 results
+
+        if (filtered.length === 0) {
+          setHidden(searchResults, true);
+          return;
+        }
+
+        searchResults.innerHTML = filtered.map(zone => {
+          const crimeCount = countCrimesInZone(zone);
+          const riskBand = zone.band?.toUpperCase() || 'MODERATE';
+          return `
+            <div class="search-result-item" data-lat="${zone.lat}" data-lng="${zone.lng}">
+              <div>
+                <div class="search-result-name">${zone.name}</div>
+                <div style="font-size: 11px; color: #666;">${riskBand}</div>
+              </div>
+              <div class="search-result-count">${crimeCount} incident${crimeCount !== 1 ? 's' : ''}</div>
+            </div>
+          `;
+        }).join('');
+
+        // Add click handlers to search results
+        searchResults.querySelectorAll('.search-result-item').forEach(item => {
+          item.addEventListener('click', () => {
+            const lat = parseFloat(item.dataset.lat);
+            const lng = parseFloat(item.dataset.lng);
+
+            // Zoom to zone on map
+            map.setView([lat, lng], 14, { animate: true, duration: 0.8 });
+
+            // Clear search and hide results
+            searchInput.value = '';
+            setHidden(searchResults, true);
+          });
+        });
+
+        setHidden(searchResults, false);
+      }, 300); // 300ms debounce
+    });
+
+    // Close search results when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.search-container')) {
+        setHidden(searchResults, true);
+      }
+    });
+
+    // Stats Dashboard Toggle
+    const statsToggleBtn = document.getElementById('stats-toggle');
+    statsToggleBtn.addEventListener('click', () => {
+      const existingStats = document.getElementById('stats-dashboard');
+      if (existingStats) {
+        existingStats.remove();
+        return;
+      }
+
+      // Create stats dashboard
+      const stats = document.createElement('div');
+      stats.id = 'stats-dashboard';
+      stats.style.cssText = `
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        width: 320px;
+        max-height: 600px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+        padding: 20px;
+        z-index: 999;
+        overflow-y: auto;
+        border: 1px solid rgba(0,0,0,0.08);
+      `;
+
+      if (document.documentElement.getAttribute('data-theme') === 'dark') {
+        stats.style.background = '#161b22';
+        stats.style.color = '#e6edf3';
+        stats.style.borderColor = 'rgba(48,54,61,0.5)';
+      }
+
+      // Calculate city crime statistics
+      const cityCrimes = crimes.filter(c => c.city === state.currentCity);
+      const crimeTypes = {};
+      cityCrimes.forEach(crime => {
+        crimeTypes[crime.type] = (crimeTypes[crime.type] || 0) + 1;
+      });
+
+      const sortedTypes = Object.entries(crimeTypes)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3);
+
+      // Safest and most risky zones
+      const zones = getCurrentRiskZones();
+      const zoneSafety = zones.map(zone => ({
+        ...zone,
+        crimeCount: countCrimesInZone(zone)
+      })).sort((a, b) => a.crimeCount - b.crimeCount);
+
+      const safestZones = zoneSafety.slice(0, 3);
+      const riskyZones = zoneSafety.slice(-3).reverse();
+
+      stats.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <h3 style="margin: 0; font-size: 16px; font-weight: 600;">Crime Statistics</h3>
+          <button onclick="this.closest('#stats-dashboard').remove()" style="
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: inherit;
+          ">×</button>
+        </div>
+
+        <div style="background: rgba(33,150,243,0.1); padding: 12px; border-radius: 8px; margin-bottom: 16px; text-align: center;">
+          <div style="font-size: 28px; font-weight: bold; color: #2196F3;">${cityCrimes.length}</div>
+          <div style="font-size: 11px; color: #666; margin-top: 4px;">Total Incidents in ${state.currentCity}</div>
+        </div>
+
+        <div style="margin-bottom: 16px;">
+          <div style="font-size: 12px; font-weight: 600; margin-bottom: 8px;">Top Crime Types</div>
+          ${sortedTypes.map(([type, count]) => {
+        const percentage = Math.round((count / cityCrimes.length) * 100);
+        return `
+              <div style="margin-bottom: 8px;">
+                <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
+                  <span style="text-transform: capitalize;">${type}</span>
+                  <span>${percentage}%</span>
+                </div>
+                <div style="width: 100%; height: 6px; background: rgba(0,0,0,0.1); border-radius: 3px; overflow: hidden;">
+                  <div style="width: ${percentage}%; height: 100%; background: #2196F3;"></div>
+                </div>
+              </div>
+            `;
+      }).join('')}
+        </div>
+
+        <div style="margin-bottom: 16px;">
+          <div style="font-size: 12px; font-weight: 600; margin-bottom: 8px;">🟢 Safest Areas</div>
+          ${safestZones.map(zone => `
+            <div style="font-size: 11px; padding: 6px 0; border-bottom: 1px solid rgba(0,0,0,0.05);">
+              <strong>${zone.name}</strong> (${zone.crimeCount} incidents)
+            </div>
+          `).join('')}
+        </div>
+
+        <div>
+          <div style="font-size: 12px; font-weight: 600; margin-bottom: 8px;">🔴 Most Risky Areas</div>
+          ${riskyZones.map(zone => `
+            <div style="font-size: 11px; padding: 6px 0; border-bottom: 1px solid rgba(0,0,0,0.05);">
+              <strong>${zone.name}</strong> (${zone.crimeCount} incidents)
+            </div>
+          `).join('')}
+        </div>
+      `;
+
+      document.body.appendChild(stats);
+    });
+
+    // Help Button
+    const helpBtn = document.getElementById('help-btn');
+    helpBtn.addEventListener('click', () => {
+      const existingHelp = document.getElementById('help-modal');
+      if (existingHelp) {
+        existingHelp.remove();
+        return;
+      }
+
+      const helpModal = document.createElement('div');
+      helpModal.id = 'help-modal';
+      helpModal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+      `;
+
+      const theme = document.documentElement.getAttribute('data-theme');
+      const bgColor = theme === 'dark' ? '#161b22' : 'white';
+      const textColor = theme === 'dark' ? '#e6edf3' : '#1a1a1a';
+
+      helpModal.innerHTML = `
+        <div style="
+          background: ${bgColor};
+          color: ${textColor};
+          border-radius: 12px;
+          padding: 32px;
+          max-width: 500px;
+          max-height: 80vh;
+          overflow-y: auto;
+          box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        ">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+            <h2 style="margin: 0;">Help & FAQ</h2>
+            <button onclick="this.closest('#help-modal').remove()" style="
+              background: none;
+              border: none;
+              font-size: 24px;
+              cursor: pointer;
+              color: inherit;
+            ">×</button>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <div>
+              <h3 style="margin: 0 0 8px 0; font-size: 14px;">🗺️ How do I use the crime map?</h3>
+              <p style="margin: 0; font-size: 12px; line-height: 1.5; opacity: 0.8;">
+                Select a city, use filters to view specific crime types, and hover over zones to see risk levels.
+              </p>
+            </div>
+
+            <div>
+              <h3 style="margin: 0 0 8px 0; font-size: 14px;">🛣️ How do I find a safe route?</h3>
+              <p style="margin: 0; font-size: 12px; line-height: 1.5; opacity: 0.8;">
+                Click on a route option to see the 3D journey view. Green start marker, red end marker. Use play button to navigate.
+              </p>
+            </div>
+
+            <div>
+              <h3 style="margin: 0 0 8px 0; font-size: 14px;">⚠️ What's the Live Route Intelligence panel?</h3>
+              <p style="margin: 0; font-size: 12px; line-height: 1.5; opacity: 0.8;">
+                Alerts you about crime zones along your route. Safety score updates in real-time as you navigate.
+              </p>
+            </div>
+
+            <div>
+              <h3 style="margin: 0 0 8px 0; font-size: 14px;">📱 SOS & Women Safety Features</h3>
+              <p style="margin: 0; font-size: 12px; line-height: 1.5; opacity: 0.8;">
+                Shake device to trigger SOS, tap safe spots, or use emergency dial. Check Women Safety tab in the left panel.
+              </p>
+            </div>
+
+            <div>
+              <h3 style="margin: 0 0 8px 0; font-size: 14px;">🔍 How do I search areas?</h3>
+              <p style="margin: 0; font-size: 12px; line-height: 1.5; opacity: 0.8;">
+                Use the search bar at the top to find zones by name. Click results to zoom to that area.
+              </p>
+            </div>
+
+            <div>
+              <h3 style="margin: 0 0 8px 0; font-size: 14px;">🌙 Dark Mode</h3>
+              <p style="margin: 0; font-size: 12px; line-height: 1.5; opacity: 0.8;">
+                Click the moon icon (🌙) in the header to toggle dark mode. Your preference is saved automatically.
+              </p>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(helpModal);
+      helpModal.addEventListener('click', (e) => {
+        if (e.target === helpModal) helpModal.remove();
+      });
+    });
+
+    // Settings Button (placeholder for future)
+    const settingsBtn = document.getElementById('settings-btn');
+    settingsBtn.addEventListener('click', () => {
+      showSettingsPanel();
+    });
+
+    // ==================== EMERGENCY CONTACTS MANAGEMENT ====================
+
+    function getEmergencyContacts() {
+      try {
+        return JSON.parse(localStorage.getItem('emergencyContacts') || '[]');
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveEmergencyContacts(contacts) {
+      try {
+        localStorage.setItem('emergencyContacts', JSON.stringify(contacts.slice(0, 10))); // Max 10
+      } catch (e) {
+        console.error('Error saving contacts:', e);
+      }
+    }
+
+    function addEmergencyContact(name, phone) {
+      const contacts = getEmergencyContacts();
+      contacts.push({
+        id: Date.now(),
+        name,
+        phone: phone.replace(/[^0-9+]/g, ''), // Sanitize
+        timestamp: new Date().toISOString()
+      });
+      saveEmergencyContacts(contacts);
+      return contacts;
+    }
+
+    function removeEmergencyContact(id) {
+      const contacts = getEmergencyContacts().filter(c => c.id !== id);
+      saveEmergencyContacts(contacts);
+      return contacts;
+    }
+
+    // ==================== ONBOARDING CAROUSEL ====================
+
+    function showOnboardingCarousel() {
+      const theme = document.documentElement.getAttribute('data-theme');
+      const bgColor = theme === 'dark' ? '#161b22' : 'white';
+      const textColor = theme === 'dark' ? '#e6edf3' : '#1a1a1a';
+
+      const slides = [
+        {
+          title: '🛡️ Women Safety First',
+          description: 'Get real-time crime intelligence to plan safe routes through Uttar Pradesh',
+          icon: '🗺️'
+        },
+        {
+          title: '📊 Smart Route Finding',
+          description: 'Compare 3 routes with safety scores, crime analysis, and safe spots nearby',
+          icon: '🛣️'
+        },
+        {
+          title: '⚠️ Live Route Alerts',
+          description: 'Get AI-powered warnings about crime zones as you navigate your journey',
+          icon: '🚨'
+        },
+        {
+          title: '🔍 Search & Explore',
+          description: 'Search areas by name to see crime statistics and high-risk zones',
+          icon: '🔎'
+        },
+        {
+          title: '📱 SOS Features',
+          description: 'Shake device for SOS, emergency dial, timer mode, and safe spot finder',
+          icon: '📲'
+        }
+      ];
+
+      let currentSlide = 0;
+      const overlay = document.createElement('div');
+      overlay.id = 'onboarding-overlay';
+      overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1001;
+      `;
+
+      const carousel = document.createElement('div');
+      carousel.style.cssText = `
+        background: ${bgColor};
+        color: ${textColor};
+        border-radius: 16px;
+        padding: 40px 32px;
+        max-width: 480px;
+        width: 90%;
+        box-shadow: 0 12px 48px rgba(0,0,0,0.3);
+        text-align: center;
+      `;
+
+      function renderSlide() {
+        const slide = slides[currentSlide];
+        carousel.innerHTML = `
+          <div style="margin-bottom: 24px;">
+            <div style="font-size: 64px; margin-bottom: 16px;">${slide.icon}</div>
+            <h2 style="margin: 0 0 12px 0; font-size: 24px; font-weight: 700;">${slide.title}</h2>
+            <p style="margin: 0; font-size: 14px; line-height: 1.6; opacity: 0.8;">${slide.description}</p>
+          </div>
+
+          <!-- Progress Dots -->
+          <div style="display: flex; justify-content: center; gap: 8px; margin: 24px 0;">
+            ${slides.map((_, i) => `
+              <div style="
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: ${i === currentSlide ? '#2196F3' : 'rgba(0,0,0,0.1)'};
+                transition: background 0.3s ease;
+              "></div>
+            `).join('')}
+          </div>
+
+          <!-- Navigation -->
+          <div style="display: flex; gap: 8px;">
+            ${currentSlide > 0 ? `
+              <button onclick="
+                currentSlide--;
+                renderSlide();
+              " style="
+                flex: 1;
+                padding: 12px;
+                background: rgba(0,0,0,0.1);
+                color: ${textColor};
+                border: 1px solid rgba(0,0,0,0.1);
+                border-radius: 8px;
+                cursor: pointer;
+                font-weight: 600;
+                font-size: 13px;
+              ">
+                ← Back
+              </button>
+            ` : ''}
+            ${currentSlide < slides.length - 1 ? `
+              <button onclick="
+                currentSlide++;
+                renderSlide();
+              " style="
+                flex: 1;
+                padding: 12px;
+                background: #2196F3;
+                color: white;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                font-weight: 600;
+                font-size: 13px;
+              ">
+                Next →
+              </button>
+            ` : `
+              <button onclick="
+                localStorage.setItem('crimeMapOnboarded', 'true');
+                document.getElementById('onboarding-overlay').remove();
+              " style="
+                width: 100%;
+                padding: 12px;
+                background: #4CAF50;
+                color: white;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                font-weight: 600;
+                font-size: 13px;
+              ">
+                ✓ Got it! Let's Go
+              </button>
+            `}
+          </div>
+
+          <!-- Skip Button -->
+          <button onclick="
+            localStorage.setItem('crimeMapOnboarded', 'true');
+            document.getElementById('onboarding-overlay').remove();
+          " style="
+            width: 100%;
+            margin-top: 12px;
+            padding: 8px;
+            background: transparent;
+            color: ${textColor};
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+            opacity: 0.6;
+          ">
+            Skip tutorial
+          </button>
+        `;
+      }
+
+      carousel.id = 'onboarding-carousel';
+      overlay.appendChild(carousel);
+      document.body.appendChild(overlay);
+      renderSlide();
+    }
+
+    // ==================== SETTINGS PANEL ====================
+
+    function showSettingsPanel() {
+      const existing = document.getElementById('settings-panel-modal');
+      if (existing) {
+        existing.remove();
+        return;
+      }
+
+      const theme = document.documentElement.getAttribute('data-theme');
+      const bgColor = theme === 'dark' ? '#161b22' : 'white';
+      const textColor = theme === 'dark' ? '#e6edf3' : '#1a1a1a';
+      const borderColor = theme === 'dark' ? '#30363d' : '#e0e0e0';
+      const accentBg = theme === 'dark' ? 'rgba(48,54,61,0.3)' : 'rgba(0,0,0,0.05)';
+
+      const contacts = getEmergencyContacts();
+      const overlay = document.createElement('div');
+      overlay.id = 'settings-panel-modal';
+      overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+      `;
+
+      overlay.innerHTML = `
+        <div style="
+          background: ${bgColor};
+          color: ${textColor};
+          border-radius: 12px;
+          padding: 0;
+          max-width: 500px;
+          max-height: 80vh;
+          overflow: hidden;
+          box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+          border: 1px solid ${borderColor};
+          display: flex;
+          flex-direction: column;
+        ">
+          <!-- Header -->
+          <div style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid ${borderColor};
+            background: ${accentBg};
+          ">
+            <h2 style="margin: 0; font-size: 18px; font-weight: 600;">Settings</h2>
+            <button onclick="document.getElementById('settings-panel-modal').remove()" style="
+              background: none;
+              border: none;
+              font-size: 24px;
+              cursor: pointer;
+              color: inherit;
+            ">×</button>
+          </div>
+
+          <!-- Content -->
+          <div style="overflow-y: auto; flex: 1; padding: 24px;">
+            <!-- Theme Setting -->
+            <div style="margin-bottom: 24px;">
+              <h3 style="margin: 0 0 12px 0; font-size: 13px; font-weight: 600; text-transform: uppercase; opacity: 0.7;">Appearance</h3>
+              <div style="
+                padding: 12px 16px;
+                background: ${accentBg};
+                border-radius: 8px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+              ">
+                <label style="font-size: 13px; font-weight: 500;">Dark Mode</label>
+                <button onclick="
+                  const currentTheme = document.documentElement.getAttribute('data-theme');
+                  const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                  document.documentElement.setAttribute('data-theme', newTheme);
+                  localStorage.setItem('crimeMapTheme', newTheme);
+                  document.getElementById('theme-toggle').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+                  this.textContent = newTheme === 'dark' ? 'ON' : 'OFF';
+                " style="
+                  padding: 6px 12px;
+                  background: ${theme === 'dark' ? '#238636' : '#ddd'};
+                  color: ${theme === 'dark' ? 'white' : '#000'};
+                  border: none;
+                  border-radius: 4px;
+                  cursor: pointer;
+                  font-size: 12px;
+                  font-weight: 600;
+                ">
+                  ${theme === 'dark' ? 'ON' : 'OFF'}
+                </button>
+              </div>
+            </div>
+
+            <!-- Emergency Contacts -->
+            <div style="margin-bottom: 24px;">
+              <h3 style="margin: 0 0 12px 0; font-size: 13px; font-weight: 600; text-transform: uppercase; opacity: 0.7;">🚨 Emergency Contacts (${contacts.length}/10)</h3>
+              
+              <!-- Add New Contact Form -->
+              <div style="margin-bottom: 16px; padding: 12px; background: ${accentBg}; border-radius: 8px;">
+                <input type="text" id="contact-name-input" placeholder="Name (e.g., Mom)" style="
+                  width: 100%;
+                  padding: 10px 12px;
+                  border: 1px solid ${borderColor};
+                  border-radius: 6px;
+                  background: ${bgColor};
+                  color: ${textColor};
+                  margin-bottom: 8px;
+                  font-size: 12px;
+                  box-sizing: border-box;
+                " />
+                <div style="display: flex; gap: 8px;">
+                  <input type="tel" id="contact-phone-input" placeholder="Phone (+91 9876543210)" style="
+                    flex: 1;
+                    padding: 10px 12px;
+                    border: 1px solid ${borderColor};
+                    border-radius: 6px;
+                    background: ${bgColor};
+                    color: ${textColor};
+                    font-size: 12px;
+                  " />
+                  <button onclick="
+                    const name = document.getElementById('contact-name-input').value.trim();
+                    const phone = document.getElementById('contact-phone-input').value.trim();
+                    if (!name || !phone) {
+                      alert('Please enter both name and phone');
+                      return;
+                    }
+                    addEmergencyContact(name, phone);
+                    document.getElementById('contact-name-input').value = '';
+                    document.getElementById('contact-phone-input').value = '';
+                    // Refresh the panel
+                    document.getElementById('settings-panel-modal').remove();
+                    showSettingsPanel();
+                  " style="
+                    padding: 10px 16px;
+                    background: #2196F3;
+                    color: white;
+                    border: none;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    font-weight: 600;
+                    font-size: 12px;
+                  ">
+                    Add
+                  </button>
+                </div>
+              </div>
+
+              <!-- Contacts List -->
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                ${contacts.length === 0 ? `
+                  <div style="padding: 12px; background: ${accentBg}; border-radius: 6px; text-align: center; font-size: 12px; opacity: 0.6;">
+                    No emergency contacts yet
+                  </div>
+                ` : contacts.map(contact => `
+                  <div style="
+                    padding: 12px;
+                    background: ${accentBg};
+                    border-radius: 6px;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                  ">
+                    <div>
+                      <div style="font-weight: 600; font-size: 13px;">${contact.name}</div>
+                      <div style="font-size: 11px; opacity: 0.6; margin-top: 2px;">${contact.phone}</div>
+                    </div>
+                    <button onclick="
+                      removeEmergencyContact(${contact.id});
+                      document.getElementById('settings-panel-modal').remove();
+                      showSettingsPanel();
+                    " style="
+                      background: #FF6B6B;
+                      color: white;
+                      border: none;
+                      border-radius: 4px;
+                      padding: 6px 10px;
+                      cursor: pointer;
+                      font-size: 11px;
+                      font-weight: 600;
+                    ">
+                      Remove
+                    </button>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Data Management -->
+            <div style="margin-bottom: 24px;">
+              <h3 style="margin: 0 0 12px 0; font-size: 13px; font-weight: 600; text-transform: uppercase; opacity: 0.7;">Data</h3>
+              <button onclick="
+                if (confirm('Delete all favorites, history, and settings?')) {
+                  localStorage.clear();
+                  location.reload();
+                }
+              " style="
+                width: 100%;
+                padding: 10px;
+                background: #FF6B6B;
+                color: white;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                font-weight: 600;
+                font-size: 12px;
+              ">
+                🗑️ Clear All Data
+              </button>
+            </div>
+
+            <!-- About -->
+            <div style="
+              padding: 12px;
+              background: ${accentBg};
+              border-radius: 8px;
+              font-size: 11px;
+              text-align: center;
+              opacity: 0.7;
+            ">
+              <strong>${document.title}</strong><br>
+              Women's Safety Crime Intelligence Platform<br>
+              Uttar Pradesh Edition
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(overlay);
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) overlay.remove();
+      });
+    }
   </script>
 </body>
 
-</html>  
+</html>
