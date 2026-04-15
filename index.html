@@ -1580,7 +1580,6 @@
     }
 
 
-
     /* Mobile Menu Overlay */
     .mobile-overlay {
       position: fixed;
@@ -1613,7 +1612,7 @@
       box-shadow: var(--shadow-sm);
       background: var(--surface);
     }
-
+    
     .lp-close-btn {
       display: none;
       background: var(--surface-2);
@@ -2013,6 +2012,12 @@
           <button class="fb" data-type="assault" onclick="filterCrimes('assault')">
             <span class="fdot" style="background:#ff9a00"></span>Assault / Violence<span class="fc">189</span>
           </button>
+          <button class="fb" data-type="cyber" onclick="filterCrimes('cyber')">
+            <span class="fdot" style="background:#8b5cf6"></span>Cyber Crime<span class="fc">0</span>
+          </button>
+          <button class="fb" data-type="vehicle" onclick="filterCrimes('vehicle')">
+            <span class="fdot" style="background:#0ea5e9"></span>Vehicle-related Crime<span class="fc">0</span>
+          </button>
 
         </div>
       </div>
@@ -2089,16 +2094,37 @@
           <div class="ws-row">
             <div class="ws-copy">
               <div class="ws-label">Emergency Quick Dial</div>
-              <div class="ws-sub">Reveal one-tap emergency numbers for police, women helpline, and child helpline.</div>
+              <div class="ws-sub">One-tap calling for essential helplines. Optional long-press confirmation and regional
+                customization.</div>
             </div>
             <input type="checkbox" class="tgl" id="ws-dial-toggle">
           </div>
           <div class="ws-extra" id="ws-dial-actions">
             <div class="ws-call-grid">
-              <a class="ws-action-btn" href="tel:112">Call 112</a>
-              <a class="ws-action-btn" href="tel:1091">Call 1091</a>
-              <a class="ws-action-btn" href="tel:1098">Call 1098</a>
+              <button class="ws-action-btn ws-dial-btn" type="button" data-label="Police" data-icon="👮" data-tel="112"
+                aria-label="Call Police 112">👮 Police · 112</button>
+              <button class="ws-action-btn ws-dial-btn" type="button" data-label="Ambulance" data-icon="🚑"
+                data-tel="108" aria-label="Call Ambulance 108">🚑 Ambulance · 108</button>
+              <button class="ws-action-btn ws-dial-btn" type="button" data-label="Fire Brigade" data-icon="🚒"
+                data-tel="101" aria-label="Call Fire Brigade 101">🚒 Fire · 101</button>
+              <button class="ws-action-btn ws-dial-btn" type="button" data-label="Women Helpline" data-icon="🧕"
+                data-tel="1091" aria-label="Call Women Helpline 1091">🧕 Women · 1091</button>
+              <button class="ws-action-btn ws-dial-btn" type="button" data-label="Cyber Crime Helpline" data-icon="🛡️"
+                data-tel="1930" aria-label="Call Cyber Crime Helpline 1930">🛡️ Cyber · 1930</button>
+              <button class="ws-action-btn ws-dial-btn" type="button" data-label="Child Helpline" data-icon="🧒"
+                data-tel="1098" aria-label="Call Child Helpline 1098">🧒 Child · 1098</button>
             </div>
+            <div style="display:flex;gap:8px;margin-top:10px">
+              <button class="ws-action-btn" id="ws-manage-dial" type="button" style="width:100%">Manage numbers</button>
+            </div>
+          </div>
+
+          <div class="ws-row">
+            <div class="ws-copy">
+              <div class="ws-label">Panic Button</div>
+              <div class="ws-sub">Trigger an emergency alert with your live location to a trusted contact instantly.</div>
+            </div>
+            <button class="ws-action-btn pink" id="ws-panic-btn" type="button" aria-label="Trigger Panic Alert">Trigger</button>
           </div>
 
           <div class="ws-row">
@@ -2121,25 +2147,6 @@
               </div>
             </div>
             <input type="checkbox" class="tgl" id="ws-disguise-toggle">
-          </div>
-
-          <div class="ws-row">
-            <div class="ws-copy">
-              <div class="ws-label">Safe Route Finder</div>
-              <div class="ws-sub">Search a start and destination, compare three walking routes, and rank them by crime
-                proximity and safe spots.</div>
-            </div>
-            <input type="checkbox" class="tgl" id="ws-route-toggle">
-          </div>
-          <div class="ws-extra" id="ws-route-controls">
-            <input class="ws-input" id="ws-route-start" type="text" placeholder="Starting location">
-            <input class="ws-input" id="ws-route-end" type="text" placeholder="Destination">
-            <button class="ws-action-btn ws-hidden" id="ws-find-route" type="button">Find Safe Route</button>
-            <div class="ws-note" id="ws-route-status">Walking routes work without a key (public OSRM). Optional: set
-              OpenRouteService in the script for alternatives.</div>
-            <div class="ws-warning ws-hidden" id="ws-night-warning">Night travel detected. Prefer the green route and
-              stay near safe spots.</div>
-            <div class="ws-route-results" id="ws-route-results"></div>
           </div>
         </div>
       </div>
@@ -2403,11 +2410,26 @@
       { city: "prayagraj", lat: 25.4340, lng: 81.8426, area: "Attarsuiya", type: "robbery", sev: 0.80, hour: 22, tags: ["Robbery"] }
     ];
 
-    const tC = { theft: '#ea580c', robbery: '#e11d48', assault: '#d97706' };
+    const tC = { theft: '#ea580c', robbery: '#e11d48', assault: '#d97706', cyber: '#8b5cf6', vehicle: '#0ea5e9' };
     const rC = s => s >= .85 ? '#e11d48' : s >= .70 ? '#ea580c' : s >= .50 ? '#ca8a04' : '#059669';
     const rL = s => s >= .85 ? 'CRITICAL' : s >= .70 ? 'HIGH' : s >= .50 ? 'MODERATE' : 'LOW';
 
     let map, heat, markers = [], filter = 'all', timeFilter = 'all', currentCity = 'lucknow', ncrbData = null;
+
+    function getTypeKey(d) {
+      const raw = (d && d.type) ? String(d.type).toLowerCase() : '';
+      if (raw === 'fraud') return 'cyber';
+      return raw;
+    }
+
+    function typeLabel(key) {
+      if (key === 'cyber') return 'Cyber Crime';
+      if (key === 'vehicle') return 'Vehicle-related Crime';
+      if (key === 'theft') return 'Theft / Snatching';
+      if (key === 'robbery') return 'Robbery / Dacoity';
+      if (key === 'assault') return 'Assault / Violence';
+      return key ? (key.charAt(0).toUpperCase() + key.slice(1)) : 'Unknown';
+    }
 
     function init() {
       map = L.map('map', { center: [26.8467, 80.9462], zoom: 13, maxZoom: 20 });
@@ -2448,7 +2470,7 @@
     function getFilt() {
       return crimes.filter(d => {
         const cityOk = d.city === currentCity;
-        const typeOk = filter === 'all' || d.type === filter;
+        const typeOk = filter === 'all' || getTypeKey(d) === filter;
         const timeOk = isInTimeWindow(d.hour ?? 12);
         return cityOk && typeOk && timeOk;
       });
@@ -2456,11 +2478,14 @@
 
     function updateTypeCounts() {
       const base = crimes.filter(function (d) { return d.city === currentCity; });
-      const c = { all: base.length, theft: 0, robbery: 0, assault: 0 };
-      base.forEach(function (d) { c[d.type] = (c[d.type] || 0) + 1; });
+      const c = { all: base.length, theft: 0, robbery: 0, assault: 0, cyber: 0, vehicle: 0 };
+      base.forEach(function (d) {
+        const k = getTypeKey(d);
+        c[k] = (c[k] || 0) + 1;
+      });
       var allBtn = document.querySelector('[data-type="all"] .fc');
       if (allBtn) allBtn.textContent = String(c.all);
-      ['theft', 'robbery', 'assault'].forEach(function (t) {
+      ['theft', 'robbery', 'assault', 'cyber', 'vehicle'].forEach(function (t) {
         var el = document.querySelector('[data-type="' + t + '"] .fc');
         if (el) el.textContent = String(c[t] || 0);
       });
@@ -2507,7 +2532,8 @@
     function buildMarkers() {
       markers.forEach(m => map.removeLayer(m)); markers = [];
       getFilt().forEach((d, idx) => {
-        const c = tC[d.type] || '#fff', sz = 7 + d.sev * 9;
+        const tK = getTypeKey(d);
+        const c = tC[tK] || '#fff', sz = 7 + d.sev * 9;
         // Use a larger wrapper with radial-gradient glow instead of box-shadow.
         // box-shadow can desync from the element during Leaflet CSS transforms (pan/zoom).
         // A radial-gradient background is part of the element itself, so it always stays aligned.
@@ -3097,6 +3123,8 @@
       const walkToggle = document.getElementById('ws-walk-toggle');
       const womenLayerToggle = document.getElementById('ws-women-layer-toggle');
       const dialToggle = document.getElementById('ws-dial-toggle');
+      const panicBtn = document.getElementById('ws-panic-btn');
+      const manageDialBtn = document.getElementById('ws-manage-dial');
       const safeSpotsToggle = document.getElementById('ws-safe-spots-toggle');
       const disguiseToggle = document.getElementById('ws-disguise-toggle');
       const routeToggle = document.getElementById('ws-route-toggle');
@@ -3265,6 +3293,194 @@
         const popup = window.open(waLink, '_blank');
         if (!popup) window.location.href = waLink;
         return true;
+      }
+
+      // Emergency Quick Dial (customizable, stored locally)
+      const DEFAULT_EMERGENCY_CONTACTS = [
+        { id: 'police', label: 'Police', icon: '👮', tel: '112' },
+        { id: 'ambulance', label: 'Ambulance', icon: '🚑', tel: '108' },
+        { id: 'fire', label: 'Fire Brigade', icon: '🚒', tel: '101' },
+        { id: 'women', label: 'Women Helpline', icon: '🧕', tel: '1091' },
+        { id: 'cyber', label: 'Cyber Crime Helpline', icon: '🛡️', tel: '1930' },
+        { id: 'child', label: 'Child Helpline', icon: '🧒', tel: '1098' }
+      ];
+
+      function loadEmergencyContacts() {
+        try {
+          const raw = JSON.parse(localStorage.getItem('ws_emergency_contacts') || 'null');
+          if (Array.isArray(raw) && raw.length) return raw;
+        } catch (e) { }
+        return DEFAULT_EMERGENCY_CONTACTS.slice();
+      }
+
+      function saveEmergencyContacts(list) {
+        localStorage.setItem('ws_emergency_contacts', JSON.stringify(list || []));
+      }
+
+      function isLongPressEnabled() {
+        return localStorage.getItem('ws_longpress_confirm') === '1';
+      }
+
+      function callTel(tel) {
+        const safeTel = String(tel || '').replace(/[^0-9+]/g, '');
+        if (!safeTel) return;
+        window.location.href = `tel:${safeTel}`;
+      }
+
+      function confirmThenCall(tel, label) {
+        const safeTel = String(tel || '').replace(/[^0-9+]/g, '');
+        if (!safeTel) return;
+        if (!confirm(`Call ${label || 'Emergency'} (${safeTel})?`)) return;
+        callTel(safeTel);
+      }
+
+      function applyEmergencyContactsToUI() {
+        const list = loadEmergencyContacts();
+        const container = document.querySelector('#ws-dial-actions .ws-call-grid');
+        if (!container) return;
+        container.querySelectorAll('.ws-dial-btn').forEach(function (b) { b.remove(); });
+        list.forEach(function (c) {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'ws-action-btn ws-dial-btn';
+          btn.dataset.label = c.label;
+          btn.dataset.icon = c.icon;
+          btn.dataset.tel = c.tel;
+          btn.setAttribute('aria-label', `Call ${c.label} ${c.tel}`);
+          btn.textContent = `${c.icon || '📞'} ${c.label} · ${c.tel}`;
+          container.appendChild(btn);
+        });
+      }
+
+      function wireDialButtons() {
+        const container = document.getElementById('ws-dial-actions');
+        if (!container) return;
+
+        // Click-to-call (when long-press is disabled)
+        container.addEventListener('click', function (e) {
+          const btn = e.target && e.target.closest ? e.target.closest('.ws-dial-btn') : null;
+          if (!btn) return;
+          if (isLongPressEnabled()) return;
+          callTel(btn.dataset.tel);
+        });
+
+        // Long-press-to-call (when enabled)
+        let pressTimer = null;
+        container.addEventListener('pointerdown', function (e) {
+          const btn = e.target && e.target.closest ? e.target.closest('.ws-dial-btn') : null;
+          if (!btn) return;
+          if (!isLongPressEnabled()) return;
+          pressTimer = window.setTimeout(function () {
+            confirmThenCall(btn.dataset.tel, btn.dataset.label);
+          }, 650);
+        });
+        function clearTimer() {
+          if (pressTimer) window.clearTimeout(pressTimer);
+          pressTimer = null;
+        }
+        container.addEventListener('pointerup', clearTimer);
+        container.addEventListener('pointercancel', clearTimer);
+        container.addEventListener('pointerleave', clearTimer);
+      }
+
+      function openManageEmergencyModal() {
+        const existing = document.getElementById('ws-manage-emergency-modal');
+        if (existing) existing.remove();
+
+        const list = loadEmergencyContacts();
+        const theme = document.documentElement.getAttribute('data-theme');
+        const bg = 'rgba(0,0,0,0.55)';
+        const card = theme === 'dark' ? '#161b22' : '#ffffff';
+        const text = theme === 'dark' ? '#e6edf3' : '#111827';
+        const line = theme === 'dark' ? '#30363d' : '#e5e7eb';
+
+        const overlay = document.createElement('div');
+        overlay.id = 'ws-manage-emergency-modal';
+        overlay.style.cssText = `position:fixed;inset:0;z-index:13000;background:${bg};display:flex;align-items:center;justify-content:center;padding:18px;font-family:DM Sans,system-ui,sans-serif;`;
+
+        overlay.innerHTML = `
+          <div role="dialog" aria-modal="true" aria-label="Manage Emergency Numbers" style="width:100%;max-width:520px;background:${card};color:${text};border:1px solid ${line};border-radius:14px;box-shadow:0 18px 50px rgba(0,0,0,0.25);overflow:hidden">
+            <div style="padding:14px 16px;border-bottom:1px solid ${line};display:flex;align-items:center;justify-content:space-between;gap:10px">
+              <div>
+                <div style="font-weight:700;font-size:0.95rem;letter-spacing:0.01em">Emergency Quick Dial</div>
+                <div style="font-size:0.72rem;color:${theme === 'dark' ? '#8b949e' : '#6b7280'}">Customize regional numbers (stored on this device).</div>
+              </div>
+              <button type="button" id="ws-em-close" style="border:1px solid ${line};background:transparent;color:inherit;border-radius:10px;padding:6px 10px;font-weight:700;cursor:pointer">✕</button>
+            </div>
+            <div style="padding:14px 16px">
+              <div id="ws-em-list" style="display:flex;flex-direction:column;gap:10px"></div>
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px">
+                <input id="ws-em-label" placeholder="Label" style="padding:10px 12px;border:1px solid ${line};border-radius:10px;background:transparent;color:inherit;font-size:0.8rem;outline:none">
+                <input id="ws-em-tel" placeholder="Number" inputmode="tel" style="padding:10px 12px;border:1px solid ${line};border-radius:10px;background:transparent;color:inherit;font-size:0.8rem;outline:none">
+                <button type="button" id="ws-em-add" style="padding:10px 12px;border-radius:10px;border:1px solid rgba(99,102,241,0.25);background:rgba(99,102,241,0.12);color:${theme === 'dark' ? '#c7d2fe' : '#4338ca'};font-weight:800;cursor:pointer">Add</button>
+              </div>
+              <div style="display:flex;gap:8px;margin-top:12px">
+                <button type="button" id="ws-em-reset" style="flex:1;padding:10px 12px;border-radius:10px;border:1px solid ${line};background:transparent;color:inherit;font-weight:700;cursor:pointer">Reset defaults</button>
+                <button type="button" id="ws-em-save" style="flex:1;padding:10px 12px;border-radius:10px;border:1px solid rgba(16,185,129,0.25);background:rgba(16,185,129,0.12);color:${theme === 'dark' ? '#bbf7d0' : '#065f46'};font-weight:800;cursor:pointer">Save</button>
+              </div>
+            </div>
+          </div>
+        `;
+
+        document.body.appendChild(overlay);
+
+        function render() {
+          const listEl = overlay.querySelector('#ws-em-list');
+          if (!listEl) return;
+          listEl.innerHTML = list.map(function (c, idx) {
+            const icon = c.icon || '📞';
+            const safeLabel = String(c.label || '').replace(/</g, '&lt;');
+            const safeTel = String(c.tel || '').replace(/</g, '&lt;');
+            return `
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid ${line};border-radius:12px;padding:10px 12px">
+                <div style="display:flex;align-items:center;gap:10px;min-width:0">
+                  <div style="width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:${theme === 'dark' ? 'rgba(148,163,184,0.12)' : 'rgba(15,23,42,0.06)'};flex:0 0 auto">${icon}</div>
+                  <div style="min-width:0">
+                    <div style="font-weight:800;font-size:0.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${safeLabel}</div>
+                    <div style="font-family:ui-monospace, SFMono-Regular, Menlo, monospace;font-size:0.72rem;color:${theme === 'dark' ? '#8b949e' : '#6b7280'}">${safeTel}</div>
+                  </div>
+                </div>
+                <button type="button" data-remove="${idx}" style="border:1px solid ${line};background:transparent;color:inherit;border-radius:10px;padding:6px 10px;font-weight:800;cursor:pointer">Remove</button>
+              </div>
+            `;
+          }).join('');
+          listEl.querySelectorAll('button[data-remove]').forEach(function (b) {
+            b.addEventListener('click', function () {
+              const idx = Number(b.getAttribute('data-remove'));
+              list.splice(idx, 1);
+              render();
+            });
+          });
+        }
+
+        render();
+
+        overlay.querySelector('#ws-em-close')?.addEventListener('click', function () { overlay.remove(); });
+        overlay.addEventListener('click', function (e) { if (e.target === overlay) overlay.remove(); });
+
+        overlay.querySelector('#ws-em-add')?.addEventListener('click', function () {
+          const l = overlay.querySelector('#ws-em-label');
+          const t = overlay.querySelector('#ws-em-tel');
+          const label = String(l?.value || '').trim();
+          const tel = String(t?.value || '').trim();
+          if (!label || !tel) return alert('Please enter both label and number.');
+          list.push({ id: 'custom_' + Date.now(), label, tel, icon: '📞' });
+          if (l) l.value = '';
+          if (t) t.value = '';
+          render();
+        });
+
+        overlay.querySelector('#ws-em-reset')?.addEventListener('click', function () {
+          if (!confirm('Reset emergency numbers to defaults?')) return;
+          list.splice(0, list.length, ...DEFAULT_EMERGENCY_CONTACTS.slice());
+          render();
+        });
+
+        overlay.querySelector('#ws-em-save')?.addEventListener('click', function () {
+          saveEmergencyContacts(list);
+          applyEmergencyContactsToUI();
+          overlay.remove();
+        });
       }
 
       function isWomenRelatedCrime(crime) {
@@ -4167,6 +4383,18 @@ out center;`;
         setExtraVisible('ws-dial-actions', this.checked);
       });
 
+      // Init Emergency Quick Dial
+      applyEmergencyContactsToUI();
+      wireDialButtons();
+      if (manageDialBtn) manageDialBtn.addEventListener('click', openManageEmergencyModal);
+
+      // Panic button
+      if (panicBtn) {
+        panicBtn.addEventListener('click', function () {
+          openWhatsAppAlert('Panic button pressed');
+        });
+      }
+
       safeSpotsToggle.addEventListener('change', function () {
         setExtraVisible('ws-safe-spots-extra', this.checked);
         if (!this.checked) {
@@ -4189,30 +4417,34 @@ out center;`;
         applyDisguiseMode(this.checked);
       });
 
-      routeToggle.addEventListener('change', function () {
-        setExtraVisible('ws-route-controls', this.checked);
-        if (!this.checked) {
-          clearRouteLayers();
-          setHidden(nightWarningEl, true);
-          setNote('ws-route-status', 'Enter start and destination, then Find Safe Route. Uses free walking directions if no ORS key is set.', '');
-        }
-        syncRouteButton();
-      });
+      // Safe Route Finder removed from Women Safety module (intentionally).
+      // Keep route code available for future modules, but do not bind UI handlers if elements don't exist.
+      if (routeToggle && routeStartInput && routeEndInput && findRouteBtn && routeResultsEl) {
+        routeToggle.addEventListener('change', function () {
+          setExtraVisible('ws-route-controls', this.checked);
+          if (!this.checked) {
+            clearRouteLayers();
+            setHidden(nightWarningEl, true);
+            setNote('ws-route-status', 'Enter start and destination, then Find Safe Route. Uses free walking directions if no ORS key is set.', '');
+          }
+          syncRouteButton();
+        });
 
-      routeStartInput.addEventListener('input', syncRouteButton);
-      routeEndInput.addEventListener('input', syncRouteButton);
-      findRouteBtn.addEventListener('click', findSafeRoute);
+        routeStartInput.addEventListener('input', syncRouteButton);
+        routeEndInput.addEventListener('input', syncRouteButton);
+        findRouteBtn.addEventListener('click', findSafeRoute);
 
-      routeResultsEl.addEventListener('click', function (event) {
-        var journeyBtn = event.target.closest('[data-journey-index]');
-        if (journeyBtn) {
-          openJourney3d(Number(journeyBtn.dataset.journeyIndex));
-          return;
-        }
-        const button = event.target.closest('[data-route-index]');
-        if (!button) return;
-        chooseRoute(Number(button.dataset.routeIndex));
-      });
+        routeResultsEl.addEventListener('click', function (event) {
+          var journeyBtn = event.target.closest('[data-journey-index]');
+          if (journeyBtn) {
+            openJourney3d(Number(journeyBtn.dataset.journeyIndex));
+            return;
+          }
+          const button = event.target.closest('[data-route-index]');
+          if (!button) return;
+          chooseRoute(Number(button.dataset.routeIndex));
+        });
+      }
 
       var journeyCloseBtn = document.getElementById('journey-3d-close');
       if (journeyCloseBtn) journeyCloseBtn.addEventListener('click', closeJourney3d);
@@ -5336,6 +5568,42 @@ out center;`;
                   font-weight: 600;
                 ">
                   ${theme === 'dark' ? 'ON' : 'OFF'}
+                </button>
+              </div>
+            </div>
+
+            <!-- Safety Settings -->
+            <div style="margin-bottom: 24px;">
+              <h3 style="margin: 0 0 12px 0; font-size: 13px; font-weight: 600; text-transform: uppercase; opacity: 0.7;">Safety</h3>
+              <div style="
+                padding: 12px 16px;
+                background: ${accentBg};
+                border-radius: 8px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 12px;
+              ">
+                <div>
+                  <div style="font-size: 13px; font-weight: 500;">Emergency dial long-press</div>
+                  <div style="font-size: 11px; opacity: 0.65; margin-top: 2px;">When enabled, emergency calls require a ~0.6s press + confirmation.</div>
+                </div>
+                <button onclick="
+                  const on = localStorage.getItem('ws_longpress_confirm') === '1';
+                  localStorage.setItem('ws_longpress_confirm', on ? '0' : '1');
+                  this.textContent = on ? 'OFF' : 'ON';
+                " style="
+                  padding: 6px 12px;
+                  background: ${theme === 'dark' ? '#238636' : '#ddd'};
+                  color: ${theme === 'dark' ? 'white' : '#000'};
+                  border: none;
+                  border-radius: 4px;
+                  cursor: pointer;
+                  font-size: 12px;
+                  font-weight: 600;
+                  min-width: 52px;
+                ">
+                  ${localStorage.getItem('ws_longpress_confirm') === '1' ? 'ON' : 'OFF'}
                 </button>
               </div>
             </div>

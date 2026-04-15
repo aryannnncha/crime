@@ -7,8 +7,11 @@
     "start": "node lucknow-crime-server.js"
   },
   "dependencies": {
+    "cheerio": "^1.1.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "multer": "^2.0.2",
+    "node-cron": "^4.2.1"
   }
 }
